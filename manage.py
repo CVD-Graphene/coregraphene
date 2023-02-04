@@ -7,7 +7,8 @@ def main():
     os.environ.setdefault('GRAPHENE_SETTINGS_MODULE', 'settings.raspberry')
     from conf import settings
 
-    print("CORGY", settings.CORGY)
+    settings1 = settings
+    print("CORGY", settings1.CORGY)
 
 
 if __name__ == '__main__':

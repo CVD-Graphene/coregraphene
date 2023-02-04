@@ -15,6 +15,17 @@ from .global_settings import *
 ENVIRONMENT_VARIABLE = "GRAPHENE_SETTINGS_MODULE"
 
 
+def singleton(class_):
+    instances = {}
+
+    def getinstance(*args, **kwargs):
+        if class_ not in instances:
+            instances[class_] = class_(*args, **kwargs)
+        return instances[class_]
+    return getinstance
+
+
+@singleton
 class Settings:
     def __init__(self, settings_module=None):
         if settings_module is None:
