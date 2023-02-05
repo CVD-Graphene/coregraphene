@@ -1,0 +1,13 @@
+# Python
+__pycache__
+venv
+
+# PyCharm files
+idea
+.idea/
+*__pycache__*
+.idea/workspace
+
+# Data files
+__data
+*.txt
