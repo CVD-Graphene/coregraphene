@@ -1,5 +1,5 @@
-from constants import TABLE_ACTIONS_NAMES
-from constants import ACTION_NAMES
+from ..constants import TABLE_ACTIONS_NAMES
+from ..constants import ACTION_NAMES
 
 from conf import settings
 
