@@ -2,9 +2,9 @@ import datetime
 
 
 class BaseCommunicationMethodException(Exception):
-    def __init__(self, communication_method_id=None):
+    def __init__(self, communication_method_id=None, description=None):
         self.communication_method_id = communication_method_id
-        self.description = f"Method raise exception"
+        self.description = description if description else f"Method raise exception"
         self.raised_at = datetime.datetime.now()
 
     def __str__(self):
