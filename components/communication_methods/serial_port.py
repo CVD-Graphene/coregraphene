@@ -3,7 +3,7 @@ from time import sleep
 
 from .base import BaseCommunicationMethod
 # from ...settings import LOCAL_MODE, SERIAL_PORT
-from conf import settings
+from ...conf import settings
 
 LOCAL_MODE = settings.LOCAL_MODE
 SERIAL_PORT = settings.SERIAL_PORT

@@ -5,7 +5,7 @@ except:
 
 from .base import BaseCommunicationMethod
 # from ...settings import LOCAL_MODE
-from conf import settings
+from ...conf import settings
 
 LOCAL_MODE = settings.LOCAL_MODE
 

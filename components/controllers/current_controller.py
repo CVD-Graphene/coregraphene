@@ -1,8 +1,9 @@
 import random
 from time import sleep
-from components.commands import BaseCommand
-from components.devices import CurrentSourceDevice
-from conf import settings
+
+from ..commands import BaseCommand
+from ..devices import CurrentSourceDevice
+from ...conf import settings
 
 from .base import AbstractController
 

@@ -1,14 +1,14 @@
-from components.communication_methods import BaseCommunicationMethod
-from constants import COMMUNICATION_INTERFACE_STATUS
+from ..communication_methods import BaseCommunicationMethod
+from ...constants import COMMUNICATION_INTERFACE_STATUS
 
-from exceptions.communicators import (
+from ...exceptions.communicators import (
     SetupCommunicatorException,
     InactiveCommunicatorException,
     BaseCommunicatorException,
     DoubleDeclarationMethodCommunicatorException,
 )
 
-from exceptions.communication_methods import BaseCommunicationMethodException
+from ...exceptions.communication_methods import BaseCommunicationMethodException
 
 
 class AbstractCommunicator(object):

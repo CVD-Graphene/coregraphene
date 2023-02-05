@@ -1,5 +1,5 @@
-from components.communicators import SerialAsciiAkipCommunicator
-from conf import settings
+from ..communicators import SerialAsciiAkipCommunicator
+from ...conf import settings
 
 from .base import AbstractDevice
 

@@ -1,5 +1,5 @@
 from .base import AbstractDevice
-from components.communicators import DigitalGpioCommunicator
+from ..communicators import DigitalGpioCommunicator
 
 
 class ValveDevice(AbstractDevice):

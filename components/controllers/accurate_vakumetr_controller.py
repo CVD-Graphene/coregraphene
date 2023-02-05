@@ -1,5 +1,5 @@
 from .base import AbstractController
-from components.devices import AccurateVakumetrDevice
+from ..devices import AccurateVakumetrDevice
 
 
 class AccurateVakumetrController(AbstractController):

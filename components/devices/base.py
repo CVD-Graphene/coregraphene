@@ -1,10 +1,10 @@
 import traceback
 
-from components.communicators import AbstractCommunicator
-from constants import DEVICE_STATUS
-from exceptions.communication_methods import BaseCommunicationMethodException
-from exceptions.communicators import BaseCommunicatorException
-from exceptions.devices import (
+from ..communicators import AbstractCommunicator
+from ...constants import DEVICE_STATUS
+from ...exceptions.communication_methods import BaseCommunicationMethodException
+from ...exceptions.communicators import BaseCommunicatorException
+from ...exceptions.devices import (
     BaseDeviceException,
     SetupDeviceException,
     InactiveDeviceException,

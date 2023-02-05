@@ -1,6 +1,6 @@
 # import wiringpi
-from conf import settings
-from exceptions.communication_methods import CommunicationMethodNotSetup, BaseCommunicationMethodException
+from ...conf import settings
+from ...exceptions.communication_methods import CommunicationMethodNotSetup, BaseCommunicationMethodException
 
 LOCAL_MODE = settings.LOCAL_MODE
 

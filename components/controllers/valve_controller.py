@@ -1,5 +1,5 @@
 from .base import AbstractController
-from components.devices import ValveDevice
+from ..devices import ValveDevice
 
 CLOSE = 1
 OPEN = 0

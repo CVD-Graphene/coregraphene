@@ -3,10 +3,10 @@ import asyncio
 import traceback
 from threading import Thread
 
-from components.commands import BaseCommand
-from components.devices import AbstractDevice
-from exceptions.controllers import ControllerInWaiting
-from conf import settings
+from ..commands import BaseCommand
+from ..devices import AbstractDevice
+from ...exceptions.controllers import ControllerInWaiting
+from ...conf import settings
 
 
 class AbstractController(object):

@@ -1,7 +1,7 @@
 from ..constants import TABLE_ACTIONS_NAMES
 from ..constants import ACTION_NAMES
 
-from conf import settings
+from ..conf import settings
 
 
 def safe_check(func):

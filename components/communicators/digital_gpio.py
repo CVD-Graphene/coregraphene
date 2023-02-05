@@ -1,5 +1,5 @@
 from .base import AbstractCommunicator
-from components.communication_methods import WiringDigitalMethod
+from ..communication_methods import WiringDigitalMethod
 
 
 class DigitalGpioCommunicator(AbstractCommunicator):

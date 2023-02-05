@@ -1,7 +1,7 @@
 from time import sleep
-from conf import settings
+from ...conf import settings
 
-from components.communicators import SerialAsciiCommunicator
+from ..communicators import SerialAsciiCommunicator
 from .base import AbstractDevice
 
 

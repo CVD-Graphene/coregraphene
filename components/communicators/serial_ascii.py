@@ -1,6 +1,6 @@
 from .base import AbstractCommunicator
-from components.communication_methods import SerialAsciiCommunicationMethod
-from conf import settings
+from ..communication_methods import SerialAsciiCommunicationMethod
+from ...conf import settings
 
 LOCAL_MODE = settings.LOCAL_MODE
 ACCURATE_VAKUMETR_USB_PORT = settings.ACCURATE_VAKUMETR_USB_PORT
