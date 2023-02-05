@@ -1,4 +1,4 @@
-from utils import get_serial_port
+from ..utils import get_serial_port
 
 
 LOCAL_MODE = True
