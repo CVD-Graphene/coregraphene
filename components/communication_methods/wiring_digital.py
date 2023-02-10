@@ -29,7 +29,7 @@ class WiringDigitalMethod(BaseCommunicationMethod):
         if self.default_command is not None:
             wiringpi.digitalWrite(self.port, self.default_command)  # Write 1 ( HIGH ) to pin 6
 
-    def _send(self, command):
+    def _send(self, command=None):
         wiringpi.digitalWrite(self.port, command)  # Write 1 ( HIGH ) to pin 6
         read_value = wiringpi.digitalRead(self.port)  # Read pin 6
         self._last_read_value = read_value

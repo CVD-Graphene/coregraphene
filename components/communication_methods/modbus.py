@@ -42,10 +42,10 @@ class ModbusCommunicationMethod(BaseCommunicationMethod):
             debug=False
         )
         self.instrument.serial.baudrate = self.baudrate
-        self.instrument.serial.timeout =self.timeout
+        self.instrument.serial.timeout = self.timeout
         self.instrument.mode = mm.MODE_ASCII
 
-    def _send(self, register, value, precision=1, functioncode=None):
+    def _send(self, register=None, value=None, precision=1, functioncode=None):
         last_command = f"{register} {value} {precision}"
         if functioncode is not None:
             last_command += f" {functioncode}"
@@ -53,18 +53,18 @@ class ModbusCommunicationMethod(BaseCommunicationMethod):
         self._last_command = last_command
         self.instrument.write_register(register, value, precision)
 
-    def _local_send(self, register, value, precision=1, functioncode=None):
+    def _local_send(self, register=None, value=None, precision=1, functioncode=None):
         self.last_register = register
         self.last_value = value
         self.last_precision = precision
         self.last_functioncode = functioncode
         self.register_values[register] = value / float(10 ** (precision - 1))
 
-    def _read(self, register, precision=1):
+    def _read(self, register=None, precision=1):
         answer = self.instrument.read_register(register, precision)
         return answer
 
-    def _local_read(self, register, precision=1):
+    def _local_read(self, register=None, precision=1):
         answer = self.register_values.get(register, self._default_register_value)
         answer /= 10 ** (precision - 1)
         return answer

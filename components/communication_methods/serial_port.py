@@ -32,6 +32,7 @@ class SerialAsciiCommunicationMethod(BaseCommunicationMethod):
         super().setup()
         if LOCAL_MODE:
             return
+
         self.rs485 = serial.Serial(
             port=self.port,
             baudrate=self.baudrate,
@@ -41,7 +42,7 @@ class SerialAsciiCommunicationMethod(BaseCommunicationMethod):
             timeout=self.timeout,
         )
 
-    def _send(self, command):
+    def _send(self, command=None):
         # if LOCAL_MODE:
         #     return
         #     # return "0011MV079.999e2u"
@@ -54,7 +55,7 @@ class SerialAsciiCommunicationMethod(BaseCommunicationMethod):
         # print("@ Q&A: ", command.strip(), " |", answer.strip())
         # return answer
 
-    def _read(self, *args, **kwargs):
+    def _read(self):
         x = self.rs485.readline()
         answer = x.decode('ASCII')
         # print("@ Q&A: ", self._last_command.strip(), " |", answer.strip())

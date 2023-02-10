@@ -51,7 +51,6 @@ class BaseCommunicationMethod:
 
         if LOCAL_MODE:
             return self._local_read(*args, **kwargs)
-
         try:
             return self._read(*args, **kwargs)
         except NotImplementedError:
