@@ -67,7 +67,7 @@ class AbstractDevice(object):
         return not bool(self._errors)
 
     # def on/off/
-    def exec_command(self, command, value=None):
+    def exec_command(self, **kwargs):
         """
         Main function for execution user commands
         :param command:
@@ -76,10 +76,15 @@ class AbstractDevice(object):
         """
         self.is_valid()
 
+        command = kwargs.get("command", None)
+        # value = kwargs.get("value", None)
+
         self._last_command = command
         try:
-            preprocessing_value = self._preprocessing_value(command, value)
-            answer = self.communicator.send(preprocessing_value)
+            preprocessing_ans = self._preprocessing_value(**kwargs)
+            if type(preprocessing_ans) != dict:
+                preprocessing_ans = {"value": preprocessing_ans}
+            answer = self.communicator.send(**preprocessing_ans)
 
             return self._postprocessing_value(answer)
 
@@ -91,12 +96,12 @@ class AbstractDevice(object):
             print(s)
             return self._handle_exception(e)
 
-    def read(self):
+    def read(self, **kwargs):
         self.is_valid()
 
         try:
             return self._postprocessing_value(
-                self.communicator.read()
+                self.communicator.read(**kwargs)
             )
 
         except (BaseCommunicatorException, BaseCommunicationMethodException):
@@ -110,14 +115,21 @@ class AbstractDevice(object):
     def _handle_exception(self, e: Exception):
         raise BaseDeviceException(device_id=self.device_id) from e
 
-    def _preprocessing_value(self, command, value):
+    def _preprocessing_value(self, **kwargs):
         """
         Connect command with value to one meaning to send for communication interface
         :param command:
         :param value:
         :return:
         """
-        return f"{command}{value}".strip()
+        return kwargs
+        # command = kwargs.get("command", None)
+        # value = kwargs.get("value", None)
+        #
+        # ans = dict(kwargs)
+        # if command is not None and value is not None:
+        #     ans["value"] = f"{command}{value}".strip(),
+        # return ans
 
-    def _postprocessing_value(self, value):
+    def _postprocessing_value(self, value=None):
         return value

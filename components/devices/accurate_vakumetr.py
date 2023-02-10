@@ -16,13 +16,16 @@ class AccurateVakumetrDevice(AbstractDevice):
 
     def get_value(self):
         # return self.exec_command("MV", "00")
-        self.exec_command("MV", "00")
+        self.exec_command(command="MV", value="00")
         sleep(0.5)
         r = self.read()
         print("Read accurate vakumetr value:", r)
         return r
 
-    def _postprocessing_value(self, value):
+    def _preprocessing_value(self, command=None, value=None):
+        return f"{command}{value}".strip(),
+
+    def _postprocessing_value(self, value=None):
         try:
             return float(value)
         except:

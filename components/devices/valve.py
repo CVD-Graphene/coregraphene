@@ -7,5 +7,5 @@ class ValveDevice(AbstractDevice):
         super().__init__()
         self.communicator = DigitalGpioCommunicator(port=port)
 
-    def _preprocessing_value(self, command, value=None):
+    def _preprocessing_value(self, command=None):
         return command

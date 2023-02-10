@@ -11,7 +11,7 @@ class CurrentSourceDevice(AbstractDevice):
             port=settings.CURRENT_SOURCE_PORT
         )
 
-    def _preprocessing_value(self, command, value):
+    def _preprocessing_value(self, command=None, value=None):
         if value is None:
             return command.strip()
         return f"{command} {value}".strip()
