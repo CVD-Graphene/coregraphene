@@ -110,7 +110,7 @@ class CurrentSourceController(AbstractController):
             self._on_thread_error(Exception(answer))
             self._add_command_force(self._CLEAR_ERRORS_COMMAND_OBJ)
 
-    def _is_error_check_command(self, command: BaseCommand):
+    def _is_error_check_command(self, command: BaseCommand = None):
         if command is None:
             return True
         return command.command in [GET_ERRORS_COMMAND, CLEAR_COMMAND]

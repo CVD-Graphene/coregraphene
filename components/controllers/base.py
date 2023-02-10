@@ -108,7 +108,8 @@ class AbstractController(object):
         to_exit = False
         while True:
             # time.sleep(self.loop_delay)
-            asyncio.sleep(self.loop_delay)
+            if self.loop_delay is not None and self.loop_delay > 0.0:
+                asyncio.sleep(self.loop_delay)
             try:
                 if self._is_thread_reading:
                     self._thread_read_command()
@@ -117,7 +118,7 @@ class AbstractController(object):
                         self._commands_queue.clear()
                         continue
                     command: BaseCommand = self._commands_queue.pop(0)
-                    print("|> CURRENT COMMAND [c]:", command.command)
+                    # print("|> CURRENT COMMAND [c]:", command.command)
 
                     if command.repeat:
                         self._commands_queue.append(command)
@@ -186,35 +187,37 @@ class AbstractController(object):
         return wrapper
 
     @device_command()
-    def exec_command(self, command=None, value=None):
+    def exec_command(self, **kwargs):
         """
         Send command with value to sensor
         :param command:
         :param value:
         :return: answered value from sensor
         """
-        return self.device.exec_command(command=command, value=value)
+        return self.device.exec_command(**kwargs)
 
     @device_command()
     def _exec_command(self, command: BaseCommand):
         """
         Send command with value to sensor
-        :param command:
-        :param value:
+        :param command: BaseCommand obj
         :return: answered value from sensor
         """
-        return self.device.exec_command(command=command.command, value=command.value)
+        return self.device.exec_command(
+            command=command.command,
+            value=command.value,
+        )
 
     @device_command(strong=True)
-    def get_value(self):
+    def get_value(self, **kwargs):
         """
         Send command with getting value from device
         :return: answered value from device
         """
         # raise NotImplementedError
-        command = None
-        value = None
-        return self.device.exec_command(command=command, value=value)
+        # command = None
+        # value = None
+        return self.device.exec_command(**kwargs)
 
     def get_last_answer(self):
         return self._last_answer
