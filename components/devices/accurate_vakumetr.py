@@ -23,7 +23,7 @@ class AccurateVakumetrDevice(AbstractDevice):
         return r
 
     def _preprocessing_value(self, command=None, value=None):
-        return f"{command}{value}".strip(),
+        return f"{command}{value}".strip()
 
     def _postprocessing_value(self, value=None):
         try:
