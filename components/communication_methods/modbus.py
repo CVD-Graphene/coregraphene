@@ -61,7 +61,14 @@ class ModbusCommunicationMethod(BaseCommunicationMethod):
             last_command += f" {functioncode}"
 
         self._last_command = last_command
-        self.instrument.write_register(register, value, precision)
+
+        args = [register, value]
+        if precision is not None:
+            args.append(precision)
+        kwargs = dict()
+        if functioncode is not None:
+            kwargs['functioncode'] = functioncode
+        self.instrument.write_register(*args, **kwargs)
 
     def _local_send(self, register=None, value=None, precision=1, functioncode=None):
         self.last_register = register
@@ -71,7 +78,10 @@ class ModbusCommunicationMethod(BaseCommunicationMethod):
         self.register_values[register] = value / float(10 ** (precision - 1))
 
     def _read(self, register=None, precision=1):
-        answer = self.instrument.read_register(register, precision)
+        args = [register]
+        if precision is not None:
+            args.append(precision)
+        answer = self.instrument.read_register(*args)
         return answer
 
     def _local_read(self, register=None, precision=1):
