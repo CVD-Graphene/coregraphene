@@ -2,24 +2,34 @@ import minimalmodbus as mm
 from .base import BaseCommunicationMethod
 from ...conf import settings
 
-LOCAL_MODE = settings.LOCAL_MODE
-
 
 class ModbusCommunicationMethod(BaseCommunicationMethod):
     def __init__(self,
                  port,  # f.e., '/dev/ttyUSB1'
-                 instrument_number,  # f.e., 1 2 3...
                  mode,  # mm.MODE_ASCII/mm.MODE_RTU
-                 baudrate=19200,
-                 timeout=0.2,
+                 instrument_number=None,  # f.e., 1 2 3...
+                 baudrate=None,
+                 timeout=None,
                  default_register_value=0,  # For LOCAL_MODE
                  ):
+        """
+        Save initial params for communication using modbus
+        :param port: serial port, f.e. '/dev/ttyUSB1'
+        :param mode: mm.MODE_ASCII or mm.MODE_RTU
+        :param instrument_number: instrument number in connection (used in mm.Instrument),
+            f.e. 1 2 3..., default settings `DEFAULT_MODBUS_INSTRUMENT_NUMBER`
+        :param baudrate: default value in settings `DEFAULT_MODBUS_BAUDRATE` (19200)
+        :param timeout: default value in settings `DEFAULT_MODBUS_TIMEOUT` (0.2)
+        :param default_register_value: used in local mode for imitation of work state
+        """
+
         super().__init__()
         self.port = port
-        self.instrument_number = instrument_number
         self.mode = mode
-        self.baudrate = baudrate
-        self.timeout = timeout
+
+        self.instrument_number = instrument_number or settings.DEFAULT_MODBUS_INSTRUMENT_NUMBER
+        self.baudrate = baudrate or settings.DEFAULT_MODBUS_BAUDRATE
+        self.timeout = timeout or settings.DEFAULT_MODBUS_TIMEOUT
 
         self.instrument = None
 
@@ -33,7 +43,7 @@ class ModbusCommunicationMethod(BaseCommunicationMethod):
 
     def setup(self):
         super().setup()
-        if LOCAL_MODE:
+        if settings.LOCAL_MODE:
             return
 
         self.instrument = mm.Instrument(

@@ -29,3 +29,8 @@ GAS_LIST = list(map(lambda x: x.get('NAME'), filter(lambda x: x.get("IS_GAS", Fa
 
 
 TABLE_COLUMN_NAMES = ["Процесс", "Аргумент 1", "Аргумент 2", "Аргумент 3", "Комментарий"]
+
+# Used in modbus communication method
+DEFAULT_MODBUS_BAUDRATE = 19200
+DEFAULT_MODBUS_TIMEOUT = 0.2
+DEFAULT_MODBUS_INSTRUMENT_NUMBER = 1
