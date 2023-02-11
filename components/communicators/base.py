@@ -18,7 +18,8 @@ class AbstractCommunicator(object):
             self,
             speed=None,
             port=None,
-            communication_method: BaseCommunicationMethod = None
+            communication_method: BaseCommunicationMethod = None,
+            **kwargs
     ):
         self.communicator_id = self.__class__.__name__
 

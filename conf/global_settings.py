@@ -34,3 +34,13 @@ TABLE_COLUMN_NAMES = ["Процесс", "Аргумент 1", "Аргумент 
 DEFAULT_MODBUS_BAUDRATE = 19200
 DEFAULT_MODBUS_TIMEOUT = 0.2
 DEFAULT_MODBUS_INSTRUMENT_NUMBER = 1
+
+# RRG_MODBUS = {
+#     'DEVICE_PORT': '/dev/ttyUSB1',
+#     'REGISTERS': {
+#         'STATE_FLAGS_1': 2,
+#         'SET_GAS_FLOW': 4,
+#         'GET_GAS_FLOW': 5,
+#     },
+# }
+RRG_MODBUS_DEVICE_PORT = '/dev/ttyUSB1'

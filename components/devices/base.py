@@ -22,6 +22,7 @@ class AbstractDevice(object):
     def __init__(
             self,
             communicator: AbstractCommunicator = None,
+            **kwargs,
     ):
         # if communicator is not None and self.communicator_class is not None:
         #     raise DoubleDeclarationCommunicatorException(device_id=self.__class__.__name__)
