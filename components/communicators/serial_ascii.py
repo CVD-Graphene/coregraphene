@@ -18,7 +18,7 @@ class SerialAsciiCommunicator(AbstractCommunicator):
 
     def _preprocessing_value(self, value="MV00"):
         return {
-            "value": f"{str(self.port).zfill(self.ADDRESS_PORT_LEN)}0{value}D\r",
+            "command": f"{str(self.port).zfill(self.ADDRESS_PORT_LEN)}0{value}D\r",
         }
 
     def _postprocessing_value(self, value: str = None):
@@ -37,7 +37,7 @@ class SerialAsciiAkipCommunicator(AbstractCommunicator):
 
     def _preprocessing_value(self, value="MV00") -> dict:
         return {
-            "value": f"A{str(self.port).zfill(self.ADDRESS_PORT_LEN)}{value};\n",
+            "command": f"A{str(self.port).zfill(self.ADDRESS_PORT_LEN)}{value};\n",
         }
 
     def _postprocessing_value(self, value: str = None):
