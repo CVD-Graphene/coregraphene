@@ -22,7 +22,7 @@ class BaseSystem(object):
     Functions for implementing:
     1. _init_controllers - initialize and save controllers, use list `_controllers` for saving
     2. _init_values - initialize main values in system
-    3. check_conditions - function raise BaseConditionException or return False in condition of
+    3. check_conditions - function raise BaseConditionException in case of
                         bad system state to prevent any action from user
     4. log_state - combine all values and save to log file
     5. _get_values - used for update reading values inside class
@@ -59,35 +59,15 @@ class BaseSystem(object):
 
     @abstractmethod
     def _init_controllers(self):
+        """
+        Init controllers and save (!!!) them to `_controllers` list
+        :return:
+        """
         pass
-        raise NotImplementedError
-
-        self.accurate_vakumetr_controller = AccurateVakumetrController()
-        self._valves = {}
-        for valve_conf in VALVES_CONFIGURATION:
-            self._valves[valve_conf["NAME"]] = ValveController(port=valve_conf["PORT"])
-
-        self.current_source_controller = CurrentSourceController(
-            on_change_current=self.on_change_current,
-            on_change_voltage=self.on_change_voltage,
-            on_set_current=None,  # ДОБАВИТЬ РЕАЛЬНОЕ ВЛИЯНИЕ - ПРОСТОЕ ВЫСТАВЛЕНИЕ АКТУАЛЬНОГО ЗНАЧЕНИЯ В UI
-        )
-
-        self._controllers: list[AbstractController] = [
-            self.accurate_vakumetr_controller,
-            self.current_source_controller,
-        ]
-
-        for valve in self._valves.values():
-            self._controllers.append(valve)
 
     @abstractmethod
     def _init_values(self):
-        raise NotImplementedError
-
-        self.accurate_vakumetr_value = 0.0
-        self.current_value = 0.0
-        self.voltage_value = 0.0
+        pass
 
     @property
     def has_logs(self):
@@ -143,10 +123,11 @@ class BaseSystem(object):
 
     @abstractmethod
     def check_conditions(self):
+        """
+        Raise condition exception if one of conditions is not correct
+        :return: True or raise exception from BaseConditionException
+        """
         return True
-        # if 5 > 6:
-        #     raise BadNumbersConditionException
-        # return True
 
     def action(func):
         """
@@ -184,29 +165,10 @@ class BaseSystem(object):
 
     @abstractmethod
     def log_state(self):
-        return
-        # for controller in self._controllers:
-        #     value = controller.get_value()
-
-    @action
-    def change_valve_state(self, gas):
-        # t = Thread(target=self.long_function)
-        # t.start()
-        # return 1
-        valve = self._valves.get(gas, None)
-        if valve is None:
-            return False
-        return valve.change_state()
-
-    # def on_change_current(self, value):
-    #     self.current_value = value
-    #
-    # def on_change_voltage(self, value):
-    #     self.voltage_value = value
-
-    # @action
-    # def set_current(self, value):
-    #     return self.current_source_controller.set_current_value(value)
+        """
+        Save current values to log file
+        """
+        pass
 
     def get_values(self):
         """
@@ -221,11 +183,10 @@ class BaseSystem(object):
 
     @abstractmethod
     def _get_values(self):
+        """
+        Override this for getting values from controllers and save them locally
+        """
         pass
-        # self.accurate_vakumetr_value = self.accurate_vakumetr_controller.get_value()
-        # self.current_value = self.current_source_controller.get_current_value()
-        # self.voltage_value = self.current_source_controller.get_voltage_value()
-        # print("VOLT VAL:", self.voltage_value)
 
     @property
     def recipe_state(self):
