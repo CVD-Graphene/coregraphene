@@ -3,10 +3,10 @@ from ..communicators import DigitalGpioCommunicator
 
 
 class ValveDevice(AbstractDevice):
-    def __init__(self, port, **kwargs):
+    def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.communicator = DigitalGpioCommunicator(
-            port=port,
+            # port=port,
             **kwargs,
         )
 
