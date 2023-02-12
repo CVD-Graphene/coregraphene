@@ -42,6 +42,7 @@ class CurrentSourceController(AbstractController):
                  on_set_current=None,
                  ):
         super().__init__()
+        self._thread_using = True
         self.on_change_voltage = on_change_voltage
         self.on_change_current = on_change_current
         self.on_set_current = on_set_current
@@ -62,8 +63,7 @@ class CurrentSourceController(AbstractController):
         # sleep(SLEEP_TIME)
         # self.exec_command(command=SET_VOLTAGE_ACTUAL)
 
-    def thread_setup(self, is_working, add_log, add_error, **kwargs):
-        super().thread_setup(is_working, add_log, add_error)
+    def _thread_setup_additional(self, **kwargs):
         self.add_command(BaseCommand(command=CLEAR_COMMAND))
         self.add_command(BaseCommand(command=REMOTE_COMMAND))
         self.add_command(BaseCommand(command=OUTPUT_1_COMMAND))

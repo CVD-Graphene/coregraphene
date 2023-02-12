@@ -30,6 +30,9 @@ class AbstractController(object):
         self.loop_delay = 0.2
 
         # THREAD VARIABLES ############################
+        # if True - system will run thread_setup
+        self._thread_using = False
+
         self._runnable = False
         self._is_global_working = True
         self._thread = None
@@ -55,11 +58,24 @@ class AbstractController(object):
         self._add_error = None
 
     def thread_setup(self, is_working, add_log, add_error, **kwargs):
+        """
+        Set `_thread_using` to True for auto calling thread_setup
+        :param is_working:
+        :param add_log:
+        :param add_error:
+        :param kwargs:
+        :return:
+        """
+        if not self._thread_using:
+            return
         self._runnable = True
         self._is_global_working = is_working
         self._add_log = add_log
         self._add_error = add_error
-        # print("IS WORK OBJECT", is_working)
+        self._thread_setup_additional(**kwargs)
+
+    def _thread_setup_additional(self, **kwargs):
+        pass
 
     @property
     def _is_working(self):
