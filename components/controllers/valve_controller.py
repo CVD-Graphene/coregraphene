@@ -8,7 +8,10 @@ OPEN = 0
 class ValveController(AbstractController):
     def __init__(self, port):
         super().__init__()
-        self.device = ValveDevice(port=port)
+        self.device = ValveDevice(
+            port=port,
+            default_command=CLOSE,
+        )
         self.is_open = False
 
     @AbstractController.device_command()

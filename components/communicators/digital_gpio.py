@@ -6,4 +6,7 @@ class DigitalGpioCommunicator(AbstractCommunicator):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.communication_method = WiringDigitalMethod(port=self.port)
+        self.communication_method = WiringDigitalMethod(
+            port=self.port,
+            **kwargs
+        )

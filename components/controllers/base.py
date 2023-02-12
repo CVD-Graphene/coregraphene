@@ -108,7 +108,7 @@ class AbstractController(object):
             read_value = ""
         else:
             read_value = self.device.read()
-            print(f"|> Read value for C[{self._last_thread_command.command}]: {read_value}")
+            print(f"|> [Controller thread] Read [command={self._last_thread_command.command}]: value={read_value}.")
             if read_value:
                 self._start_thread_read_time = None
                 self._is_thread_reading = False

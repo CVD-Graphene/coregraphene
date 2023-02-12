@@ -13,7 +13,8 @@ DEFAULT_PIN_VALUE = 0
 class WiringDigitalMethod(BaseCommunicationMethod):
     def __init__(self,
                  port,
-                 default_command=1,
+                 default_command=None,
+                 **kwargs,
                  ):
         super().__init__()
         self.port = port
