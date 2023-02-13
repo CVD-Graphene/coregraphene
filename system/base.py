@@ -156,6 +156,12 @@ class BaseSystem(object):
     def _add_error_log(self, e):
         self._add_log(str(e), log_type=NOTIFICATIONS.ERROR)
 
+    def add_log(self, log):
+        self._add_log(log)
+
+    def add_error(self, e):
+        self._add_error_log(e)
+
     def _handle_exception(self, e):
         print("Raise exception in handler!")
         self._add_error_log(e)
