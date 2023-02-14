@@ -1,3 +1,5 @@
+import random
+
 import serial
 from time import sleep
 
@@ -60,3 +62,6 @@ class SerialAsciiCommunicationMethod(BaseCommunicationMethod):
         answer = x.decode('ASCII')
         # print("@ Q&A: ", self._last_command.strip(), " |", answer.strip())
         return answer
+
+    def _local_read(self, *args, **kwargs):
+        return random.random() * 100

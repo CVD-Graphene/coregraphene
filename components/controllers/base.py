@@ -77,6 +77,24 @@ class AbstractController(object):
     def _thread_setup_additional(self, **kwargs):
         pass
 
+    def check_command(self, **kwargs):
+        """
+        Check that all setup params are correct
+        :return: True if correct, else False
+        """
+        try:
+            self._check_command(**kwargs)
+            return True
+        except:
+            return False
+
+    def _check_command(self, **kwargs):
+        """
+        Use this function for check all params for devices
+        :return: True/False
+        """
+        return True
+
     @property
     def _is_working(self):
         if type(self._is_global_working) == bool:
@@ -108,7 +126,8 @@ class AbstractController(object):
             read_value = ""
         else:
             read_value = self.device.read()
-            print(f"|> [Controller thread] Read [command={self._last_thread_command.command}]: value={read_value}.")
+            com_name = self._last_thread_command.kwargs.get("command", "SMTH")
+            print(f"|> [Controller thread] Read [command={com_name}]: value={read_value}.")
             if read_value:
                 self._start_thread_read_time = None
                 self._is_thread_reading = False
@@ -125,7 +144,7 @@ class AbstractController(object):
         while True:
             # time.sleep(self.loop_delay)
             if self.loop_delay is not None and self.loop_delay > 0.0:
-                asyncio.sleep(self.loop_delay)
+                time.sleep(self.loop_delay)
             try:
                 if self._is_thread_reading:
                     self._thread_read_command()
@@ -140,7 +159,9 @@ class AbstractController(object):
                         self._commands_queue.append(command)
                     if command.with_answer:
                         self._is_thread_reading = True
-                    self._run_thread_command(command)
+                    answer = self._run_thread_command(command)
+                    if command.immediate_answer:
+                        command.on_answer(answer)
                 else:
                     if to_exit:
                         break
@@ -220,8 +241,9 @@ class AbstractController(object):
         :return: answered value from sensor
         """
         return self.device.exec_command(
-            command=command.command,
-            value=command.value,
+            **command.kwargs,
+            # command=command.command,
+            # value=command.value,
         )
 
     @device_command(strong=True)
@@ -233,7 +255,7 @@ class AbstractController(object):
         # raise NotImplementedError
         # command = None
         # value = None
-        return self.device.exec_command(**kwargs)
+        return self.device.read(**kwargs)
 
     def get_last_answer(self):
         return self._last_answer

@@ -24,6 +24,10 @@ class RrgModbusController(AbstractController):
         self.target_sccm = 0.0
         self.current_sccm = 0.0
 
+    def _check_command(self, **kwargs):
+        current_flow = self.exec_command(register=REGISTER_GET_FLOW)
+        assert current_flow >= 0.0
+
     @AbstractController.device_command()
     def set_target_sccm(self, sccm: float = 0.):
         sccm = min(200.0, max(0.0, sccm))
