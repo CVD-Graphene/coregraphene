@@ -33,7 +33,7 @@ class TermodatModbusController(AbstractController):
 
     def _check_command(self, **kwargs):
         self.exec_command(register=REGISTER_ON_OFF, value=ON)
-        current_temperature = self.get_value(
+        current_temperature = self.read(
             register=REGISTER_CURRENT_TEMPERATURE_GET)
         self.exec_command(register=REGISTER_ON_OFF, value=OFF)
         assert current_temperature >= 0.0

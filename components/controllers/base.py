@@ -125,10 +125,11 @@ class AbstractController(object):
             self._is_thread_reading = False
             read_value = ""
         else:
-            read_value = self.device.read()
+            read_value = self.device.read(**self._last_thread_command.kwargs)
             com_name = self._last_thread_command.kwargs.get("command", "SMTH")
             print(f"|> [Controller thread] Read [command={com_name}]: value={read_value}.")
-            if read_value:
+            if read_value is not None and not\
+                    (type(read_value) == str and len(read_value) == 0):
                 self._start_thread_read_time = None
                 self._is_thread_reading = False
                 # print("READ FOR:", self._last_thread_command.command)
@@ -153,15 +154,19 @@ class AbstractController(object):
                         self._commands_queue.clear()
                         continue
                     command: BaseCommand = self._commands_queue.pop(0)
+                    self._last_thread_command = command
                     # print("|> CURRENT COMMAND [c]:", command.command)
 
                     if command.repeat:
                         self._commands_queue.append(command)
                     if command.with_answer:
                         self._is_thread_reading = True
-                    answer = self._run_thread_command(command)
                     if command.immediate_answer:
-                        command.on_answer(answer)
+                        self._thread_read_command()
+                        # command.on_answer(answer)
+                    else:
+                        self._run_thread_command(command)
+
                 else:
                     if to_exit:
                         break
