@@ -17,6 +17,8 @@ class TermodatModbusDevice(AbstractDevice):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        if kwargs.get('baudrate', None) is None:
+            kwargs['baudrate'] = settings.DEFAULT_MODBUS_TERMODAT_BAUDRATE
         self.communicator = ModbusAsciiCommunicator(
             **kwargs,
         )
