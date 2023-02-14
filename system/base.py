@@ -47,6 +47,9 @@ class BaseSystem(object):
 
         # CONTROLLERS
         self._controllers: list[AbstractController] = []
+
+        self._determine_attributes()
+
         self._init_controllers()
 
         # VALUES
@@ -56,6 +59,13 @@ class BaseSystem(object):
         #                     "self.accurate_vakume self.accurate_vakumetr_value = "
         #                     "self.accurate_vakumetr_controller.get_value()")
         # self._add_log("Тупая тупая заметка!!!!!", log_type=NOTIFICATIONS.LOG)
+
+    def _determine_attributes(self):
+        """
+        Update ports, get values from system, etc
+        :return:
+        """
+        pass
 
     @abstractmethod
     def _init_controllers(self):
