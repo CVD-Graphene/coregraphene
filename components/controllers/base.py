@@ -257,6 +257,14 @@ class AbstractController(object):
         # value = None
         return self.device.read(**kwargs)
 
+    @device_command(strong=True)
+    def read(self, **kwargs):
+        """
+        Send command with getting value from device
+        :return: answered value from device
+        """
+        return self.device.read(**kwargs)
+
     def get_last_answer(self):
         return self._last_answer
 
