@@ -1,3 +1,5 @@
+import random
+
 from .base import AbstractController
 from ..devices import RrgModbusDevice
 from ...conf import settings
@@ -53,6 +55,8 @@ class RrgModbusController(AbstractController):
 
     @AbstractController.device_command()
     def get_current_sccm(self):
-        current_flow = self.exec_command(register=REGISTER_GET_FLOW)
+        current_flow = self.read(register=REGISTER_GET_FLOW)
         self.current_sccm = current_flow * 2.0
+        if LOCAL_MODE:
+            self.current_sccm = random.random() * 200
         return self.current_sccm
