@@ -275,7 +275,7 @@ class AbstractController(object):
 
     def _handle_exception(self, e):
         s = traceback.format_exc()
-        print(s)
+        # print(s)
         raise e
 
     def wait_seconds(self, seconds=None, after_wait=None, **kwargs):
