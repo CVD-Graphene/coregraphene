@@ -15,6 +15,7 @@ class AccurateVakumetrDevice(AbstractDevice):
             port_communicator=settings.ACCURATE_VAKUMETR_PORT,
             **kwargs,
         )
+        self.kwargs = kwargs
 
     def get_value(self):
         # return self.exec_command("MV", "00")
@@ -29,7 +30,7 @@ class AccurateVakumetrDevice(AbstractDevice):
         self.exec_command(command="MV", value="00")
         sleep(1)
         r = self.read()
-        print("Read accurate vakumetr value:", r)
+        print("Read accurate vakumetr value:", r, "KW", self.kwargs)
         return r
 
     def _preprocessing_value(self, command=None, value=None):
