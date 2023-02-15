@@ -8,7 +8,6 @@ LOCAL_MODE = settings.LOCAL_MODE
 class BaseCommunicationMethod:
     def __init__(self, *args, **kwargs):
         self.ready = False
-        self.rs485 = None
         self._last_command = None
         self._last_read_value = None
 
