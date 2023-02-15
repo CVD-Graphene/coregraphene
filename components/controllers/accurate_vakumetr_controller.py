@@ -60,13 +60,13 @@ class AccurateVakumetrController(AbstractController):
         print("|> Accurate vakumetr destructor!")
 
     def _check_command(self, **kwargs):
-        self.device.exec_command(
-            command="DR",
-            value="00",
-            operation_code="2",
-        )
-        time.sleep(1)
-        print(self.device.read(), "REBOOT READ")
+        # self.device.exec_command(
+        #     command="DR",
+        #     value="00",
+        #     operation_code="2",
+        # )
+        # time.sleep(1)
+        # print(self.device.read(), "REBOOT READ")
         value = self.device.get_value_with_waiting()
         assert value >= 0.0
 
