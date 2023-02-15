@@ -30,7 +30,7 @@ class AccurateVakumetrDevice(AbstractDevice):
         self.exec_command(command="MV", value="00")
         sleep(1)
         r = self.read()
-        print("Read accurate vakumetr value:", r, "KW", self.kwargs)
+        print("Read accurate vakumetr value:", r)#, "KW", self.kwargs)
         return r
 
     def _preprocessing_value(self, command=None, value=None):
