@@ -19,9 +19,22 @@ class SerialAsciiCommunicator(AbstractCommunicator):
         )
         # self.communication_method = SerialAsciiCommunicationMethod()
 
-    def _preprocessing_value(self, value="MV00"):
+    def _add_check_sum(self, command):
+        summ = 0
+        for c in command:
+            summ += ord(c)
+            # print(ord(c))
+
+        summ = (summ % 64) + 64
+        # print(chr(summ))
+        return f"{command}{chr(summ)}"
+
+    def _preprocessing_value(self, value="0MV00"):
+        address = str(self.port).zfill(self.ADDRESS_PORT_LEN)
+        command = f"{address}{value}"
+        command = f"{self._add_check_sum(command)}\r"
         return {
-            "command": f"{str(self.port).zfill(self.ADDRESS_PORT_LEN)}0{value}D\r",
+            "command": command,
         }
 
     def _postprocessing_value(self, value: str = None):

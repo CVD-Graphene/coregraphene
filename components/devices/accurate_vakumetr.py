@@ -33,8 +33,8 @@ class AccurateVakumetrDevice(AbstractDevice):
         print("Read accurate vakumetr value:", r)#, "KW", self.kwargs)
         return r
 
-    def _preprocessing_value(self, command=None, value=None):
-        return f"{command}{value}".strip()
+    def _preprocessing_value(self, operation_code="0", command=None, value=None):
+        return f"{operation_code}{command}{value}".strip()
 
     def _postprocessing_value(self, value=None):
         try:

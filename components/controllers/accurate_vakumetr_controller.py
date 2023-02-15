@@ -1,4 +1,5 @@
 import random
+import time
 
 from ...conf import settings
 
@@ -22,8 +23,17 @@ class AccurateVakumetrController(AbstractController):
 
     def _thread_setup_additional(self, **kwargs):
         self.add_command(BaseCommand(
+            command="DR",
+            value="00",
+            operation_code="2",
+            repeat=False,
+            with_answer=True,
+            on_answer=self._on_reboot_answer,
+        ))
+        self.add_command(BaseCommand(
             command="MV",
             value="00",
+            operation_code="0",
             repeat=True,
             with_answer=True,
             on_answer=self._on_get_vakumetr_value,
@@ -38,11 +48,25 @@ class AccurateVakumetrController(AbstractController):
         # if self.on_change_voltage is not None:
         #     self.on_change_voltage(value)
 
+    @AbstractController.thread_command
+    def _on_reboot_answer(self, value):
+        if LOCAL_MODE:
+            value = random.random() * 100
+        value = float(value)
+        print("REBOOT ANSWER", value)
+
     def destructor(self):
         super().destructor()
         print("|> Accurate vakumetr destructor!")
 
     def _check_command(self, **kwargs):
+        self.device.exec_command(
+            command="DR",
+            value="00",
+            operation_code="2",
+        )
+        time.sleep(1)
+        print(self.device.read(), "REBOOT READ")
         value = self.device.get_value_with_waiting()
         assert value >= 0.0
 
