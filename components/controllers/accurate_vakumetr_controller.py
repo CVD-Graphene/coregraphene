@@ -42,7 +42,7 @@ class AccurateVakumetrController(AbstractController):
         print("|> Accurate vakumetr destructor!")
 
     def _check_command(self, **kwargs):
-        value = self.device.get_value()
+        value = self.device.get_value_with_waiting()
         assert value >= 0.0
 
     def get_value(self):
