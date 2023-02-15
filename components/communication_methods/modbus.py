@@ -31,7 +31,8 @@ class ModbusCommunicationMethod(BaseCommunicationMethod):
         self.baudrate = baudrate or settings.DEFAULT_MODBUS_BAUDRATE
         self.timeout = timeout or settings.DEFAULT_MODBUS_TIMEOUT
 
-        print("|>>>> RRG MODBUS: PORT=", port, "INST NUM:", self.instrument_number)
+        print("|>>>> RRG MODBUS: PORT=", port, "INST NUM:", self.instrument_number,
+              "MODE", self.mode, "baudrate", self.baudrate)
 
         self.instrument = None
 
@@ -51,11 +52,12 @@ class ModbusCommunicationMethod(BaseCommunicationMethod):
         self.instrument = mm.Instrument(
             self.port,
             self.instrument_number,
+            mode=self.mode,
             debug=False
         )
         self.instrument.serial.baudrate = self.baudrate
         self.instrument.serial.timeout = self.timeout
-        self.instrument.mode = self.mode
+        # self.instrument.mode = self.mode
 
     def _send(self, register=None, value=None, precision=1, functioncode=None):
         last_command = f"{register} {value} {precision}"
