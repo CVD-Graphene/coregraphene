@@ -31,6 +31,8 @@ class ModbusCommunicationMethod(BaseCommunicationMethod):
         self.baudrate = baudrate or settings.DEFAULT_MODBUS_BAUDRATE
         self.timeout = timeout or settings.DEFAULT_MODBUS_TIMEOUT
 
+        print("|>>>> RRG MODBUS: PORT=", port, "INST NUM:", self.instrument_number)
+
         self.instrument = None
 
         # FOR LOCAL MODE
