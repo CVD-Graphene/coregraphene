@@ -10,10 +10,11 @@ LOCAL_MODE = settings.LOCAL_MODE
 
 
 class AccurateVakumetrController(AbstractController):
-    device_class = AccurateVakumetrDevice
+    # device_class = AccurateVakumetrDevice
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.device = AccurateVakumetrDevice(*args, **kwargs)
         self.vakumetr_value = None
         self.loop_delay = 0.5
 
