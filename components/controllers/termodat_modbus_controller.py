@@ -34,7 +34,9 @@ class TermodatModbusController(AbstractController):
     def _check_command(self, **kwargs):
         self.exec_command(register=REGISTER_ON_OFF, value=ON)
         current_temperature = self.read(
-            register=REGISTER_CURRENT_TEMPERATURE_GET)
+            register=REGISTER_CURRENT_TEMPERATURE_GET,
+            precision=PRECISION,
+        )
         self.exec_command(register=REGISTER_ON_OFF, value=OFF)
         print("TERMODAT current_temperature:", current_temperature)
         assert current_temperature >= 0.0
@@ -47,12 +49,14 @@ class TermodatModbusController(AbstractController):
         # Repeat commands for updating values
         self.add_command(BaseCommand(
             register=REGISTER_CURRENT_TEMPERATURE_GET,
+            precision=PRECISION,
             repeat=True,
             immediate_answer=True,
             on_answer=self._on_get_current_temperature,
         ))
         self.add_command(BaseCommand(
             register=REGISTER_TARGET_TEMPERATURE_GET,
+            precision=PRECISION,
             repeat=True,
             immediate_answer=True,
             on_answer=self._on_get_target_temperature,
