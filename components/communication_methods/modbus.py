@@ -55,7 +55,7 @@ class ModbusCommunicationMethod(BaseCommunicationMethod):
         )
         self.instrument.serial.baudrate = self.baudrate
         self.instrument.serial.timeout = self.timeout
-        self.instrument.mode = mm.MODE_ASCII
+        self.instrument.mode = self.mode
 
     def _send(self, register=None, value=None, precision=1, functioncode=None):
         last_command = f"{register} {value} {precision}"
