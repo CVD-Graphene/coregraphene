@@ -10,10 +10,13 @@ class SerialAsciiCommunicator(AbstractCommunicator):
     # communication_method_class = SerialAsciiCommunicationMethod
     ADDRESS_PORT_LEN = 3
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, port_communicator=None, **kwargs):
         super().__init__(*args, **kwargs)
+        self.port = port_communicator
         self.communication_method = SerialAsciiCommunicationMethod(
-            port=ACCURATE_VAKUMETR_USB_PORT)
+            *args, **kwargs,
+            # port=ACCURATE_VAKUMETR_USB_PORT
+        )
         # self.communication_method = SerialAsciiCommunicationMethod()
 
     def _preprocessing_value(self, value="MV00"):

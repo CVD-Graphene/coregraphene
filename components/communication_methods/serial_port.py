@@ -64,4 +64,4 @@ class SerialAsciiCommunicationMethod(BaseCommunicationMethod):
         return answer
 
     def _local_read(self, *args, **kwargs):
-        return random.random() * 100
+        return round(random.random() * 100, 1)
