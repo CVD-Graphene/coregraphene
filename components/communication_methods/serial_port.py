@@ -42,6 +42,9 @@ class SerialAsciiCommunicationMethod(BaseCommunicationMethod):
             timeout=self.timeout,
         )
 
+    def destructor(self):
+        self.rs485.close()
+
     def _send(self, command=None):
         # if LOCAL_MODE:
         #     return

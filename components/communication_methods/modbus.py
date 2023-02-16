@@ -60,6 +60,7 @@ class ModbusCommunicationMethod(BaseCommunicationMethod):
         )
         self.instrument.serial.baudrate = self.baudrate
         self.instrument.serial.timeout = self.timeout
+
         # self.instrument.mode = self.mode
 
     def _send(self, register=None, value=None, precision=1, functioncode=None):

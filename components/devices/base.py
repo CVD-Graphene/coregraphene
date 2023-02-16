@@ -49,7 +49,7 @@ class AbstractDevice(object):
             raise SetupDeviceException(device_id=self.device_id) from e
 
     def destructor(self):
-        pass
+        self.communicator.destructor()
 
     def is_valid(self, raise_exception=True):
         e = None

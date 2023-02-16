@@ -16,6 +16,9 @@ class BaseCommunicationMethod:
     def setup(self, *args, **kwargs):
         self.ready = True
 
+    def destructor(self):
+        pass
+
     def _check_setup(self):
         if not self.ready:
             raise CommunicationMethodNotSetup(
