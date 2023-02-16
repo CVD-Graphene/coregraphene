@@ -125,7 +125,7 @@ class AbstractController(object):
             self._is_thread_reading = False
             read_value = ""
         else:
-            read_value = self.device.read(**self._last_thread_command.kwargs)
+            read_value = self.read(**self._last_thread_command.kwargs)
             com_name = self._last_thread_command.kwargs.get("command", "SMTH")
             # print(f"|> [Controller thread] Read [command={com_name}]: value={read_value}.")
             if read_value is not None and not\
@@ -302,3 +302,42 @@ class AbstractController(object):
         """
         self._target_value = target_value
         self._on_reached = on_reached
+
+
+class AbstractControllerManyDevices(AbstractController):
+
+    devices = None
+
+    def setup(self):
+        for device in self.devices:
+            device.setup()
+
+    def destructor(self):
+        if self._thread is not None:
+            self._thread.join()
+        for device in self.devices:
+            device.destructor()
+
+    @AbstractController.device_command(strong=True)
+    def read(self, device_num=0, **kwargs):
+        """
+        Send command with getting value from device
+        :return: answered value from device
+        """
+        return self.devices[device_num].read(**kwargs)
+
+    @AbstractController.device_command(strong=True)
+    def get_value(self, device_num=0, **kwargs):
+        return self.devices[device_num].read(**kwargs)
+
+    @AbstractController.device_command()
+    def _exec_command(self, command: BaseCommand):
+        return self.devices[command.device_num].exec_command(**command.kwargs)
+
+    @AbstractController.device_command()
+    def exec_command(self, device_num=0, **kwargs):
+        """
+        Send command with value to sensor
+        :return: answered value from sensor
+        """
+        return self.devices[device_num].exec_command(**kwargs)

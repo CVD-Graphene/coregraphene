@@ -1,6 +1,6 @@
 import random
 
-from .base import AbstractController
+from .base import AbstractController, AbstractControllerManyDevices
 from ..commands import BaseCommand
 from ..devices import TermodatModbusDevice
 from ...conf import settings
@@ -16,6 +16,107 @@ REGISTER_TARGET_TEMPERATURE_SET = 371
 REGISTER_SPEED_SET = 377
 
 MAX_TEMPERATURE = 60.0
+
+
+class SeveralTermodatModbusController(AbstractControllerManyDevices):
+    def __init__(self, config=None, **kwargs):
+        super().__init__()
+
+        self.devices = []
+        for termodat_config in config:
+            termodat = TermodatModbusDevice(
+                instrument_number=termodat_config['INSTRUMENT_NUMBER'],
+                **kwargs
+            )
+            self.devices.append(termodat)
+
+        self.devices_amount = len(self.devices)
+        self.loop_delay = 0.1
+
+        self._thread_using = True
+        self.state = OFF
+
+        self.target_temperatures = [0.0 for _ in self.devices]
+        self.current_temperatures = [0.0 for _ in self.devices]
+        self.speeds = [0.0 for _ in self.devices]
+
+    def _thread_setup_additional(self, **kwargs):
+        for i in range(self.devices_amount):
+            self.add_command(BaseCommand(
+                register=REGISTER_ON_OFF, value=ON, precision=PRECISION,
+                device_num=i,
+            ))
+
+            # Repeat commands for updating values
+            self.add_command(BaseCommand(
+                register=REGISTER_CURRENT_TEMPERATURE_GET,
+                precision=PRECISION,
+                device_num=i,
+                repeat=True,
+                immediate_answer=True,
+                on_answer=self._on_get_current_temperature,
+            ))
+            self.add_command(BaseCommand(
+                register=REGISTER_TARGET_TEMPERATURE_GET,
+                precision=PRECISION,
+                device_num=i,
+                repeat=True,
+                immediate_answer=True,
+                on_answer=self._on_get_target_temperature,
+            ))
+
+    def _get_last_commands_to_exit(self):
+        commands = []
+        for i in range(self.devices_amount):
+            commands += [
+                BaseCommand(
+                    device_num=i,
+                    register=REGISTER_TARGET_TEMPERATURE_SET, value=0.0,
+                ),
+                BaseCommand(
+                    device_num=i,
+                    register=REGISTER_ON_OFF, value=OFF, precision=PRECISION,
+                ),
+            ]
+        return commands
+
+    def _create_set_target_temperaturn_command_obj(self, temperature, device_num):
+        return BaseCommand(
+            register=REGISTER_TARGET_TEMPERATURE_SET,
+            value=temperature,
+            device_num=device_num,
+        )
+
+    @AbstractController.thread_command
+    def set_target_temperature(self, value, device_num):
+        value = float(value)
+        value = min(value, MAX_TEMPERATURE)
+        command = self._create_set_target_temperaturn_command_obj(value, device_num)
+        print("|> Set value [TARGET TEMP]:", value)
+        self.add_command(command)
+        return value
+
+    @AbstractController.thread_command
+    def _on_get_current_temperature(self, value):
+        if LOCAL_MODE:
+            value = random.random() * 100
+        value = float(value)
+        self.current_temperatures[self._last_thread_command.device_num] = value
+        # if self.on_change_current is not None:
+        #     self.on_change_current(value)
+
+    @AbstractController.thread_command
+    def _on_get_target_temperature(self, value):
+        if LOCAL_MODE:
+            value = random.random() * 100
+        value = float(value)
+        self.target_temperatures[self._last_thread_command.device_num] = value
+
+    def get_target_temperature(self, device_num):
+        return self.target_temperatures[device_num]
+
+    def get_current_temperature(self, device_num):
+        return self.current_temperatures[device_num]
 
 
 class TermodatModbusController(AbstractController):

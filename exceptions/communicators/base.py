@@ -2,9 +2,9 @@ import datetime
 
 
 class BaseCommunicatorException(Exception):
-    def __init__(self, communicator_id=None):
+    def __init__(self, communicator_id=None, description=None):
         self.communicator_id = communicator_id
-        self.description = f"Communicator raise exception"
+        self.description = description or f"Communicator raise exception"
         self.raised_at = datetime.datetime.now()
 
     def __str__(self):

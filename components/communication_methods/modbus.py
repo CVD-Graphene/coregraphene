@@ -64,7 +64,7 @@ class ModbusCommunicationMethod(BaseCommunicationMethod):
 
         # self.instrument.mode = self.mode
 
-    def _send(self, register=None, value=None, precision=1, functioncode=None):
+    def _send(self, register=None, value=None, precision=1, functioncode=None, **kwargs):
         last_command = f"{register} {value} {precision}"
         if functioncode is not None:
             last_command += f" {functioncode}"
@@ -79,7 +79,7 @@ class ModbusCommunicationMethod(BaseCommunicationMethod):
             kwargs['functioncode'] = functioncode
         self.instrument.write_register(*args, **kwargs)
 
-    def _local_send(self, register=None, value=None, precision=None, functioncode=None):
+    def _local_send(self, register=None, value=None, precision=None, functioncode=None, **kwargs):
         self.last_register = register
         self.last_value = value
         self.last_precision = precision
@@ -88,7 +88,7 @@ class ModbusCommunicationMethod(BaseCommunicationMethod):
             value = value / float(10 ** (precision - 1))
         self.register_values[register] = value
 
-    def _read(self, register=None, precision=None):
+    def _read(self, register=None, precision=None, **kwargs):
         last_command = f"{register} {precision}"
 
         self._last_command = last_command
@@ -100,7 +100,7 @@ class ModbusCommunicationMethod(BaseCommunicationMethod):
         answer = self.instrument.read_register(*args)
         return answer
 
-    def _local_read(self, register=None, precision=None):
+    def _local_read(self, register=None, precision=None, **kwargs):
         answer = self.register_values.get(register, self._default_register_value)
         if precision is not None:
             answer /= 10 ** (precision - 1)

@@ -126,5 +126,6 @@ class AbstractCommunicator(object):
 
     def _handle_exception(self, e):
         raise BaseCommunicatorException(
-            communicator_id=self.communicator_id
+            communicator_id=self.communicator_id,
+            description=str(e),
         ) from e

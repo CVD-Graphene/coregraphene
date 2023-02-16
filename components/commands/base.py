@@ -6,6 +6,7 @@ class BaseCommand(object):
                  immediate_answer=False,
                  repeat=False,
                  on_answer=None,
+                 device_num=None,
                  **kwargs,
                  ):
         # self.command = command
@@ -14,4 +15,8 @@ class BaseCommand(object):
         self.immediate_answer = immediate_answer
         self.repeat = repeat
         self.on_answer = on_answer
-        self.kwargs = kwargs
+        self.device_num = device_num
+        kwargs_copy = dict(kwargs)
+        if device_num is not None:
+            kwargs_copy['device_num'] = device_num
+        self.kwargs = kwargs_copy
