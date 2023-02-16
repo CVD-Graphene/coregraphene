@@ -44,6 +44,9 @@ class ModbusCommunicationMethod(BaseCommunicationMethod):
         self._default_register_value = default_register_value
         self.register_values = dict()
 
+        self.communication_method_id = f"{self.__class__.__name__}: {self.port} " \
+                                       f"{self.instrument_number}"
+
     def setup(self):
         super().setup()
         if settings.LOCAL_MODE:
