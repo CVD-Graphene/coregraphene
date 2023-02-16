@@ -54,7 +54,7 @@ class SerialAsciiAkipCommunicator(AbstractCommunicator):
     communication_method_class = SerialAsciiCommunicationMethod
     ADDRESS_PORT_LEN = 3
 
-    def _preprocessing_value(self, value="MV00") -> dict:
+    def _preprocessing_value(self, value="0MV00") -> dict:
         return {
             "command": f"A{str(self.port).zfill(self.ADDRESS_PORT_LEN)}{value};\n",
         }

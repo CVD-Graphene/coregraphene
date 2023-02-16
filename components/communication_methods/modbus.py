@@ -87,7 +87,7 @@ class ModbusCommunicationMethod(BaseCommunicationMethod):
         args = [register]
         if precision is not None:
             args.append(precision)
-        print("MODBUS _read ARGS:", args)
+        # print("MODBUS _read ARGS:", args)
         answer = self.instrument.read_register(*args)
         return answer
 

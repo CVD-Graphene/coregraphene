@@ -127,7 +127,7 @@ class AbstractController(object):
         else:
             read_value = self.device.read(**self._last_thread_command.kwargs)
             com_name = self._last_thread_command.kwargs.get("command", "SMTH")
-            print(f"|> [Controller thread] Read [command={com_name}]: value={read_value}.")
+            # print(f"|> [Controller thread] Read [command={com_name}]: value={read_value}.")
             if read_value is not None and not\
                     (type(read_value) == str and len(read_value) == 0):
                 self._start_thread_read_time = None
