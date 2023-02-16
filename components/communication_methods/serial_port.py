@@ -20,7 +20,7 @@ class SerialAsciiCommunicationMethod(BaseCommunicationMethod):
                  ):
         super().__init__()
         self.port = port
-        print("\n|#> PORT SerialAsciiCommunicationMethod:", port)
+        print("\n|#> SerialAsciiCommunicationMethod: port", port, ", baudrate", baudrate)
         self.baudrate = baudrate
         self.parity = parity
         self.stopbits = stopbits
