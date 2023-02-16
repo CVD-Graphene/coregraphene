@@ -24,7 +24,7 @@ class TermodatModbusController(AbstractController):
         self.device = TermodatModbusDevice(
             **kwargs,
         )
-        self.loop_delay = 0.25
+        self.loop_delay = 0.5
 
         self._thread_using = True
         self.state = OFF
