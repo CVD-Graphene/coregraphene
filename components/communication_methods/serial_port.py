@@ -43,6 +43,8 @@ class SerialAsciiCommunicationMethod(BaseCommunicationMethod):
         )
 
     def destructor(self):
+        if LOCAL_MODE:
+            return
         self.rs485.close()
 
     def _send(self, command=None):
