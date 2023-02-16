@@ -1,10 +1,7 @@
 import random
-
 import serial
-from time import sleep
 
 from .base import BaseCommunicationMethod
-# from ...settings import LOCAL_MODE, SERIAL_PORT
 from ...conf import settings
 
 LOCAL_MODE = settings.LOCAL_MODE
@@ -14,7 +11,7 @@ SERIAL_PORT = settings.SERIAL_PORT
 class SerialAsciiCommunicationMethod(BaseCommunicationMethod):
     def __init__(self,
                  port=SERIAL_PORT,
-                 baudrate=115200,
+                 baudrate=19200,  # 115200 - was for vakumetr early
                  parity=serial.PARITY_NONE,
                  stopbits=serial.STOPBITS_ONE,
                  bytesize=serial.EIGHTBITS,
