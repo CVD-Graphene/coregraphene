@@ -24,6 +24,7 @@ class TermodatModbusController(AbstractController):
         self.device = TermodatModbusDevice(
             **kwargs,
         )
+        self.loop_delay = 0.25
 
         self._thread_using = True
         self.state = OFF
@@ -32,18 +33,18 @@ class TermodatModbusController(AbstractController):
         self.speed = 0.0
 
     def _check_command(self, **kwargs):
-        self.exec_command(register=REGISTER_ON_OFF, value=ON)
+        self.exec_command(register=REGISTER_ON_OFF, value=ON, precision=PRECISION,)
         current_temperature = self.read(
             register=REGISTER_CURRENT_TEMPERATURE_GET,
             precision=PRECISION,
         )
-        self.exec_command(register=REGISTER_ON_OFF, value=OFF)
+        self.exec_command(register=REGISTER_ON_OFF, value=OFF, precision=PRECISION,)
         print("TERMODAT current_temperature:", current_temperature)
         assert current_temperature >= 0.0
 
     def _thread_setup_additional(self, **kwargs):
         self.add_command(BaseCommand(
-            register=REGISTER_ON_OFF, value=ON,
+            register=REGISTER_ON_OFF, value=ON, precision=PRECISION,
         ))
 
         # Repeat commands for updating values
@@ -65,7 +66,7 @@ class TermodatModbusController(AbstractController):
     def _get_last_commands_to_exit(self):
         return [
             BaseCommand(register=REGISTER_TARGET_TEMPERATURE_SET, value=0.0),
-            BaseCommand(register=REGISTER_ON_OFF, value=OFF),
+            BaseCommand(register=REGISTER_ON_OFF, value=OFF, precision=PRECISION,),
         ]
 
     def _create_set_target_temperaturn_command_obj(self, temperature):
