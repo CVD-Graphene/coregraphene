@@ -88,6 +88,10 @@ class ModbusCommunicationMethod(BaseCommunicationMethod):
         self.register_values[register] = value
 
     def _read(self, register=None, precision=None):
+        last_command = f"{register} {precision}"
+
+        self._last_command = last_command
+
         args = [register]
         if precision is not None:
             args.append(precision)

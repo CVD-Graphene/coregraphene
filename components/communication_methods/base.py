@@ -60,7 +60,7 @@ class BaseCommunicationMethod:
         except Exception as e:
             raise BaseCommunicationMethodException(
                 communication_method_id=self.communication_method_id,
-                description=f"Read error: {str(e)}",
+                description=f"Read error [{self._last_command}]: {str(e)}",
             ) from e
 
     def _read(self, *args, **kwargs):
