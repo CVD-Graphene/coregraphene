@@ -13,3 +13,15 @@ def get_serial_port():
     except:
         print("[ERR] SERIAL PORT ERROR! RETURN DEFAULT")
         return "/dev/ttyUSB0"
+
+
+def get_available_usb_ports():
+    import subprocess
+    try:
+        a = subprocess.run("ls /dev/ttyUSB*", shell=True, capture_output=True)
+        line = a.stdout.decode("ASCII")
+        print("PORTS", line)
+        return line.strip().split()
+    except Exception as e:
+        print("ERROR [get_available_usb_ports]:", e)
+        return []
