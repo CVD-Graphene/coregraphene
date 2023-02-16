@@ -58,7 +58,7 @@ class SerialAsciiCommunicationMethod(BaseCommunicationMethod):
         # print("@ Q&A: ", command.strip(), " |", answer.strip())
         # return answer
 
-    def _read(self):
+    def _read(self, **kwargs):
         x = self.rs485.readline()
         answer = x.decode('ASCII')
         print("@ Q&A: ", self._last_command.strip(), " |", answer.strip(), " | End")
