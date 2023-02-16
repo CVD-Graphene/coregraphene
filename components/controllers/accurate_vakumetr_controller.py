@@ -17,7 +17,7 @@ class AccurateVakumetrController(AbstractController):
         super().__init__(*args, **kwargs)
         self.device = AccurateVakumetrDevice(*args, **kwargs)
         self.vakumetr_value = None
-        self.loop_delay = 0.5
+        self.loop_delay = 0.3
 
         self._thread_using = True
 

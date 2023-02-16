@@ -161,6 +161,7 @@ class AbstractController(object):
                         self._commands_queue.append(command)
                     if command.with_answer:
                         self._is_thread_reading = True
+
                     if command.immediate_answer:
                         self._thread_read_command()
                         # command.on_answer(answer)
