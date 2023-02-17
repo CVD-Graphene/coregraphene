@@ -78,7 +78,7 @@ class SeveralRrgModbusController(AbstractControllerManyDevices):
         sccm = min(200.0, max(0.0, sccm))
         assert 0.0 <= sccm <= 200.0
         self.target_sccms[device_num] = sccm
-        target_flow = sccm / 2.0 * 100
+        target_flow = sccm / 2.0 #* 100
 
         if target_flow <= 0.001:  # TO CLOSE
             self.add_command(BaseCommand(
