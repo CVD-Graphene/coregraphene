@@ -55,7 +55,7 @@ class ModbusCommunicationMethod(BaseCommunicationMethod):
         self.instrument = mm.Instrument(
             self.port,
             self.instrument_number,
-            close_port_after_each_call=True,
+            close_port_after_each_call=False,
             mode=self.mode,
             debug=False
         )
@@ -64,7 +64,7 @@ class ModbusCommunicationMethod(BaseCommunicationMethod):
 
         # self.instrument.mode = self.mode
 
-    def _send(self, register=None, value=None, precision=1, functioncode=None, **kwargs):
+    def _send(self, register=None, value=None, precision=None, functioncode=None, **kwargs):
         last_command = f"{register} {value} {precision}"
         if functioncode is not None:
             last_command += f" {functioncode}"
