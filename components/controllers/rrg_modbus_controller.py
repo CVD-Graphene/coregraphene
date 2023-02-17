@@ -74,6 +74,7 @@ class SeveralRrgModbusController(AbstractControllerManyDevices):
 
     @AbstractController.device_command()
     def set_target_sccm(self, sccm: float, device_num):
+        sccm = float(sccm)
         sccm = min(200.0, max(0.0, sccm))
         assert 0.0 <= sccm <= 200.0
         self.target_sccms[device_num] = sccm
