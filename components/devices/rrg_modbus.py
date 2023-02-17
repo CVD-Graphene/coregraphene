@@ -5,7 +5,7 @@ from ..communicators import ModbusRtuCommunicator
 from .base import AbstractDevice
 
 REGISTER_STATE_FLAGS_1 = 2
-REGISTER_STATE_FLAGS_1_MIN_MASK = 0b11
+REGISTER_STATE_FLAGS_1_MIN_MASK = 0b10011
 
 
 class RrgModbusDevice(AbstractDevice):

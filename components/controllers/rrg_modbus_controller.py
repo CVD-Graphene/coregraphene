@@ -40,11 +40,11 @@ class SeveralRrgModbusController(AbstractControllerManyDevices):
     def _thread_setup_additional(self, **kwargs):
         for i in range(self.devices_amount):
             self.add_command(BaseCommand(
-                register=REGISTER_SET_FLOW, value=0,
+                register=REGISTER_STATE_FLAGS_1, value=CLOSE_RRG_FLAGS,
                 device_num=i,
             ))
             self.add_command(BaseCommand(
-                register=REGISTER_STATE_FLAGS_1, value=CLOSE_RRG_FLAGS,
+                register=REGISTER_SET_FLOW, value=0.0,
                 device_num=i,
             ))
             self.add_command(BaseCommand(
@@ -60,7 +60,7 @@ class SeveralRrgModbusController(AbstractControllerManyDevices):
         for i in range(self.devices_amount):
             commands += [
                 BaseCommand(
-                    register=REGISTER_SET_FLOW, value=0, device_num=i,
+                    register=REGISTER_SET_FLOW, value=0.0, device_num=i,
                 ),
                 BaseCommand(
                     register=REGISTER_STATE_FLAGS_1, value=CLOSE_RRG_FLAGS, device_num=i,
@@ -77,7 +77,7 @@ class SeveralRrgModbusController(AbstractControllerManyDevices):
 
         if target_flow <= 0.001:  # TO CLOSE
             self.add_command(BaseCommand(
-                register=REGISTER_SET_FLOW, value=0,
+                register=REGISTER_SET_FLOW, value=0.0,
                 device_num=device_num,
             ))
             self.add_command(BaseCommand(
