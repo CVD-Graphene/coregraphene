@@ -56,7 +56,7 @@ class SeveralRrgModbusController(AbstractControllerManyDevices):
             ))
             self.add_command(BaseCommand(
                 register=REGISTER_STATE_FLAGS_2,
-                device_num=i, functioncode=3,
+                device_num=i, #functioncode=3,
                 repeat=True,
                 immediate_answer=True,
                 on_answer=self._on_get_state_flags_2,
