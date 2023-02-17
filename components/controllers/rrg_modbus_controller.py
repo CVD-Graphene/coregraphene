@@ -41,10 +41,12 @@ class SeveralRrgModbusController(AbstractControllerManyDevices):
         for i in range(self.devices_amount):
             self.add_command(BaseCommand(
                 register=REGISTER_STATE_FLAGS_1, value=CLOSE_RRG_FLAGS,
+                functioncode=6,
                 device_num=i,
             ))
             self.add_command(BaseCommand(
                 register=REGISTER_SET_FLOW, value=0.0,
+                functioncode=6,
                 device_num=i,
             ))
             self.add_command(BaseCommand(
@@ -61,9 +63,11 @@ class SeveralRrgModbusController(AbstractControllerManyDevices):
             commands += [
                 BaseCommand(
                     register=REGISTER_SET_FLOW, value=0.0, device_num=i,
+                    functioncode=6,
                 ),
                 BaseCommand(
                     register=REGISTER_STATE_FLAGS_1, value=CLOSE_RRG_FLAGS, device_num=i,
+                    functioncode=6,
                 ),
             ]
         return commands
@@ -78,10 +82,12 @@ class SeveralRrgModbusController(AbstractControllerManyDevices):
         if target_flow <= 0.001:  # TO CLOSE
             self.add_command(BaseCommand(
                 register=REGISTER_SET_FLOW, value=0.0,
+                functioncode=6,
                 device_num=device_num,
             ))
             self.add_command(BaseCommand(
                 register=REGISTER_STATE_FLAGS_1, value=CLOSE_RRG_FLAGS,
+                functioncode=6,
                 device_num=device_num,
             ))
         else:
@@ -91,10 +97,12 @@ class SeveralRrgModbusController(AbstractControllerManyDevices):
             """
             self.add_command(BaseCommand(
                 register=REGISTER_SET_FLOW, value=target_flow,
+                functioncode=6,
                 device_num=device_num,
             ))
             self.add_command(BaseCommand(
                 register=REGISTER_STATE_FLAGS_1, value=OPEN_RRG_FLAGS,
+                functioncode=6,
                 device_num=device_num,
             ))
 
@@ -140,16 +148,16 @@ class RrgModbusController(AbstractController):
         target_flow = sccm / 2.0
 
         if self.target_sccm <= 0.00001:  # TO CLOSE
-            self.exec_command(register=REGISTER_SET_FLOW, value=0)
-            self.exec_command(register=REGISTER_STATE_FLAGS_1, value=CLOSE_RRG_FLAGS)
+            self.exec_command(register=REGISTER_SET_FLOW, value=0, functioncode=6,)
+            self.exec_command(register=REGISTER_STATE_FLAGS_1, value=CLOSE_RRG_FLAGS, functioncode=6,)
             is_open = False
         else:
             """
             1. Set flow to target value (= sccm / 2)
             2. Open rrg
             """
-            self.exec_command(register=REGISTER_SET_FLOW, value=target_flow)
-            self.exec_command(register=REGISTER_STATE_FLAGS_1, value=OPEN_RRG_FLAGS)
+            self.exec_command(register=REGISTER_SET_FLOW, value=target_flow, functioncode=6,)
+            self.exec_command(register=REGISTER_STATE_FLAGS_1, value=OPEN_RRG_FLAGS, functioncode=6,)
             is_open = True
 
         self.is_open = is_open
