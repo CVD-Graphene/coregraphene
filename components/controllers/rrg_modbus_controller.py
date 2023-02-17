@@ -29,7 +29,7 @@ class SeveralRrgModbusController(AbstractControllerManyDevices):
             self.devices.append(rrg)
 
         self.devices_amount = len(self.devices)
-        self.loop_delay = 0.1
+        self.loop_delay = 0.2
 
         self.target_sccms = [0.0 for _ in self.devices]
         self.current_sccms = [0.0 for _ in self.devices]
