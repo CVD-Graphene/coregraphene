@@ -55,7 +55,7 @@ class ModbusCommunicationMethod(BaseCommunicationMethod):
         self.instrument = mm.Instrument(
             self.port,
             self.instrument_number,
-            close_port_after_each_call=True,
+            close_port_after_each_call=False,
             mode=self.mode,
             debug=False
         )
