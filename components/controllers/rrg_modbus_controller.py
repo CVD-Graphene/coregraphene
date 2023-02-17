@@ -10,7 +10,7 @@ LOCAL_MODE = settings.LOCAL_MODE
 CLOSE = 1
 OPEN = 0
 
-OPEN_RRG_FLAGS = 0b0  # 0b1100
+OPEN_RRG_FLAGS = 0b0  # 0b1100 / 0b0
 CLOSE_RRG_FLAGS = 0b1000
 REGISTER_STATE_FLAGS_1 = 2
 REGISTER_SET_FLOW = 4
@@ -113,7 +113,7 @@ class SeveralRrgModbusController(AbstractControllerManyDevices):
     def _on_get_current_flow(self, value):
         if LOCAL_MODE:
             value = random.random() * 100 * 100
-        value = float(value) / 100 * 2.0
+        value = float(value) #/ 100 * 2.0
         # print(f"CURRENT SCCM [{self._last_thread_command.device_num}]: {value}")
         self.current_sccms[self._last_thread_command.device_num] = value
 
