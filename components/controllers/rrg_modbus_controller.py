@@ -73,9 +73,9 @@ class SeveralRrgModbusController(AbstractControllerManyDevices):
         sccm = min(200.0, max(0.0, sccm))
         assert 0.0 <= sccm <= 200.0
         self.target_sccms[device_num] = sccm
-        target_flow = sccm / 2.0
+        target_flow = sccm / 2.0 * 100
 
-        if target_flow <= 0.00001:  # TO CLOSE
+        if target_flow <= 0.001:  # TO CLOSE
             self.add_command(BaseCommand(
                 register=REGISTER_SET_FLOW, value=0,
                 device_num=device_num,
@@ -103,8 +103,8 @@ class SeveralRrgModbusController(AbstractControllerManyDevices):
     @AbstractController.thread_command
     def _on_get_current_flow(self, value):
         if LOCAL_MODE:
-            value = random.random() * 100
-        value = float(value) * 2.0
+            value = random.random() * 100 * 100
+        value = float(value) / 100 * 2.0
         # print(f"CURRENT SCCM [{self._last_thread_command.device_num}]: {value}")
         self.current_sccms[self._last_thread_command.device_num] = value
 
