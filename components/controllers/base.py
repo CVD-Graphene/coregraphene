@@ -1,6 +1,7 @@
 import time
 import asyncio
 import traceback
+from abc import abstractmethod
 from threading import Thread
 
 from ..commands import BaseCommand
@@ -74,6 +75,7 @@ class AbstractController(object):
         self._add_error = add_error
         self._thread_setup_additional(**kwargs)
 
+    @abstractmethod
     def _thread_setup_additional(self, **kwargs):
         pass
 
@@ -142,6 +144,9 @@ class AbstractController(object):
         :return: None
         """
         to_exit = False
+        MAX_NUMBER_ATTEMPTS = 3
+        attempts = 0
+        # with_error = False
         while True:
             # time.sleep(self.loop_delay)
             if self.loop_delay is not None and self.loop_delay > 0.0:
@@ -175,7 +180,15 @@ class AbstractController(object):
                         to_exit = True
                         self._commands_queue = self._get_last_commands_to_exit()
 
+                # with_error = False
+                attempts = 0
             except Exception as e:
+                # with_error = True
+                attempts += 1
+                if attempts <= MAX_NUMBER_ATTEMPTS:
+                    self._add_command_force(self._last_thread_command)
+                else:
+                    attempts = 0
                 self._on_thread_error(e)
 
     def run(self):
