@@ -1,3 +1,5 @@
+import gc
+
 import minimalmodbus as mm
 from .base import BaseCommunicationMethod
 from ...conf import settings
@@ -52,6 +54,9 @@ class ModbusCommunicationMethod(BaseCommunicationMethod):
         if settings.LOCAL_MODE:
             return
 
+        self._create_instrument()
+
+    def _create_instrument(self):
         self.instrument = mm.Instrument(
             self.port,
             self.instrument_number,
@@ -62,7 +67,10 @@ class ModbusCommunicationMethod(BaseCommunicationMethod):
         self.instrument.serial.baudrate = self.baudrate
         self.instrument.serial.timeout = self.timeout
 
-        # self.instrument.mode = self.mode
+        gc.collect()
+
+    def _handle_exception(self, e):
+        self._create_instrument()
 
     def _send(self, register=None, value=None, precision=None, functioncode=None, **kwargs):
         last_command = f"{register} {value} {precision}"

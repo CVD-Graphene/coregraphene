@@ -36,6 +36,7 @@ class BaseCommunicationMethod:
         except NotImplementedError:
             raise
         except Exception as e:
+            self._handle_exception(e)
             raise BaseCommunicationMethodException(
                 communication_method_id=self.communication_method_id,
                 description=f"Write error [{self._last_command}]: {str(e)}",
@@ -58,10 +59,14 @@ class BaseCommunicationMethod:
         except NotImplementedError:
             raise
         except Exception as e:
+            self._handle_exception(e)
             raise BaseCommunicationMethodException(
                 communication_method_id=self.communication_method_id,
                 description=f"Read error [{self._last_command}]: {str(e)}",
             ) from e
+
+    def _handle_exception(self, e):
+        pass
 
     def _read(self, *args, **kwargs):
         raise NotImplementedError
