@@ -204,11 +204,11 @@ class AbstractController(object):
         :return: new decorated function
         """
         def command_wrapper(func):
-            def wrapper(self, **kwargs):
+            def wrapper(self, *args, **kwargs):
                 try:
                     if not strong and not self._active:
                         raise ControllerInWaiting(controller_id=self.controller_id)
-                    self._last_answer = func(self, **kwargs)
+                    self._last_answer = func(self, *args, **kwargs)
                     return self._last_answer
                 except Exception as e:
                     return self._handle_exception(e)

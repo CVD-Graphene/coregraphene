@@ -2,5 +2,5 @@ from .base import AbstractController, AbstractControllerManyDevices
 from .accurate_vakumetr_controller import AccurateVakumetrController
 from .valve_controller import ValveController
 from .current_controller import CurrentSourceController
-from .rrg_modbus_controller import RrgModbusController
+from .rrg_modbus_controller import RrgModbusController, SeveralRrgModbusController
 from .termodat_modbus_controller import TermodatModbusController, SeveralTermodatModbusController
