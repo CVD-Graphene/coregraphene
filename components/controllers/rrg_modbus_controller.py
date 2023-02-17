@@ -25,6 +25,7 @@ class SeveralRrgModbusController(AbstractControllerManyDevices):
         for rrg_config in config:
             rrg = RrgModbusDevice(
                 instrument_number=rrg_config['INSTRUMENT_NUMBER'],
+                timeout=0.2,
                 **kwargs
             )
             self.devices.append(rrg)
