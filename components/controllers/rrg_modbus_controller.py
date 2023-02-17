@@ -10,6 +10,7 @@ LOCAL_MODE = settings.LOCAL_MODE
 OPEN_RRG_FLAGS = 0b0  # 0b1100 / 0b0
 CLOSE_RRG_FLAGS = 0b1000
 REGISTER_STATE_FLAGS_1 = 2
+REGISTER_STATE_FLAGS_2 = 3
 REGISTER_SET_FLOW = 4
 REGISTER_GET_FLOW = REGISTER_SET_FLOW if LOCAL_MODE else 5
 
@@ -45,6 +46,20 @@ class SeveralRrgModbusController(AbstractControllerManyDevices):
                 register=REGISTER_SET_FLOW, value=0.0,
                 functioncode=6,
                 device_num=i,
+            ))
+            self.add_command(BaseCommand(
+                register=REGISTER_SET_FLOW,
+                device_num=i, functioncode=3,
+                repeat=True,
+                immediate_answer=True,
+                on_answer=self._on_get_current_flow,
+            ))
+            self.add_command(BaseCommand(
+                register=REGISTER_STATE_FLAGS_2,
+                device_num=i, functioncode=3,
+                repeat=True,
+                immediate_answer=True,
+                on_answer=self._on_get_state_flags_2,
             ))
             self.add_command(BaseCommand(
                 register=REGISTER_GET_FLOW,
@@ -111,8 +126,22 @@ class SeveralRrgModbusController(AbstractControllerManyDevices):
         if LOCAL_MODE:
             value = random.random() * 100 * 100
         value = float(value) #/ 100 * 2.0
-        print(f"CURRENT SCCM [{self._last_thread_command.device_num}]: {value}")
+        # print(f"CURRENT SCCM [{self._last_thread_command.device_num}]: {value}")
         self.current_sccms[self._last_thread_command.device_num] = value
+
+    @AbstractController.thread_command
+    def _on_get_state_flags_2(self, value):
+        if LOCAL_MODE:
+            value = int(random.random() * 100)
+        print(f"STATE FLAGS 2 [{self._last_thread_command.device_num}]:", "{0:b}".format(value))
+
+    @AbstractController.thread_command
+    def _on_get_target_flow(self, value):
+        if LOCAL_MODE:
+            value = random.random() * 100 * 100
+        value = float(value) #/ 100 * 2.0
+        print(f"TARGET SCCM [{self._last_thread_command.device_num}]: {value}")
+        # self.current_sccms[self._last_thread_command.device_num] = value
 
     @AbstractController.device_command()
     def get_current_sccm(self, device_num):
