@@ -21,6 +21,8 @@ class SeveralRrgModbusController(AbstractControllerManyDevices):
     def __init__(self, config, **kwargs):
         super().__init__()
 
+        self._thread_using = True
+
         self.devices = []
         for rrg_config in config:
             rrg = RrgModbusDevice(
@@ -103,7 +105,7 @@ class SeveralRrgModbusController(AbstractControllerManyDevices):
         if LOCAL_MODE:
             value = random.random() * 100
         value = float(value) * 2.0
-        print(f"CURRENT SCCM [{self._last_thread_command.device_num}]: {value}")
+        # print(f"CURRENT SCCM [{self._last_thread_command.device_num}]: {value}")
         self.current_sccms[self._last_thread_command.device_num] = value
 
     @AbstractController.device_command()
