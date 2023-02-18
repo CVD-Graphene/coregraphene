@@ -144,7 +144,7 @@ class AbstractController(object):
         :return: None
         """
         to_exit = False
-        MAX_NUMBER_ATTEMPTS = 3
+        MAX_NUMBER_ATTEMPTS = 2
         attempts = 0
         # with_error = False
         while True:
@@ -185,11 +185,11 @@ class AbstractController(object):
             except Exception as e:
                 # with_error = True
                 attempts += 1
-                if attempts <= MAX_NUMBER_ATTEMPTS:
+                if attempts < MAX_NUMBER_ATTEMPTS:
                     self._add_command_force(self._last_thread_command)
                 else:
                     attempts = 0
-                self._on_thread_error(e)
+                    self._on_thread_error(e)
 
     def run(self):
         if self._runnable and self._thread is None:
