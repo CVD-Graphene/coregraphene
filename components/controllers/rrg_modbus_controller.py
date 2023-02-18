@@ -8,7 +8,7 @@ from ...conf import settings
 LOCAL_MODE = settings.LOCAL_MODE
 
 OPEN_RRG_FLAGS = 0b0  # 0b1100 / 0b0
-CLOSE_RRG_FLAGS = 0b1000
+CLOSE_RRG_FLAGS = 0b1000  # 8
 REGISTER_STATE_FLAGS_1 = 2
 REGISTER_STATE_FLAGS_2 = 3
 REGISTER_SET_FLOW = 4
@@ -48,20 +48,20 @@ class SeveralRrgModbusController(AbstractControllerManyDevices):
                 functioncode=6,
                 device_num=i,
             ))
-            self.add_command(BaseCommand(
-                register=REGISTER_SET_FLOW,
-                device_num=i, functioncode=3,
-                repeat=True,
-                immediate_answer=True,
-                on_answer=self._on_get_current_flow,
-            ))
-            self.add_command(BaseCommand(
-                register=REGISTER_STATE_FLAGS_2,
-                device_num=i, #functioncode=3,
-                repeat=True,
-                immediate_answer=True,
-                on_answer=self._on_get_state_flags_2,
-            ))
+            # self.add_command(BaseCommand(
+            #     register=REGISTER_SET_FLOW,
+            #     device_num=i, functioncode=3,
+            #     repeat=True,
+            #     immediate_answer=True,
+            #     on_answer=self._on_get_current_flow,
+            # ))
+            # self.add_command(BaseCommand(
+            #     register=REGISTER_STATE_FLAGS_2,
+            #     device_num=i, #functioncode=3,
+            #     repeat=True,
+            #     immediate_answer=True,
+            #     on_answer=self._on_get_state_flags_2,
+            # ))
             self.add_command(BaseCommand(
                 register=REGISTER_GET_FLOW,
                 device_num=i,
@@ -91,7 +91,7 @@ class SeveralRrgModbusController(AbstractControllerManyDevices):
         sccm = min(200.0, max(0.0, sccm))
         assert 0.0 <= sccm <= 200.0
         self.target_sccms[device_num] = sccm
-        target_flow = sccm / 2.0 #* 100
+        target_flow = sccm / 2.0 * 100
 
         if target_flow <= 0.001:  # TO CLOSE
             self.add_command(BaseCommand(
@@ -130,11 +130,11 @@ class SeveralRrgModbusController(AbstractControllerManyDevices):
         # print(f"CURRENT SCCM [{self._last_thread_command.device_num}]: {value}")
         self.current_sccms[self._last_thread_command.device_num] = value
 
-    @AbstractController.thread_command
-    def _on_get_state_flags_2(self, value):
-        if LOCAL_MODE:
-            value = int(random.random() * 100)
-        print(f"STATE FLAGS 2 [{self._last_thread_command.device_num}]:", "{0:b}".format(value))
+    # @AbstractController.thread_command
+    # def _on_get_state_flags_2(self, value):
+    #     if LOCAL_MODE:
+    #         value = int(random.random() * 100)
+    #     print(f"STATE FLAGS 2 [{self._last_thread_command.device_num}]:", "{0:b}".format(value))
 
     @AbstractController.thread_command
     def _on_get_target_flow(self, value):
