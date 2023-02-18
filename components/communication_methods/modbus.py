@@ -69,8 +69,8 @@ class ModbusCommunicationMethod(BaseCommunicationMethod):
 
         gc.collect()
 
-    # def _handle_exception(self, e):
-    #     self._create_instrument()
+    def _handle_exception(self, e):
+        self._create_instrument()
 
     def _send(self, register=None, value=None, precision=None, functioncode=None, **kwargs):
         last_command = f"{register} {value} {precision}"
