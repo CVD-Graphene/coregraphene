@@ -49,6 +49,7 @@ class SeveralTermodatModbusController(AbstractControllerManyDevices):
             self.add_command(BaseCommand(
                 register=REGISTER_SPEED_SET,
                 value=settings.TERMODAT_DEFAULT_SPEED,
+                functioncode=6,
                 precision=PRECISION,
                 device_num=i,
             ))
@@ -121,6 +122,7 @@ class SeveralTermodatModbusController(AbstractControllerManyDevices):
     def set_speed_regulation(self, speed: float, device_num):
         self.add_command(BaseCommand(
             register=REGISTER_SPEED_SET,
+            functioncode=6,
             value=speed,
             precision=PRECISION,
             device_num=device_num,
