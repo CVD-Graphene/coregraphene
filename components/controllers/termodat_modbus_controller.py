@@ -43,7 +43,13 @@ class SeveralTermodatModbusController(AbstractControllerManyDevices):
     def _thread_setup_additional(self, **kwargs):
         for i in range(self.devices_amount):
             self.add_command(BaseCommand(
-                register=REGISTER_ON_OFF, value=ON, precision=PRECISION,
+                register=REGISTER_ON_OFF, value=OFF, precision=PRECISION,
+                device_num=i,
+            ))
+            self.add_command(BaseCommand(
+                register=REGISTER_SPEED_SET,
+                value=settings.TERMODAT_DEFAULT_SPEED,
+                precision=PRECISION,
                 device_num=i,
             ))
 
@@ -71,6 +77,10 @@ class SeveralTermodatModbusController(AbstractControllerManyDevices):
             commands += [
                 BaseCommand(
                     device_num=i,
+                    register=REGISTER_ON_OFF, value=ON, precision=PRECISION,
+                ),
+                BaseCommand(
+                    device_num=i,
                     register=REGISTER_TARGET_TEMPERATURE_SET, value=0.0,
                 ),
                 BaseCommand(
@@ -91,10 +101,31 @@ class SeveralTermodatModbusController(AbstractControllerManyDevices):
     def set_target_temperature(self, value, device_num):
         value = float(value)
         value = min(value, MAX_TEMPERATURE)
-        command = self._create_set_target_temperaturn_command_obj(value, device_num)
         print("|> Set value [TARGET TEMP]:", value)
+        command = self._create_set_target_temperaturn_command_obj(value, device_num)
         self.add_command(command)
         return value
+
+    @AbstractController.thread_command
+    def set_is_active_regulation(self, is_active: bool, device_num):
+        command = BaseCommand(
+            device_num=device_num,
+            register=REGISTER_ON_OFF,
+            value=ON if is_active else OFF,
+            precision=PRECISION,
+        )
+        self.add_command(command)
+        return is_active
+
+    @AbstractController.thread_command
+    def set_speed_regulation(self, speed: float, device_num):
+        self.add_command(BaseCommand(
+            register=REGISTER_SPEED_SET,
+            value=speed,
+            precision=PRECISION,
+            device_num=device_num,
+        ))
+        return speed
 
     @AbstractController.thread_command
     def _on_get_current_temperature(self, value):
