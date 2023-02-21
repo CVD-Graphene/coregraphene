@@ -44,12 +44,12 @@ class RecipeRunner:
     def run_recipe(self):
         self._recipe_state = RECIPE_STATES.RUN
         for i in range(7):
-            print(f"START STEP {i} STATE:", RECIPE_STATES_TO_STR[self._recipe_state])
+            print(f"|>> START STEP {i} STATE:", RECIPE_STATES_TO_STR[self._recipe_state])
             if self._recipe_state == RECIPE_STATES.STOP:
                 return
 
             while self._recipe_state == RECIPE_STATES.PAUSE:
-                print("IN PAUSE!")
+                # print("IN PAUSE!")
                 sleep(1)
             self._set_current_recipe_step(f"STEP:) [{i}]", i + 1)
             sleep(2)
