@@ -209,8 +209,13 @@ class BaseSystem(object):
     def recipe_state(self):
         return self._recipe_runner.recipe_state
 
+    def get_recipe_state(self):
+        return self.recipe_state
+
     def on_pause_recipe(self):
-        self._recipe_runner.set_recipe_state(RECIPE_STATES.PAUSE)
+        new_state = RECIPE_STATES.PAUSE if self.recipe_state == RECIPE_STATES.RUN else \
+            RECIPE_STATES.RUN
+        self._recipe_runner.set_recipe_state(new_state)
 
     def on_stop_recipe(self):
         self._recipe_runner.set_recipe_state(RECIPE_STATES.STOP)
