@@ -62,9 +62,7 @@ class RecipeRunner:
         return self._recipe_state
 
     def set_recipe_state(self, state):
-        print("|> NEW RECIPE STATE:", state)
+        # print("|> NEW RECIPE STATE:", state)
         if state == self._recipe_state or self._recipe_state == RECIPE_STATES.STOP:
             return
         self._recipe_state = state
-
-    # def _run_recipe

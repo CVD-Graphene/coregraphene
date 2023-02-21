@@ -215,6 +215,7 @@ class BaseSystem(object):
     def on_pause_recipe(self):
         new_state = RECIPE_STATES.PAUSE if self.recipe_state == RECIPE_STATES.RUN else \
             RECIPE_STATES.RUN
+        print("AFTER ON PAUSE: NEW STATE:", new_state)
         self._recipe_runner.set_recipe_state(new_state)
 
     def on_stop_recipe(self):
