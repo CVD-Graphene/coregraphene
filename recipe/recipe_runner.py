@@ -1,3 +1,4 @@
+from threading import Thread
 from time import sleep
 from .constants import RECIPE_STATES
 
@@ -11,6 +12,7 @@ class RecipeRunner:
                  on_log=None,  # add log
                  ):
         self._recipe = None
+        self._recipe_thread = None
         self._status = 0
         self.get_work_status = get_work_status
         self._recipe_state = RECIPE_STATES.STOP
@@ -36,10 +38,25 @@ class RecipeRunner:
         """
         return True
 
+    def _thread_run_recipe(self):
+        self._recipe_state = RECIPE_STATES.RUN
+        for i in range(2):
+            self._set_current_recipe_step(f"Pause:) [{i}]", i + 1)
+            sleep(3)
+
+        self._recipe_state = RECIPE_STATES.STOP
+        self._on_success_end_recipe()
+
     def run_recipe(self):
         self._recipe_state = RECIPE_STATES.RUN
-        self._set_current_recipe_step("Pause:)", 1)
-        sleep(6)
+        for i in range(3):
+            if self._recipe_state == RECIPE_STATES.STOP:
+                return
+
+            while self._recipe_state == RECIPE_STATES.PAUSE:
+                sleep(1)
+            self._set_current_recipe_step(f"Pause:) [{i}]", i + 1)
+            sleep(2)
 
         self._recipe_state = RECIPE_STATES.STOP
         self._on_success_end_recipe()

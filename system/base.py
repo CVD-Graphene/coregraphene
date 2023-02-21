@@ -129,6 +129,7 @@ class BaseSystem(object):
             if controller is not None:
                 controller.destructor()
         if self._recipe_thread is not None:
+            self.on_stop_recipe()
             self._recipe_thread.join()
 
     @abstractmethod
