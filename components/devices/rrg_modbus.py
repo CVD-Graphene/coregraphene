@@ -18,8 +18,8 @@ class RrgModbusDevice(AbstractDevice):
         )
 
     def _preprocessing_value(self, register=None, value=None, **kwargs):
-        if register == REGISTER_STATE_FLAGS_1:
-            value = value | REGISTER_STATE_FLAGS_1_MIN_MASK
+        # if register == REGISTER_STATE_FLAGS_1:
+        #     value = value | REGISTER_STATE_FLAGS_1_MIN_MASK
         return {
             'register': register,
             'value': value,
