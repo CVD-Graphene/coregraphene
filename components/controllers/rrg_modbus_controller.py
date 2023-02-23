@@ -163,9 +163,9 @@ class RrgModbusController(AbstractController):
 
     def _check_command(self, **kwargs):
         states = self.read(register=REGISTER_STATE_FLAGS_1)
-        print("::: RRG STATE FLAGS:", states)
+        # print("::: RRG STATE FLAGS:", states)
         current_flow = self.read(register=REGISTER_GET_FLOW)
-        print("::: RRG CURRENT FLOW:", current_flow)
+        # print("::: RRG CURRENT FLOW:", current_flow)
         assert current_flow >= 0.0
 
     @AbstractController.device_command()
