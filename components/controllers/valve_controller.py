@@ -14,11 +14,21 @@ class ValveController(AbstractController):
         )
         self.is_open = False
 
+    def _send_command(self, command):
+        answer = self.exec_command(command=command)
+        self.is_open = not bool(answer)
+        return answer
+
     @AbstractController.device_command()
     def change_state(self):
         """Return if valve is open"""
         command = CLOSE if self.is_open else OPEN
-        answer = self.exec_command(command=command)
-        # print(f"command {command}, answer {answer}")
-        self.is_open = not bool(answer)
-        return answer
+        return self._send_command(command)
+
+    @AbstractController.device_command()
+    def open(self):
+        return self._send_command(OPEN)
+
+    @AbstractController.device_command()
+    def close(self):
+        return self._send_command(CLOSE)
