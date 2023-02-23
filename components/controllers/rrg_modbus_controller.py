@@ -7,7 +7,8 @@ from ...conf import settings
 
 LOCAL_MODE = settings.LOCAL_MODE
 
-OPEN_RRG_FLAGS = 19  # 0b0  # 0b1100 / 0b0
+OPEN_RRG_FLAGS = 6  # 0b0  # 0b1100 / 0b0
+REGULATION_RRG_FLAGS = 19
 CLOSE_RRG_FLAGS = 10  # 0b1000  # 8
 REGISTER_STATE_FLAGS_1 = 2
 REGISTER_STATE_FLAGS_2 = 3
@@ -115,12 +116,33 @@ class SeveralRrgModbusController(AbstractControllerManyDevices):
                 device_num=device_num,
             ))
             self.add_command(BaseCommand(
-                register=REGISTER_STATE_FLAGS_1, value=OPEN_RRG_FLAGS,
+                register=REGISTER_STATE_FLAGS_1, value=REGULATION_RRG_FLAGS,
                 functioncode=6,
                 device_num=device_num,
             ))
 
         return sccm
+
+    @AbstractController.device_command()
+    def full_open(self, device_num):
+        self.add_command(BaseCommand(
+            register=REGISTER_STATE_FLAGS_1, value=OPEN_RRG_FLAGS,
+            functioncode=6,
+            device_num=device_num,
+        ))
+
+    @AbstractController.device_command()
+    def full_close(self, device_num):
+        self.add_command(BaseCommand(
+            register=REGISTER_SET_FLOW, value=0.0,
+            functioncode=6,
+            device_num=device_num,
+        ))
+        self.add_command(BaseCommand(
+            register=REGISTER_STATE_FLAGS_1, value=CLOSE_RRG_FLAGS,
+            functioncode=6,
+            device_num=device_num,
+        ))
 
     @AbstractController.thread_command
     def _on_get_current_flow(self, value):
@@ -185,7 +207,7 @@ class RrgModbusController(AbstractController):
             2. Open rrg
             """
             self.exec_command(register=REGISTER_SET_FLOW, value=target_flow, functioncode=6,)
-            self.exec_command(register=REGISTER_STATE_FLAGS_1, value=OPEN_RRG_FLAGS, functioncode=6,)
+            self.exec_command(register=REGISTER_STATE_FLAGS_1, value=REGULATION_RRG_FLAGS, functioncode=6,)
             is_open = True
 
         self.is_open = is_open
