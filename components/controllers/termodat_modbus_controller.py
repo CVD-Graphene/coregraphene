@@ -130,6 +130,13 @@ class SeveralTermodatModbusController(AbstractControllerManyDevices):
         return [temperature, speed]
 
     @AbstractController.thread_command
+    def set_temperature_all_termodats(self, temperature):
+        temperature = float(temperature)
+        for device_num in range(self.devices_amount):
+            self.set_target_temperature(temperature, device_num)
+        return temperature
+
+    @AbstractController.thread_command
     def set_target_temperature(self, value, device_num):
         value = float(value)
         # value = min(value, MAX_TEMPERATURE)
