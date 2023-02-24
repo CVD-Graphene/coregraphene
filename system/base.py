@@ -28,22 +28,29 @@ class BaseSystem(object):
     5. _get_values - used for update reading values inside class
     """
 
-    def __init__(self):
+    def __init__(self, actions_list=None):
         self._last_action_answer = None
         self._errors = []
         self._event_logs = []
         self._is_working = True
+        self._actions_list = actions_list
 
         self._recipe = None
         self._recipe_runner = RecipeRunner(
             # ...
+            actions_list,
+            system=self,
             on_success_end_recipe=self._on_success_end_recipe,
             set_current_recipe_step=self._set_current_recipe_step,
+            on_error=self._add_error_log,
+            on_log=self.add_log,
         )
         self._recipe_thread = None
         self._recipe_history = []
         self._recipe_current_step = ""
         self._recipe_state = RECIPE_STATES.STOP
+
+        self._ui_functions = {}
 
         # CONTROLLERS
         self._controllers: list[AbstractController] = []
@@ -55,10 +62,16 @@ class BaseSystem(object):
         # VALUES
         self._init_values()
 
+        self._init_actions()
+
         # self._add_error_log("Тупая тупая ошибка где много букв self.accurate_vakumetr_value = "
         #                     "self.accurate_vakume self.accurate_vakumetr_value = "
         #                     "self.accurate_vakumetr_controller.get_value()")
         # self._add_log("Тупая тупая заметка!!!!!", log_type=NOTIFICATIONS.LOG)
+
+    def set_ui_functions(self, **kwargs):
+        self._ui_functions = kwargs
+        self._recipe_runner.set_ui_functions(**kwargs)
 
     def _determine_attributes(self):
         """
@@ -71,6 +84,14 @@ class BaseSystem(object):
     def _init_controllers(self):
         """
         Init controllers and save (!!!) them to `_controllers` list
+        :return:
+        """
+        pass
+
+    @abstractmethod
+    def _init_actions(self):
+        """
+        Init auto_actions
         :return:
         """
         pass
@@ -142,7 +163,7 @@ class BaseSystem(object):
 
     def action(func):
         """
-        Decorator for actions, that check all conditions and system state
+        Decorator for auto_actions, that check all conditions and system state
         :return: new decorated function
         """
 
@@ -167,6 +188,9 @@ class BaseSystem(object):
     def _add_error_log(self, e):
         self._add_log(str(e), log_type=NOTIFICATIONS.ERROR)
 
+    def add_error_log(self, e):
+        self._add_log(str(e), log_type=NOTIFICATIONS.ERROR)
+
     def add_log(self, log):
         self._add_log(log)
 
@@ -174,7 +198,7 @@ class BaseSystem(object):
         self._add_error_log(e)
 
     def _handle_exception(self, e):
-        print("Raise exception in handler!")
+        print(f"Raise exception in handler!::, {self.__class__.__name__}", e)
         self._add_error_log(e)
         self._errors.append(e)
         if isinstance(e, BaseConditionException):
