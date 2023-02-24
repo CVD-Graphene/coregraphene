@@ -42,7 +42,7 @@ class AccurateVakumetrController(AbstractController):
     @AbstractController.thread_command
     def _on_get_vakumetr_value(self, value):
         if LOCAL_MODE:
-            value = random.random() * 100
+            value = round(random.random() * 100, 2)
         value = float(value)
         self.vakumetr_value = value
         # if self.on_change_voltage is not None:

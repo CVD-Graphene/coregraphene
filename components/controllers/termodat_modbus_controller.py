@@ -99,9 +99,40 @@ class SeveralTermodatModbusController(AbstractControllerManyDevices):
         )
 
     @AbstractController.thread_command
+    def turn_on_termodat_regulation(self, device_num):
+        return self.set_is_active_regulation(True, device_num)
+
+    @AbstractController.thread_command
+    def turn_off_termodat_regulation(self, device_num):
+        return self.set_is_active_regulation(False, device_num)
+
+    @AbstractController.thread_command
+    def turn_on_all_termodats_regulation(self):
+        for device_num in range(self.devices_amount):
+            self.turn_on_termodat_regulation(device_num)
+        return True
+
+    @AbstractController.thread_command
+    def turn_off_all_termodats_regulation(self):
+        for device_num in range(self.devices_amount):
+            self.turn_off_termodat_regulation(device_num)
+        return False
+
+    @AbstractController.thread_command
+    def set_temperature_and_speed_all_termodats(self, temperature, speed):
+        # print("TS:::", temperature, speed, type(temperature), type(speed))
+        temperature = float(temperature)
+        speed = float(speed)
+        # print("TS2:::", temperature, speed)
+        for device_num in range(self.devices_amount):
+            self.set_target_temperature(temperature, device_num)
+            self.set_speed_regulation(speed, device_num)
+        return [temperature, speed]
+
+    @AbstractController.thread_command
     def set_target_temperature(self, value, device_num):
         value = float(value)
-        value = min(value, MAX_TEMPERATURE)
+        # value = min(value, MAX_TEMPERATURE)
         print("|> Set value [TARGET TEMP]:", value)
         command = self._create_set_target_temperaturn_command_obj(value, device_num)
         self.add_command(command)
@@ -133,7 +164,7 @@ class SeveralTermodatModbusController(AbstractControllerManyDevices):
     def _on_get_current_temperature(self, value):
         if LOCAL_MODE:
             value = random.random() * 100
-        value = float(value)
+        value = round(float(value), 1)
         self.current_temperatures[self._last_thread_command.device_num] = value
         # if self.on_change_current is not None:
         #     self.on_change_current(value)
@@ -142,7 +173,7 @@ class SeveralTermodatModbusController(AbstractControllerManyDevices):
     def _on_get_target_temperature(self, value):
         if LOCAL_MODE:
             value = random.random() * 100
-        value = float(value)
+        value = round(float(value), 1)
         self.target_temperatures[self._last_thread_command.device_num] = value
 
     def get_target_temperature(self, device_num):
@@ -212,7 +243,7 @@ class TermodatModbusController(AbstractController):
     @AbstractController.thread_command
     def set_target_temperature(self, value):
         value = float(value)
-        value = min(value, MAX_TEMPERATURE)
+        # value = min(value, MAX_TEMPERATURE)
         command = self._create_set_target_temperaturn_command_obj(value)
         print("|> Set value [TARGET TEMP]:", value)
         self.add_command(command)

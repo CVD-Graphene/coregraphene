@@ -1,5 +1,6 @@
 import random
 
+from Structure.system.system_actions import GetCurrentFlowRrgControllerAction
 from .base import AbstractController, AbstractControllerManyDevices
 from ..commands import BaseCommand
 from ..devices import RrgModbusDevice
@@ -32,10 +33,12 @@ class SeveralRrgModbusController(AbstractControllerManyDevices):
             self.devices.append(rrg)
 
         self.devices_amount = len(self.devices)
-        self.loop_delay = 0.2
+        self.loop_delay = 0.4
 
         self.target_sccms = [0.0 for _ in self.devices]
         self.current_sccms = [0.0 for _ in self.devices]
+
+        self.get_current_flow = GetCurrentFlowRrgControllerAction(controller=self)
 
     def _thread_setup_additional(self, **kwargs):
         for i in range(self.devices_amount):
@@ -50,13 +53,6 @@ class SeveralRrgModbusController(AbstractControllerManyDevices):
                 device_num=i,
             ))
             # self.add_command(BaseCommand(
-            #     register=REGISTER_SET_FLOW,
-            #     device_num=i, functioncode=3,
-            #     repeat=True,
-            #     immediate_answer=True,
-            #     on_answer=self._on_get_current_flow,
-            # ))
-            # self.add_command(BaseCommand(
             #     register=REGISTER_STATE_FLAGS_2,
             #     device_num=i, #functioncode=3,
             #     repeat=True,
@@ -68,7 +64,8 @@ class SeveralRrgModbusController(AbstractControllerManyDevices):
                 device_num=i,
                 repeat=True,
                 immediate_answer=True,
-                on_answer=self._on_get_current_flow,
+                # on_answer=self._on_get_current_flow,
+                on_answer=self.get_current_flow,
             ))
 
     def _get_last_commands_to_exit(self):
@@ -131,6 +128,8 @@ class SeveralRrgModbusController(AbstractControllerManyDevices):
             device_num=device_num,
         ))
 
+        return settings.MAX_SCCM_VALUE
+
     @AbstractController.device_command()
     def full_close(self, device_num):
         self.add_command(BaseCommand(
@@ -144,13 +143,16 @@ class SeveralRrgModbusController(AbstractControllerManyDevices):
             device_num=device_num,
         ))
 
-    @AbstractController.thread_command
-    def _on_get_current_flow(self, value):
-        if LOCAL_MODE:
-            value = random.random() * 100 * 100
-        value = float(value) #/ 100 * 2.0
-        # print(f"CURRENT SCCM [{self._last_thread_command.device_num}]: {value}")
-        self.current_sccms[self._last_thread_command.device_num] = value
+        return 0
+
+    # @AbstractController.thread_command
+    # def _on_get_current_flow(self, value):
+    #     if LOCAL_MODE:
+    #         value = random.random() * 100 * 100
+    #     value = round(float(value) / 100 * 2.0, 1)
+    #     print(f"CURRENT SCCM [{self._last_thread_command.device_num}]: {value}")
+    #     self.current_sccms[self._last_thread_command.device_num] = value
+    #     self.get_current_flow(value)
 
     # @AbstractController.thread_command
     # def _on_get_state_flags_2(self, value):
