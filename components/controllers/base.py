@@ -41,7 +41,7 @@ class AbstractController(object):
         self._is_thread_reading = False
         self._last_thread_command: BaseCommand = None
         self._start_thread_read_time = None
-        self._critical_read_time = -0.1 if settings.LOCAL_MODE else 3.0
+        self._critical_read_time = 3.0  # -0.1 if settings.LOCAL_MODE else 3.0
 
         # target value and function for calling after sensor reach this value
         self._target_value = None
@@ -119,17 +119,22 @@ class AbstractController(object):
         self._exec_command(command=command)
 
     def _thread_read_command(self):
+        # print("1111")
         if self._start_thread_read_time is None:
             self._start_thread_read_time = time.time()
 
         if time.time() - self._start_thread_read_time > self._critical_read_time:
+            # print("2222")
             self._start_thread_read_time = None
             self._is_thread_reading = False
             read_value = ""
         else:
+            # print("3333")
             read_value = self.read(**self._last_thread_command.kwargs)
+            # print("4444,", read_value)
             com_name = self._last_thread_command.kwargs.get("command", "SMTH")
-            # print(f"|> [Controller thread] Read [command={com_name}]: value={read_value}.")
+            # print(f"|> [Controller thread {self.__class__.__name__}] "
+            #       f"Read [command={com_name}]: value={read_value}.")
             if read_value is not None and not\
                     (type(read_value) == str and len(read_value) == 0):
                 self._start_thread_read_time = None
@@ -294,7 +299,7 @@ class AbstractController(object):
 
     def wait_seconds(self, seconds=None, after_wait=None, **kwargs):
         """
-        Wait for seconds before actions;
+        Wait for seconds before auto_actions;
         :param after_wait: function for execute after waiting
         :param seconds: amount of seconds
         :param kwargs:
