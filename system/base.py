@@ -50,8 +50,6 @@ class BaseSystem(object):
         self._recipe_current_step = ""
         self._recipe_state = RECIPE_STATES.STOP
 
-        self._ui_functions = {}
-
         # CONTROLLERS
         self._controllers: list[AbstractController] = []
 
@@ -68,10 +66,6 @@ class BaseSystem(object):
         #                     "self.accurate_vakume self.accurate_vakumetr_value = "
         #                     "self.accurate_vakumetr_controller.get_value()")
         # self._add_log("Тупая тупая заметка!!!!!", log_type=NOTIFICATIONS.LOG)
-
-    def set_ui_functions(self, **kwargs):
-        self._ui_functions = kwargs
-        self._recipe_runner.set_ui_functions(**kwargs)
 
     def _determine_attributes(self):
         """

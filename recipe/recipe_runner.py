@@ -31,12 +31,6 @@ class RecipeRunner:
         self._on_error = on_error
         self._on_log = on_log
 
-        self._ui_functions = {}
-        # self.
-
-    def set_ui_functions(self, **kwargs):
-        self._ui_functions = kwargs
-
     def set_recipe(self, recipe):
         self._recipe = recipe
 
@@ -97,7 +91,6 @@ class RecipeRunner:
             action_obj.set_functions(
                 system=self._system,
                 get_current_recipe_state=self.get_current_recipe_state,
-                **self._ui_functions,
             )
 
             args = action[1:1 + action_obj.args_amount]
