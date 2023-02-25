@@ -1,0 +1,2 @@
+class BaseRecipeException(Exception):
+    pass
