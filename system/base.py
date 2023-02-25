@@ -28,6 +28,8 @@ class BaseSystem(object):
     5. _get_values - used for update reading values inside class
     """
 
+    recipe_class = RecipeRunner
+
     def __init__(self, actions_list=None):
         self._last_action_answer = None
         self._errors = []
@@ -36,7 +38,7 @@ class BaseSystem(object):
         self._actions_list = actions_list
 
         self._recipe = None
-        self._recipe_runner = RecipeRunner(
+        self._recipe_runner = self.recipe_class(
             # ...
             actions_list,
             system=self,

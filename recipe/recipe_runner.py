@@ -1,7 +1,10 @@
+from abc import abstractmethod
+
 from coregraphene.utils.actions import get_action_by_name
 from coregraphene.auto_actions import AppAction, Argument
 from time import sleep
 from .constants import RECIPE_STATES
+from .exceptions import NotAchievingRecipeStepGoal
 
 RECIPE_STATES_TO_STR = {
     RECIPE_STATES.RUN: "Running",
@@ -73,43 +76,43 @@ class RecipeRunner:
         self._recipe_state = RECIPE_STATES.RUN
         sleep(1)
         for action_index, action in enumerate(self._recipe):
-            if len(action) == 0:
-                continue
+            try:
+                if len(action) == 0:
+                    continue
 
-            if self._recipe_state == RECIPE_STATES.STOP:
-                return
+                if self._recipe_state == RECIPE_STATES.STOP:
+                    return
 
-            while self._recipe_state == RECIPE_STATES.PAUSE:
-                sleep(1)
+                while self._recipe_state == RECIPE_STATES.PAUSE:
+                    sleep(1)
 
-            action_table_name = action[0]
-            # self._set_current_recipe_step(f"ШАГ №{action_index + 1}: {action_table_name}")
-            self._set_current_recipe_step(f"{action_table_name}")
+                action_table_name = action[0]
+                # self._set_current_recipe_step(f"ШАГ №{action_index + 1}: {action_table_name}")
+                self._set_current_recipe_step(f"{action_table_name}")
 
-            action_obj, index = get_action_by_name(action_table_name, self._actions_list)
-            action_obj: AppAction = action_obj
-            action_obj.set_functions(
-                system=self._system,
-                get_current_recipe_state=self.get_current_recipe_state,
-            )
+                action_obj, index = get_action_by_name(action_table_name, self._actions_list)
+                action_obj: AppAction = action_obj
+                action_obj.set_functions(
+                    system=self._system,
+                    get_current_recipe_state=self.get_current_recipe_state,
+                )
 
-            args = action[1:1 + action_obj.args_amount]
-            action_obj.action(*args)
+                args = action[1:1 + action_obj.args_amount]
+                action_obj.action(*args)
 
-        # for i in range(7):
-        #     print(f"|>> START STEP {i} STATE:", RECIPE_STATES_TO_STR[self._recipe_state])
-        #     if self._recipe_state == RECIPE_STATES.STOP:
-        #         return
-        #
-            # while self._recipe_state == RECIPE_STATES.PAUSE:
-            #     # print("IN PAUSE!")
-            #     sleep(1)
-        #     self._set_current_recipe_step(f"STEP:) [{i}]", i + 1)
-        #     sleep(2)
+            except NotAchievingRecipeStepGoal:
+                self._system.add_error(f"Цель шага №{action_index + 1} не достигнута. "
+                                       f"Завершение рецепта.")
+                self._on_not_achieving_recipe_step_action()
+                break
 
         sleep(1)
         self._recipe_state = RECIPE_STATES.STOP
         self._on_success_end_recipe()
+
+    @abstractmethod
+    def _on_not_achieving_recipe_step_action(self):
+        pass
 
     @property
     def recipe_state(self):
