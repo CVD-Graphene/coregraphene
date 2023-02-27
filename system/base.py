@@ -1,4 +1,5 @@
 import os
+import time
 from abc import abstractmethod
 from math import isnan
 
@@ -285,6 +286,8 @@ class BaseSystem(object):
             # self._recipe_thread.join()
             self._recipe_thread = None
             self._recipe = None
+            print("AFTER ALL END!")
+            time.sleep(10)
         except Exception as e:
             print("On end recipe error:", e)
 
