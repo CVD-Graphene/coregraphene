@@ -282,7 +282,7 @@ class BaseSystem(object):
                 self._add_log("Рецепт успешно выполнен")
             else:
                 pass
-            self._recipe_thread.join()
+            # self._recipe_thread.join()
             self._recipe_thread = None
             self._recipe = None
         except Exception as e:
