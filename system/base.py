@@ -42,7 +42,7 @@ class BaseSystem(object):
             # ...
             actions_list,
             system=self,
-            on_success_end_recipe=self._on_success_end_recipe,
+            on_end_recipe=self._on_end_recipe,
             set_current_recipe_step=self._set_current_recipe_step,
             on_error=self._add_error_log,
             on_log=self.add_log,
@@ -276,14 +276,17 @@ class BaseSystem(object):
         except Exception as e:
             self._handle_exception(Exception(f"Ошибка открытия {file_name}: {str(e)}"))
 
-    def _on_success_end_recipe(self):
+    def _on_end_recipe(self, success=False):
         try:
-            self._add_log("Рецепт успешно выполнен")
+            if success:
+                self._add_log("Рецепт успешно выполнен")
+            else:
+                pass
             # self._recipe_thread.join()
             self._recipe_thread = None
             self._recipe = None
         except Exception as e:
-            print("On success end recipe error:", e)
+            print("On end recipe error:", e)
 
     def run_recipe(self, recipe):
         if type(recipe) != list:

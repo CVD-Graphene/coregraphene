@@ -18,7 +18,7 @@ class RecipeRunner:
                  actions_list,
                  system=None,
                  set_current_recipe_step=None,  # set current action (index, name)
-                 on_success_end_recipe=None,  # call at the end of all steps of recipe
+                 on_end_recipe=None,  # call at the end of all steps of recipe
                  on_error=None,  # add error
                  on_log=None,  # add log
                  ):
@@ -29,7 +29,7 @@ class RecipeRunner:
         self._status = 0
         self._recipe_state = RECIPE_STATES.STOP
 
-        self._on_success_end_recipe = on_success_end_recipe
+        self._on_end_recipe = on_end_recipe
         self._set_current_recipe_step = set_current_recipe_step
         self._on_error = on_error
         self._on_log = on_log
@@ -74,6 +74,7 @@ class RecipeRunner:
 
     def run_recipe(self):
         self._recipe_state = RECIPE_STATES.RUN
+        success = True
         sleep(1)
         for action_index, action in enumerate(self._recipe):
             try:
@@ -104,11 +105,12 @@ class RecipeRunner:
                 self._system.add_error(f"Цель шага №{action_index + 1} не достигнута. "
                                        f"Завершение рецепта.")
                 self._on_not_achieving_recipe_step_action()
+                success = False
                 break
 
         sleep(1)
         self._recipe_state = RECIPE_STATES.STOP
-        self._on_success_end_recipe()
+        self._on_end_recipe(success=success)
 
     @abstractmethod
     def _on_not_achieving_recipe_step_action(self):
