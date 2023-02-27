@@ -77,6 +77,7 @@ class RecipeRunner:
         success = True
         sleep(1)
         for action_index, action in enumerate(self._recipe):
+            print("ACTION NOW...", action_index, action)
             try:
                 if len(action) == 0:
                     continue
@@ -107,10 +108,11 @@ class RecipeRunner:
                 self._on_not_achieving_recipe_step_action()
                 success = False
                 break
-
+        print("DONE!")
         sleep(1)
         self._recipe_state = RECIPE_STATES.STOP
         self._on_end_recipe(success=success)
+        print("AFTER END!")
 
     @abstractmethod
     def _on_not_achieving_recipe_step_action(self):
