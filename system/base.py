@@ -130,6 +130,9 @@ class BaseSystem(object):
                 )
                 controller.run()
 
+        self._recipe_thread = Thread(target=self._recipe_runner.thread_run)
+        self._recipe_thread.start()
+
     def stop(self):
         """
         Function for execute before closing main ui program to destroy all threads
@@ -294,19 +297,29 @@ class BaseSystem(object):
         except Exception as e:
             print("On end recipe error:", e)
 
-    def run_recipe(self, recipe):
-        if type(recipe) != list:
-            self._add_error_log(Exception("Чтение рецепта завершилось с ошибками"))
-            return False
-
+    def set_recipe(self, recipe):
         self._recipe = recipe
         self._recipe_runner.set_recipe(self._recipe)
+
+    def check_recipe_is_correct(self):
         ready = self._recipe_runner.check_recipe()
-        if ready:
-            self._recipe_thread = Thread(target=self._recipe_runner.run_recipe)
-            self._recipe_thread.start()
-        print("|>> WHAT'S READY:", ready)
         return ready
+
+    def run_recipe(self):
+        self._recipe_history = []
+        # if type(recipe) != list:
+        #     self._add_error_log(Exception("Чтение рецепта завершилось с ошибками"))
+        #     return False
+
+        # self._recipe = recipe
+        # self._recipe_runner.set_recipe(self._recipe)
+        self._recipe_runner.start_recipe()
+        # ready = self._recipe_runner.check_recipe()
+        # if ready:
+        #     self._recipe_thread = Thread(target=self._recipe_runner.run_recipe)
+        #     self._recipe_thread.start()
+        # print("|>> WHAT'S READY:", ready)
+        # return ready
 
     def _set_current_recipe_step(self, name, index=None):
         index = index if index else (len(self._recipe_history) + 1)

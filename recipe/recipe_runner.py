@@ -37,6 +37,19 @@ class RecipeRunner:
     def set_recipe(self, recipe):
         self._recipe = recipe
 
+    def start_recipe(self):
+        self._recipe_state = RECIPE_STATES.RUN
+
+    def thread_run(self):
+        while self._system.is_working():
+            sleep(1)
+            if self._recipe_state == RECIPE_STATES.STOP:
+                continue
+            if self._recipe_state == RECIPE_STATES.RUN:
+                self.run_recipe()
+                self._recipe_state = RECIPE_STATES.STOP
+        sleep(1)
+
     def get_current_recipe_state(self):
         return self._recipe_state
 
@@ -73,7 +86,7 @@ class RecipeRunner:
         return True
 
     def run_recipe(self):
-        self._recipe_state = RECIPE_STATES.RUN
+        # self._recipe_state = RECIPE_STATES.RUN
         success = True
         sleep(1)
         for action_index, action in enumerate(self._recipe):
@@ -83,6 +96,7 @@ class RecipeRunner:
                     continue
 
                 if self._recipe_state == RECIPE_STATES.STOP:
+                    self._system.add_error(f"Принудительное завершение рецепта.")
                     return
 
                 while self._recipe_state == RECIPE_STATES.PAUSE:
