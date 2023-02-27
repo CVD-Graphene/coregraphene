@@ -147,8 +147,11 @@ class BaseSystem(object):
             if controller is not None:
                 controller.destructor()
         if self._recipe_thread is not None:
-            self.on_stop_recipe()
-            self._recipe_thread.join()
+            try:
+                self.on_stop_recipe()
+                self._recipe_thread.join()
+            except Exception as e:
+                print("Join recipe thread error:", e)
 
     @abstractmethod
     def check_conditions(self):
@@ -284,10 +287,10 @@ class BaseSystem(object):
             else:
                 pass
             # self._recipe_thread.join()
-            self._recipe_thread = None
+            # self._recipe_thread = None
             self._recipe = None
             print("AFTER ALL END!")
-            time.sleep(10)
+            time.sleep(2)
         except Exception as e:
             print("On end recipe error:", e)
 
