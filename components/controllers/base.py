@@ -152,7 +152,11 @@ class AbstractController(object):
         MAX_NUMBER_ATTEMPTS = 3
         attempts = 0
         # with_error = False
+        counter = 0
         while True:
+            # if counter % 25 == 0:
+            #     print("COMMANDS:", len(self._commands_queue))
+            # counter += 1
             # time.sleep(self.loop_delay)
             if self.loop_delay is not None and self.loop_delay > 0.0:
                 time.sleep(self.loop_delay)
