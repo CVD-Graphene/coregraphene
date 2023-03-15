@@ -221,6 +221,7 @@ class BaseSystem(object):
         :return:
         """
         try:
+            # print("MEMORY SYSTEM:", deep_getsizeof(self, set()))
             self._get_values()
         except Exception as e:
             self._add_error_log(e)
