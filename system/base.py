@@ -6,13 +6,13 @@ from math import isnan
 import pandas as pd
 from threading import Thread
 
-from Structure.system.system_actions import SetCurrentRecipeStepAction
 from .constants import NOTIFICATIONS
 from .event_log import EventLog
 from ..conf import settings
 from ..exceptions.system import BaseConditionException
 from ..components.controllers import AbstractController
 from ..recipe import RECIPE_STATES, RecipeRunner
+from ..system_actions import SetCurrentRecipeStepAction
 
 TABLE_COLUMN_NAMES = settings.TABLE_COLUMN_NAMES
 
