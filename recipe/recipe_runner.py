@@ -17,6 +17,7 @@ class RecipeRunner:
     def __init__(self,
                  actions_list,
                  system=None,
+                 # set_recipe_step=None,
                  set_current_recipe_step=None,  # set current action (index, name)
                  on_end_recipe=None,  # call at the end of all steps of recipe
                  on_error=None,  # add error

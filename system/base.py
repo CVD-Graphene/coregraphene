@@ -6,6 +6,7 @@ from math import isnan
 import pandas as pd
 from threading import Thread
 
+from Structure.system.system_actions import SetCurrentRecipeStepAction
 from .constants import NOTIFICATIONS
 from .event_log import EventLog
 from ..conf import settings
@@ -44,7 +45,7 @@ class BaseSystem(object):
             actions_list,
             system=self,
             on_end_recipe=self._on_end_recipe,
-            set_current_recipe_step=self._set_current_recipe_step,
+            set_current_recipe_step=self.set_current_recipe_step,
             on_error=self._add_error_log,
             on_log=self.add_log,
         )
@@ -85,13 +86,12 @@ class BaseSystem(object):
         """
         pass
 
-    @abstractmethod
     def _init_actions(self):
         """
         Init auto_actions
         :return:
         """
-        pass
+        self.set_current_recipe_step_action = SetCurrentRecipeStepAction(system=self)
 
     @abstractmethod
     def _init_values(self):
@@ -322,11 +322,20 @@ class BaseSystem(object):
         # print("|>> WHAT'S READY:", ready)
         # return ready
 
+    def set_current_recipe_step(self, name, index=None):
+        return self.set_current_recipe_step_action(name, index=index)
+
     def _set_current_recipe_step(self, name, index=None):
         index = index if index else (len(self._recipe_history) + 1)
         self._recipe_current_step = {'name': name, 'index': index}
         self._recipe_history.append(self._recipe_current_step)
 
+        return self._recipe_current_step
+
     @property
     def current_recipe_step(self):
         return self._recipe_current_step
+
+    @property
+    def last_recipe_steps(self):
+        return reversed(self._recipe_history[-2:])
