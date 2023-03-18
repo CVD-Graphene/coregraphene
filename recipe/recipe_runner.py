@@ -91,7 +91,7 @@ class RecipeRunner:
         success = True
         sleep(1)
         for action_index, action in enumerate(self._recipe):
-            print("ACTION NOW...", action_index, action)
+            # print("ACTION NOW...", action_index, action)
             try:
                 if len(action) == 0:
                     continue
