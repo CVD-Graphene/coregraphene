@@ -57,15 +57,17 @@ class ModbusCommunicationMethod(BaseCommunicationMethod):
         self._create_instrument()
 
     def _create_instrument(self):
-        self.instrument = mm.Instrument(
-            self.port,
-            self.instrument_number,
-            close_port_after_each_call=False,
-            mode=self.mode,
-            debug=False
-        )
-        self.instrument.serial.baudrate = self.baudrate
-        self.instrument.serial.timeout = self.timeout
+        self.instrument.serial.close()
+        self.instrument.serial.open()
+        # self.instrument = mm.Instrument(
+        #     self.port,
+        #     self.instrument_number,
+        #     close_port_after_each_call=False,
+        #     mode=self.mode,
+        #     debug=False
+        # ).serial.close()
+        # self.instrument.serial.baudrate = self.baudrate
+        # self.instrument.serial.timeout = self.timeout
 
         gc.collect()
 
