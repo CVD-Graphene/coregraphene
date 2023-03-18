@@ -71,8 +71,8 @@ class ModbusCommunicationMethod(BaseCommunicationMethod):
 
     def _handle_exception(self, e):
         try:
-            self.instrument.serial.close()
-            self.instrument.serial.open()
+            # self.instrument.serial.close()
+            # self.instrument.serial.open()
             gc.collect()
         except Exception as e:
             print("MODBUS HANDLE EXCEPTION:", e)
