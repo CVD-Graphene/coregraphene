@@ -57,22 +57,23 @@ class ModbusCommunicationMethod(BaseCommunicationMethod):
         self._create_instrument()
 
     def _create_instrument(self):
-        self.instrument.serial.close()
-        self.instrument.serial.open()
-        # self.instrument = mm.Instrument(
-        #     self.port,
-        #     self.instrument_number,
-        #     close_port_after_each_call=False,
-        #     mode=self.mode,
-        #     debug=False
-        # ).serial.close()
-        # self.instrument.serial.baudrate = self.baudrate
-        # self.instrument.serial.timeout = self.timeout
+        self.instrument = mm.Instrument(
+            self.port,
+            self.instrument_number,
+            close_port_after_each_call=False,
+            mode=self.mode,
+            debug=False
+        ).serial.close()
+        self.instrument.serial.baudrate = self.baudrate
+        self.instrument.serial.timeout = self.timeout
 
         gc.collect()
 
     def _handle_exception(self, e):
-        self._create_instrument()
+        self.instrument.serial.close()
+        self.instrument.serial.open()
+        gc.collect()
+        # self._create_instrument()
 
     def _send(self, register=None, value=None, precision=None, functioncode=None, **kwargs):
         last_command = f"{register} {value} {precision}"
