@@ -63,7 +63,7 @@ class ModbusCommunicationMethod(BaseCommunicationMethod):
             close_port_after_each_call=False,
             mode=self.mode,
             debug=False
-        ).serial.close()
+        )
         self.instrument.serial.baudrate = self.baudrate
         self.instrument.serial.timeout = self.timeout
 
