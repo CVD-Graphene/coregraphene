@@ -22,6 +22,7 @@ class SeveralRrgModbusController(AbstractControllerManyDevices):
         super().__init__()
 
         self._thread_using = True
+        self._rrgs_config = config
 
         self.devices = []
         for rrg_config in config:
@@ -39,6 +40,11 @@ class SeveralRrgModbusController(AbstractControllerManyDevices):
         self.current_sccms = [0.0 for _ in self.devices]
 
         self.get_current_flow = GetCurrentFlowRrgControllerAction(controller=self)
+
+    def get_max_sccm_device(self, device_num=None):
+        if device_num is None:
+            return settings.MAX_DEFAULT_SCCM_VALUE
+        return self._rrgs_config[device_num].get("MAX_SCCM", settings.MAX_DEFAULT_SCCM_VALUE)
 
     def _thread_setup_additional(self, **kwargs):
         for i in range(self.devices_amount):
@@ -86,10 +92,12 @@ class SeveralRrgModbusController(AbstractControllerManyDevices):
     @AbstractController.device_command()
     def set_target_sccm(self, sccm: float, device_num):
         sccm = float(sccm)
-        sccm = min(200.0, max(0.0, sccm))
-        assert 0.0 <= sccm <= 200.0
+        max_sccm = self.get_max_sccm_device(device_num=device_num)
+        sccm = min(max_sccm, max(0.0, sccm))
+        assert 0.0 <= sccm <= max_sccm
+
         self.target_sccms[device_num] = sccm
-        target_flow = sccm / 2.0 * 100
+        target_flow = sccm / max_sccm * 100 * 100
 
         if target_flow <= 0.001:  # TO CLOSE
             self.add_command(BaseCommand(
@@ -118,6 +126,7 @@ class SeveralRrgModbusController(AbstractControllerManyDevices):
                 device_num=device_num,
             ))
 
+        print("NEW SCCM:", sccm, "| MAX:", max_sccm)
         return sccm
 
     @AbstractController.device_command()
@@ -128,7 +137,7 @@ class SeveralRrgModbusController(AbstractControllerManyDevices):
             device_num=device_num,
         ))
 
-        return settings.MAX_SCCM_VALUE
+        return self.get_max_sccm_device(device_num=device_num)
 
     @AbstractController.device_command()
     def full_close(self, device_num):
@@ -171,12 +180,12 @@ class SeveralRrgModbusController(AbstractControllerManyDevices):
     @AbstractController.device_command()
     def get_current_sccm(self, device_num):
         if LOCAL_MODE:
-            self.current_sccms[device_num] = random.random() * 200
+            self.current_sccms[device_num] = random.random() * settings.MAX_DEFAULT_SCCM_VALUE
         return self.current_sccms[device_num]
 
 
 class RrgModbusController(AbstractController):
-    def __init__(self, **kwargs):
+    def __init__(self, max_sccm=None, **kwargs):
         super().__init__()
         self.device = RrgModbusDevice(
             **kwargs
@@ -184,6 +193,8 @@ class RrgModbusController(AbstractController):
         self.is_open = False
         self.target_sccm = 0.0
         self.current_sccm = 0.0
+
+        self.max_sccm = max_sccm or settings.MAX_DEFAULT_SCCM_VALUE
 
     def _check_command(self, **kwargs):
         states = self.read(register=REGISTER_STATE_FLAGS_1)
@@ -194,10 +205,10 @@ class RrgModbusController(AbstractController):
 
     @AbstractController.device_command()
     def set_target_sccm(self, sccm: float = 0.):
-        sccm = min(200.0, max(0.0, sccm))
-        assert 0.0 <= sccm <= 200.0
+        sccm = min(self.max_sccm, max(0.0, sccm))
+        assert 0.0 <= sccm <= self.max_sccm
         self.target_sccm = sccm
-        target_flow = sccm / 2.0
+        target_flow = sccm / self.max_sccm * 100 * 100
 
         if self.target_sccm <= 0.00001:  # TO CLOSE
             self.exec_command(register=REGISTER_SET_FLOW, value=0, functioncode=6,)
@@ -218,7 +229,7 @@ class RrgModbusController(AbstractController):
     @AbstractController.device_command()
     def get_current_sccm(self):
         current_flow = self.read(register=REGISTER_GET_FLOW)
-        self.current_sccm = current_flow * 2.0
+        self.current_sccm = current_flow / 100.0 * self.max_sccm
         if LOCAL_MODE:
-            self.current_sccm = random.random() * 200
+            self.current_sccm = random.random() * self.max_sccm
         return self.current_sccm

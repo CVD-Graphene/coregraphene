@@ -42,12 +42,16 @@ class FloatArgument(Argument):
 class SccmArgument(FloatArgument):
     key = "float"
     decimals = 2
+    max_sccm = settings.MAX_DEFAULT_SCCM_VALUE
+
+    def update_max_sccm(self, max_sccm):
+        self.max_sccm = max_sccm
 
     def _check(self, value):
         value = float(value)
-        range_list = [0, settings.MAX_SCCM_VALUE]
-        if not range_list[0] <= value <= range_list[1]:
-            raise Exception(f"SCCM value {value} not in range {range_list}")
+        # range_list = [0, self.max_sccm]
+        # if not range_list[0] <= value <= range_list[1]:
+        #     raise Exception(f"SCCM value {value} not in range {range_list}")
 
 
 class IntKeyArgument(Argument):
