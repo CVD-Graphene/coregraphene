@@ -126,7 +126,7 @@ class SeveralRrgModbusController(AbstractControllerManyDevices):
                 device_num=device_num,
             ))
 
-        print("NEW SCCM:", sccm, "| MAX:", max_sccm)
+        # print("NEW SCCM:", sccm, "| MAX:", max_sccm)
         return sccm
 
     @AbstractController.device_command()
