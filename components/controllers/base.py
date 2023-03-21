@@ -205,8 +205,8 @@ class AbstractController(object):
                     attempts = 0
                     self._reinitialize_communication()
                     self._on_thread_error(e)
-
-                self._add_command_force(self._last_thread_command)
+                if self._is_working:
+                    self._add_command_force(self._last_thread_command)
 
     def run(self):
         if self._runnable and self._thread is None:
