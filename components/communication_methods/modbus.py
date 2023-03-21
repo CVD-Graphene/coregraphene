@@ -72,7 +72,13 @@ class ModbusCommunicationMethod(BaseCommunicationMethod):
 
     def _handle_exception(self, e):
         try:
+            self.instrument.serial.reset_input_buffer()
+            self.instrument.serial.reset_output_buffer()
+
             self.instrument.serial.close()
+            self.instrument.serial.reset_input_buffer()
+            self.instrument.serial.reset_output_buffer()
+
             self.instrument.serial.open()
             gc.collect()
             time.sleep(0.5)

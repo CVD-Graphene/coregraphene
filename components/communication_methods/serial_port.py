@@ -45,9 +45,18 @@ class SerialAsciiCommunicationMethod(BaseCommunicationMethod):
         )
 
     def _handle_exception(self, e):
-        self.rs485.close()
-        self.rs485.open()
-        time.sleep(0.5)
+        try:
+            self.rs485.reset_input_buffer()
+            self.rs485.reset_output_buffer()
+
+            self.rs485.close()
+            self.rs485.reset_input_buffer()
+            self.rs485.reset_output_buffer()
+
+            self.rs485.open()
+            time.sleep(0.5)
+        except Exception as e2:
+            print("SERIAL HANDLE ERR E2:", e2)
 
     def destructor(self):
         if LOCAL_MODE:
