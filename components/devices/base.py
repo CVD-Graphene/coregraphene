@@ -94,7 +94,7 @@ class AbstractDevice(object):
 
         except Exception as e:
             s = traceback.format_exc()
-            print(s)
+            print("MY COOL DEVICE ERROR", s)
             return self._handle_exception(e)
 
     def read(self, **kwargs):
