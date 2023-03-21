@@ -19,13 +19,20 @@ MAX_TEMPERATURE = 100.0
 
 
 class SeveralTermodatModbusController(AbstractControllerManyDevices):
-    def __init__(self, config=None, **kwargs):
+
+    code = 'termodat'
+
+    def __init__(self, config=None, get_potential_port=None, port=None, **kwargs):
         super().__init__()
+
+        self.port = port
+        self._get_potential_port = get_potential_port
 
         self.devices = []
         for termodat_config in config:
             termodat = TermodatModbusDevice(
                 instrument_number=termodat_config['INSTRUMENT_NUMBER'],
+                port=self.port,
                 **kwargs
             )
             self.devices.append(termodat)
@@ -39,6 +46,16 @@ class SeveralTermodatModbusController(AbstractControllerManyDevices):
         self.target_temperatures = [0.0 for _ in self.devices]
         self.current_temperatures = [0.0 for _ in self.devices]
         self.speeds = [0.0 for _ in self.devices]
+
+    def _reinitialize_communication(self):
+        try:
+            if self._get_potential_port is not None:
+                new_port = self._get_potential_port(self.port, self.code)
+                self.port = new_port
+                for device in self.devices:
+                    device.update_communication(port=new_port)
+        except Exception as e:
+            print(f"|<<< REINITIALIZE {self.code} COMMUNICATION ERR:", e)
 
     def _thread_setup_additional(self, **kwargs):
         for i in range(self.devices_amount):

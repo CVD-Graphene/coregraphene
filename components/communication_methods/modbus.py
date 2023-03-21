@@ -58,6 +58,9 @@ class ModbusCommunicationMethod(BaseCommunicationMethod):
         self._create_instrument()
 
     def _create_instrument(self):
+        if settings.LOCAL_MODE:
+            return
+
         self.instrument = mm.Instrument(
             self.port,
             self.instrument_number,
@@ -69,6 +72,10 @@ class ModbusCommunicationMethod(BaseCommunicationMethod):
         self.instrument.serial.timeout = self.timeout
 
         gc.collect()
+
+    def update_communication(self, port=None, **kwargs):
+        self.port = port or self.port
+        self._create_instrument()
 
     def _handle_exception(self, e):
         try:

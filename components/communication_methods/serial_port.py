@@ -1,3 +1,4 @@
+import gc
 import random
 import time
 
@@ -21,6 +22,8 @@ class SerialAsciiCommunicationMethod(BaseCommunicationMethod):
                  pause=0.04,
                  ):
         super().__init__()
+        self.instrument = None
+
         self.port = port
         print("\n|#> SerialAsciiCommunicationMethod: port", port, ", baudrate", baudrate)
         self.baudrate = baudrate
@@ -35,7 +38,13 @@ class SerialAsciiCommunicationMethod(BaseCommunicationMethod):
         if LOCAL_MODE:
             return
 
-        self.rs485 = serial.Serial(
+        self._create_instrument()
+
+    def _create_instrument(self):
+        if settings.LOCAL_MODE:
+            return
+
+        self.instrument = serial.Serial(
             port=self.port,
             baudrate=self.baudrate,
             parity=self.parity,
@@ -44,16 +53,22 @@ class SerialAsciiCommunicationMethod(BaseCommunicationMethod):
             timeout=self.timeout,
         )
 
+        gc.collect()
+
+    def update_communication(self, port=None, **kwargs):
+        self.port = port or self.port
+        self._create_instrument()
+
     def _handle_exception(self, e):
         try:
-            self.rs485.reset_input_buffer()
-            self.rs485.reset_output_buffer()
+            self.instrument.reset_input_buffer()
+            self.instrument.reset_output_buffer()
 
-            self.rs485.close()
-            self.rs485.reset_input_buffer()
-            self.rs485.reset_output_buffer()
+            self.instrument.close()
+            self.instrument.reset_input_buffer()
+            self.instrument.reset_output_buffer()
 
-            self.rs485.open()
+            self.instrument.open()
             time.sleep(0.5)
         except Exception as e2:
             print("SERIAL HANDLE ERR E2:", e2)
@@ -61,23 +76,23 @@ class SerialAsciiCommunicationMethod(BaseCommunicationMethod):
     def destructor(self):
         if LOCAL_MODE:
             return
-        self.rs485.close()
+        self.instrument.close()
 
     def _send(self, command=None):
         # if LOCAL_MODE:
         #     return
         #     # return "0011MV079.999e2u"
         self._last_command = command
-        self.rs485.write(bytearray(command.encode("ASCII")))
+        self.instrument.write(bytearray(command.encode("ASCII")))
         # sleep(self.pause)
         # sleep(1)
-        # x = self.rs485.readline()
+        # x = self.instrument.readline()
         # answer = x.decode('ASCII')
         # print("@ Q&A: ", command.strip(), " |", answer.strip())
         # return answer
 
     def _read(self, **kwargs):
-        x = self.rs485.readline()
+        x = self.instrument.readline()
         answer = x.decode('ASCII')
         # print("@ Q&A: ", self._last_command.strip(), " |", answer.strip(), " | End")
         return answer

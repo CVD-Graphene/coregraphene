@@ -51,6 +51,9 @@ class AbstractDevice(object):
     def destructor(self):
         self.communicator.destructor()
 
+    def update_communication(self, **kwargs):
+        self.communicator.update_communication(**kwargs)
+
     def is_valid(self, raise_exception=True):
         e = None
         if self._status == DEVICE_STATUS.INACTIVE:

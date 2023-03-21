@@ -16,6 +16,7 @@ class AbstractController(object):
     """
 
     device_class = None
+    code = None  # str controller code
 
     def __init__(self, *args, device=None, **kwargs):
         if device is not None:
@@ -198,16 +199,22 @@ class AbstractController(object):
                 except Exception as pe:
                     print("ERROR PRINTING CONTROLLER RUN EXCEPTION :(")
                 attempts += 1
-                if attempts < MAX_NUMBER_ATTEMPTS:
-                    self._add_command_force(self._last_thread_command)
-                else:
+                # if attempts < MAX_NUMBER_ATTEMPTS:
+                #     self._add_command_force(self._last_thread_command)
+                if attempts >= MAX_NUMBER_ATTEMPTS:
                     attempts = 0
+                    self._reinitialize_communication()
                     self._on_thread_error(e)
+
+                self._add_command_force(self._last_thread_command)
 
     def run(self):
         if self._runnable and self._thread is None:
             self._thread = Thread(target=self._run)
             self._thread.start()
+
+    def _reinitialize_communication(self):
+        pass
 
     def _get_last_commands_to_exit(self):
         return []

@@ -12,14 +12,28 @@ LOCAL_MODE = settings.LOCAL_MODE
 
 class AccurateVakumetrController(AbstractController):
     # device_class = AccurateVakumetrDevice
+    code = 'vakumetr'
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.device = AccurateVakumetrDevice(*args, **kwargs)
+    def __init__(self, *args, get_potential_port=None, port=None, **kwargs):
+        super().__init__(*args, port=port, **kwargs)
+
+        self.port = port
+        self._get_potential_port = get_potential_port
+
+        self.device = AccurateVakumetrDevice(*args, port=self.port, **kwargs)
         self.vakumetr_value = None
         self.loop_delay = 0.3
 
         self._thread_using = True
+
+    def _reinitialize_communication(self):
+        try:
+            if self._get_potential_port is not None:
+                new_port = self._get_potential_port(self.port, self.code)
+                self.port = new_port
+                self.device.update_communication(port=new_port)
+        except Exception as e:
+            print(f"|<<< REINITIALIZE {self.code} COMMUNICATION ERR:", e)
 
     def _thread_setup_additional(self, **kwargs):
         # self.add_command(BaseCommand(

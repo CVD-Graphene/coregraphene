@@ -58,6 +58,9 @@ class AbstractCommunicator(object):
     def destructor(self):
         self.communication_method.destructor()
 
+    def update_communication(self, **kwargs):
+        self.communication_method.update_communication(**kwargs)
+
     def is_valid(self, raise_exception=True):
         e = None
         if self._status == COMMUNICATION_INTERFACE_STATUS.INACTIVE:

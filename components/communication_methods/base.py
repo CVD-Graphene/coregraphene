@@ -19,6 +19,9 @@ class BaseCommunicationMethod:
     def destructor(self):
         pass
 
+    def update_communication(self, **kwargs):
+        pass
+
     def _check_setup(self):
         if not self.ready:
             raise CommunicationMethodNotSetup(

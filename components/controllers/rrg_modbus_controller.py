@@ -18,9 +18,13 @@ REGISTER_GET_FLOW = REGISTER_SET_FLOW if LOCAL_MODE else 5
 
 
 class SeveralRrgModbusController(AbstractControllerManyDevices):
-    def __init__(self, config, **kwargs):
+    code = 'rrg'
+
+    def __init__(self, config, get_potential_port=None, port=None, **kwargs):
         super().__init__()
 
+        self.port = port
+        self._get_potential_port = get_potential_port
         self._thread_using = True
         self._rrgs_config = config
 
@@ -29,6 +33,7 @@ class SeveralRrgModbusController(AbstractControllerManyDevices):
             rrg = RrgModbusDevice(
                 instrument_number=rrg_config['INSTRUMENT_NUMBER'],
                 timeout=0.2,
+                port=self.port,
                 **kwargs
             )
             self.devices.append(rrg)
@@ -40,6 +45,16 @@ class SeveralRrgModbusController(AbstractControllerManyDevices):
         self.current_sccms = [0.0 for _ in self.devices]
 
         self.get_current_flow = GetCurrentFlowRrgControllerAction(controller=self)
+
+    def _reinitialize_communication(self):
+        try:
+            if self._get_potential_port is not None:
+                new_port = self._get_potential_port(self.port, self.code)
+                self.port = new_port
+                for device in self.devices:
+                    device.update_communication(port=new_port)
+        except Exception as e:
+            print(f"|<<< REINITIALIZE {self.code} COMMUNICATION ERR:", e)
 
     def get_max_sccm_device(self, device_num=None):
         if device_num is None:
