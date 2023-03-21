@@ -1,4 +1,5 @@
 import gc
+import time
 
 import minimalmodbus as mm
 from .base import BaseCommunicationMethod
@@ -74,6 +75,7 @@ class ModbusCommunicationMethod(BaseCommunicationMethod):
             self.instrument.serial.close()
             self.instrument.serial.open()
             gc.collect()
+            time.sleep(0.5)
         except Exception as e:
             print("MODBUS HANDLE EXCEPTION:", e)
         # self._create_instrument()

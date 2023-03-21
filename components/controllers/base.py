@@ -149,7 +149,7 @@ class AbstractController(object):
         :return: None
         """
         to_exit = False
-        MAX_NUMBER_ATTEMPTS = 3
+        MAX_NUMBER_ATTEMPTS = 5
         attempts = 0
         # with_error = False
         counter = 0

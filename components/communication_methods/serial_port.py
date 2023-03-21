@@ -1,4 +1,6 @@
 import random
+import time
+
 import serial
 
 from .base import BaseCommunicationMethod
@@ -41,6 +43,11 @@ class SerialAsciiCommunicationMethod(BaseCommunicationMethod):
             bytesize=self.bytesize,
             timeout=self.timeout,
         )
+
+    def _handle_exception(self, e):
+        self.rs485.close()
+        self.rs485.open()
+        time.sleep(0.5)
 
     def destructor(self):
         if LOCAL_MODE:
