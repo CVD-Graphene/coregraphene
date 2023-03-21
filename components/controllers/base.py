@@ -193,7 +193,10 @@ class AbstractController(object):
                 attempts = 0
             except Exception as e:
                 # with_error = True
-                print(f"ERROR DURING EXECUTING COMMAND:", str(e))
+                try:
+                    print(f"ERROR DURING EXECUTING COMMAND:", str(e))
+                except Exception as pe:
+                    print("ERROR PRINTING CONTROLLER RUN EXCEPTION :(")
                 attempts += 1
                 if attempts < MAX_NUMBER_ATTEMPTS:
                     self._add_command_force(self._last_thread_command)
