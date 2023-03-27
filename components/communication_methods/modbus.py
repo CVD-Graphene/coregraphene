@@ -66,7 +66,7 @@ class ModbusCommunicationMethod(BaseCommunicationMethod):
             self.instrument_number,
             close_port_after_each_call=False,
             mode=self.mode,
-            debug=False
+            debug=False,
         )
         self.instrument.serial.baudrate = self.baudrate
         self.instrument.serial.timeout = self.timeout
@@ -75,6 +75,7 @@ class ModbusCommunicationMethod(BaseCommunicationMethod):
 
     def update_communication(self, port=None, **kwargs):
         self.port = port or self.port
+        print(f"ATTENTION! Update modbus port to >> {self.port} <<")
         self._create_instrument()
 
     def _handle_exception(self, e):

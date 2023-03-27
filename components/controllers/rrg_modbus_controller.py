@@ -51,7 +51,8 @@ class SeveralRrgModbusController(AbstractControllerManyDevices):
             if self._get_potential_port is not None:
                 new_port = self._get_potential_port(self.port, self.code)
                 self.port = new_port
-                for device in self.devices:
+                for i, device in enumerate(self.devices):
+                    print(f"|> UPDATE PORT {self.code} for device #{i + 1} {self.device}")
                     device.update_communication(port=new_port)
         except Exception as e:
             print(f"|<<< REINITIALIZE {self.code} COMMUNICATION ERR:", e)

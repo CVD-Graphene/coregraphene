@@ -137,3 +137,6 @@ class AbstractDevice(object):
 
     def _postprocessing_value(self, value=None):
         return value
+
+    def __str__(self):
+        return f"Device {self.__class__.__name__}"

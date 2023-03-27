@@ -20,3 +20,7 @@ class ModbusRtuCommunicator(AbstractCommunicator):
             baudrate=baudrate,
             timeout=timeout,
         )
+
+    def update_communication(self, port=None, **kwargs):
+        self.port = port
+        super().update_communication(port=port, **kwargs)
