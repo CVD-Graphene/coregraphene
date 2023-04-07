@@ -1,6 +1,6 @@
 import random
 
-from Structure.system.system_actions import GetCurrentFlowRrgControllerAction
+from ...system_actions import GetCurrentFlowRrgControllerAction
 from .base import AbstractController, AbstractControllerManyDevices
 from ..commands import BaseCommand
 from ..devices import RrgModbusDevice
