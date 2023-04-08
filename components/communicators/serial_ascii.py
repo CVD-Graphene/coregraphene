@@ -32,6 +32,7 @@ class SerialAsciiCommunicator(AbstractCommunicator):
         address = str(self.port).zfill(self.ADDRESS_PORT_LEN)
         command = f"{address}{value}"
         command = f"{self._add_check_sum(command)}\r"
+        print("SerialAsciiCommunicator COMMAND::", command.strip())
         return {
             "command": command,
         }
@@ -63,9 +64,9 @@ class SerialAsciiAkipCommunicator(AbstractCommunicator):
     def _preprocessing_value(self, value="0MV00") -> dict:
         # print("SerialAsciiAkipCommunicator VALUE:", value)
         command = f"A{str(self.port).zfill(self.ADDRESS_PORT_LEN)}{value};\n"
-        print("SerialAsciiAkipCommunicator COMMAND::", command.strip())
+        # print("SerialAsciiAkipCommunicator COMMAND::", command.strip())
         return {
-            "command": f"A{str(self.port).zfill(self.ADDRESS_PORT_LEN)}{value};\n",
+            "command": command,
         }
 
     def _postprocessing_value(self, value: str = None):
