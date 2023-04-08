@@ -129,6 +129,9 @@ class AbstractController(object):
             self._start_thread_read_time = None
             self._is_thread_reading = False
             read_value = ""
+            self._on_thread_error(Exception(
+                f"{self.controller_id}: Прибор не отвечает дольше критического времени: "
+                f"> {self._critical_read_time} сек."))
         else:
             # print("3333")
             read_value = self.read(**self._last_thread_command.kwargs)
