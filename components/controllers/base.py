@@ -18,8 +18,10 @@ class AbstractController(object):
     device_class = None
     code = None  # str controller code
 
-    def __init__(self, *args, **kwargs):
-        if self.device_class is not None:
+    def __init__(self, *args, active=True, **kwargs):
+        self._active = active
+
+        if self.device_class is not None and self._active:
             self.device: AbstractDevice = self.device_class(
                 *args, **kwargs
             )
@@ -27,8 +29,6 @@ class AbstractController(object):
             self.device = None
 
         self.controller_id = self.__class__.__name__
-
-        self._active = True
         self.loop_delay = 0.2
 
         # THREAD VARIABLES ############################
@@ -68,7 +68,7 @@ class AbstractController(object):
         :param kwargs:
         :return:
         """
-        if not self._thread_using:
+        if not self._thread_using or not self._active:
             return
         self._runnable = True
         self._is_global_working = is_working
@@ -149,6 +149,9 @@ class AbstractController(object):
         Main loop for running commands from self._commands_queue
         :return: None
         """
+        if not self._active:
+            return
+
         to_exit = False
         MAX_NUMBER_ATTEMPTS = 5
         attempts = 0
@@ -211,7 +214,7 @@ class AbstractController(object):
                     self._add_command_force(self._last_thread_command)
 
     def run(self):
-        if self._runnable and self._thread is None:
+        if self._runnable and self._thread is None and self._active:
             self._thread = Thread(target=self._run)
             self._thread.start()
 
@@ -222,9 +225,14 @@ class AbstractController(object):
         return []
 
     def setup(self):
+        if not self._active:
+            return
         self.device.setup()
 
     def destructor(self):
+        if not self._active:
+            return
+
         if self._thread is not None:
             self._thread.join()
         self.device.destructor()
@@ -313,30 +321,6 @@ class AbstractController(object):
         s = traceback.format_exc()
         # print(s)
         raise e
-
-    def wait_seconds(self, seconds=None, after_wait=None, **kwargs):
-        """
-        Wait for seconds before auto_actions;
-        :param after_wait: function for execute after waiting
-        :param seconds: amount of seconds
-        :param kwargs:
-        :return:
-        """
-        self._start_timer = time.time()
-        self._delay = seconds
-        self._after_waiting = after_wait
-
-    def wait_until_value(self, target_value, on_reached=None, **kwargs):
-        """
-        TODO: ADD COMMAND PARAMS FOR EXECUTION TO REACH TARGET VALUE
-        Wait time until target value is not reached
-        :param on_reached: function for execute after value is reached
-        :param target_value: target value
-        :param kwargs:
-        :return:
-        """
-        self._target_value = target_value
-        self._on_reached = on_reached
 
 
 class AbstractControllerManyDevices(AbstractController):

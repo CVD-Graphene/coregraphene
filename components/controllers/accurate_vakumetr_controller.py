@@ -11,17 +11,17 @@ LOCAL_MODE = settings.LOCAL_MODE
 
 
 class AccurateVakumetrController(AbstractController):
-    # device_class = AccurateVakumetrDevice
+    device_class = AccurateVakumetrDevice
     code = 'vakumetr'
 
-    def __init__(self, *args, get_potential_port=None, port=None, **kwargs):
-        super().__init__(*args, port=port, **kwargs)
+    def __init__(self, *args, get_potential_port=None, **kwargs):
+        super().__init__(*args, **kwargs)
 
-        self.port = port
+        self.port = kwargs.get("port", None)
         self._get_potential_port = get_potential_port
 
-        self.device = AccurateVakumetrDevice(*args, port=self.port, **kwargs)
-        self.vakumetr_value = None
+        # self.device = AccurateVakumetrDevice(port=self.port, **kwargs)
+        self.vakumetr_value = 0.0
         self.loop_delay = 0.3
 
         self._thread_using = True
