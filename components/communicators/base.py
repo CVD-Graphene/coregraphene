@@ -17,22 +17,19 @@ class AbstractCommunicator(object):
     def __init__(
             self,
             # speed=None,
-            port=None,
             **kwargs
     ):
         self.communicator_id = self.__class__.__name__
+        self.communication_method = None
+        self.kwargs = kwargs
 
         if self.communication_method_class is not None:
             self.communication_method: BaseCommunicationMethod = \
-                self.communication_method_class(port=port, **kwargs)
+                self.communication_method_class(**kwargs)
 
-        # self.speed = speed
-        self.port = port
-
+        self.port = self.kwargs.get("port", None)
         self._status = COMMUNICATION_INTERFACE_STATUS.INACTIVE
         self._errors = []
-
-        self.kwargs = kwargs
 
     def setup(self):
         try:

@@ -18,11 +18,11 @@ class AbstractController(object):
     device_class = None
     code = None  # str controller code
 
-    def __init__(self, *args, device=None, **kwargs):
-        if device is not None:
-            self.device = device
-        elif self.device_class is not None:
-            self.device: AbstractDevice = self.device_class()
+    def __init__(self, *args, **kwargs):
+        if self.device_class is not None:
+            self.device: AbstractDevice = self.device_class(
+                *args, **kwargs
+            )
         else:
             self.device = None
 

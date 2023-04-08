@@ -8,8 +8,8 @@ from ...conf import settings
 
 class ModbusCommunicationMethod(BaseCommunicationMethod):
     def __init__(self,
-                 port,  # f.e., '/dev/ttyUSB1'
-                 mode,  # mm.MODE_ASCII/mm.MODE_RTU
+                 port=None,  # f.e., '/dev/ttyUSB1'
+                 mode=None,  # mm.MODE_ASCII/mm.MODE_RTU
                  instrument_number=None,  # f.e., 1 2 3...
                  baudrate=None,
                  timeout=None,

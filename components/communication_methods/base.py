@@ -6,7 +6,7 @@ LOCAL_MODE = settings.LOCAL_MODE
 
 
 class BaseCommunicationMethod:
-    def __init__(self, *args, **kwargs):
+    def __init__(self, **kwargs):
         self.ready = False
         self._last_command = None
         self._last_read_value = None

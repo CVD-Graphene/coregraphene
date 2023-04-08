@@ -42,13 +42,15 @@ class CurrentSourceController(AbstractController):
                  on_change_current=None,
                  on_set_current=None,
                  ):
-        super().__init__()
+        super().__init__(port=port)
         self._thread_using = True
         self.on_change_voltage = on_change_voltage
         self.on_change_current = on_change_current
         self.on_set_current = on_set_current
         self.voltage_value = 0.0
         self.current_value = 0.0
+
+        self.loop_delay = 0.1
 
     def setup(self):
         super().setup()
