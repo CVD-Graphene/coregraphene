@@ -1,9 +1,9 @@
-from ..communicators import SerialAsciiSimpleCommunicator
+from ..communicators import SerialAsciiPyrometerCommunicator
 from .base import AbstractDevice
 
 
 class PyrometerTemperatureDevice(AbstractDevice):
-    communicator_class = SerialAsciiSimpleCommunicator
+    communicator_class = SerialAsciiPyrometerCommunicator
 
     # def get_value_with_waiting(self):
     #     """For testing"""

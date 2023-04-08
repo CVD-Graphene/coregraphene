@@ -77,7 +77,7 @@ class SerialAsciiAkipCommunicator(AbstractCommunicator):
         return value.strip() if value else ""
 
 
-class SerialAsciiSimpleCommunicator(AbstractCommunicator):
+class SerialAsciiPyrometerCommunicator(AbstractCommunicator):
     communication_method_class = SerialAsciiCommunicationMethod
 
     def _preprocessing_value(self, value="") -> dict:
@@ -85,3 +85,12 @@ class SerialAsciiSimpleCommunicator(AbstractCommunicator):
         return {
             "command": value,
         }
+
+    def _postprocessing_value(self, value: str = None):
+        if not value:
+            return ""
+        if LOCAL_MODE:
+            return str(value).strip()
+
+        value = int(value[5:9], base=16) - 273
+        return value
