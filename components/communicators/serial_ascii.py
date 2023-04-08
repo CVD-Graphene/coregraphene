@@ -70,7 +70,7 @@ class SerialAsciiAkipCommunicator(AbstractCommunicator):
         }
 
     def _postprocessing_value(self, value: str = None):
-        print("SerialAsciiAkipCommunicator ANSWER::", value, type(value))
+        # print("SerialAsciiAkipCommunicator ANSWER::", value, type(value))
         # if LOCAL_MODE or value is None:
         #     return ""
         value = str(value)
