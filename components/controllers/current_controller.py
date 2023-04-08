@@ -37,12 +37,12 @@ class CurrentSourceController(AbstractController):
     device_class = CurrentSourceDevice
 
     def __init__(self,
-                 port=settings.CURRENT_SOURCE_PORT,
                  on_change_voltage=None,
                  on_change_current=None,
                  on_set_current=None,
+                 **kwargs,
                  ):
-        super().__init__(port=port)
+        super().__init__(**kwargs)
         self._thread_using = True
         self.on_change_voltage = on_change_voltage
         self.on_change_current = on_change_current

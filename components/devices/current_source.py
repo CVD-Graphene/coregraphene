@@ -16,11 +16,11 @@ class CurrentSourceDevice(AbstractDevice):
     #     )
     #     self.kwargs = kwargs
 
-    def d_init_(self):
-        super().__init__()
-        self.communicator = SerialAsciiAkipCommunicator(
-            port=settings.CURRENT_SOURCE_PORT
-        )
+    # def d_init_(self):
+    #     super().__init__()
+    #     self.communicator = SerialAsciiAkipCommunicator(
+    #         port=settings.CURRENT_SOURCE_PORT
+    #     )
 
     def _preprocessing_value(self, command=None, value=None):
         if value is None:

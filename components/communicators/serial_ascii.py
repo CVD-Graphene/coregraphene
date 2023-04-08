@@ -6,16 +6,16 @@ LOCAL_MODE = settings.LOCAL_MODE
 
 
 class SerialAsciiCommunicator(AbstractCommunicator):
-    # communication_method_class = SerialAsciiCommunicationMethod
+    communication_method_class = SerialAsciiCommunicationMethod
     ADDRESS_PORT_LEN = 3
 
-    def __init__(self, *args, port_communicator=None, **kwargs):
-        super().__init__(*args, **kwargs)
-        # self.port = port_communicator
-        self.communication_method = SerialAsciiCommunicationMethod(
-            *args, **kwargs,
-            # port=ACCURATE_VAKUMETR_USB_PORT
-        )
+    def __init__(self, port_communicator=None, **kwargs):
+        super().__init__(**kwargs)
+        self.port = port_communicator
+        # self.communication_method = SerialAsciiCommunicationMethod(
+        #     **kwargs,
+        #     # port=ACCURATE_VAKUMETR_USB_PORT
+        # )
         # self.communication_method = SerialAsciiCommunicationMethod()
 
     def _add_check_sum(self, command):
@@ -50,17 +50,20 @@ class SerialAsciiCommunicator(AbstractCommunicator):
 
 
 class SerialAsciiAkipCommunicator(AbstractCommunicator):
+    communication_method_class = SerialAsciiCommunicationMethod
     ADDRESS_PORT_LEN = 3
 
-    def __init__(self, *args, port_communicator=None, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, port_communicator=None, **kwargs):
+        super().__init__(**kwargs)
         self.port = port_communicator
-        self.communication_method = SerialAsciiCommunicationMethod(
-            *args, **kwargs,
-        )
+        # self.communication_method = SerialAsciiCommunicationMethod(
+        #     *args, **kwargs,
+        # )
 
     def _preprocessing_value(self, value="0MV00") -> dict:
         # print("SerialAsciiAkipCommunicator VALUE:", value)
+        command = f"A{str(self.port).zfill(self.ADDRESS_PORT_LEN)}{value};\n"
+        print("SerialAsciiAkipCommunicator COMMAND::", command.strip())
         return {
             "command": f"A{str(self.port).zfill(self.ADDRESS_PORT_LEN)}{value};\n",
         }
