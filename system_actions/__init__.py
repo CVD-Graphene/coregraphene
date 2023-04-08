@@ -12,3 +12,4 @@ from .actions import (
 )
 
 from .controllers import *
+from .common import *

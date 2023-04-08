@@ -75,3 +75,12 @@ class SerialAsciiAkipCommunicator(AbstractCommunicator):
         #     return ""
         value = str(value)
         return value.strip() if value else ""
+
+
+class SerialAsciiSimpleCommunicator(AbstractCommunicator):
+    communication_method_class = SerialAsciiCommunicationMethod
+
+    def _preprocessing_value(self, value="") -> dict:
+        return {
+            "command": value,
+        }

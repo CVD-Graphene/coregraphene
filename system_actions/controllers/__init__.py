@@ -1,1 +1,2 @@
 from .rrg import GetCurrentFlowRrgControllerAction
+from .pyrometer import GetCurrentTemperaturePyrometerControllerAction

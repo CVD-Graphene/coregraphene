@@ -4,3 +4,4 @@ from .valve_controller import ValveController
 from .current_controller import CurrentSourceController
 from .rrg_modbus_controller import RrgModbusController, SeveralRrgModbusController
 from .termodat_modbus_controller import TermodatModbusController, SeveralTermodatModbusController
+from .pyrometer_temperature_controller import PyrometerTemperatureController
