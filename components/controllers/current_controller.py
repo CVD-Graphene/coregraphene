@@ -17,7 +17,9 @@ OUTPUT_1_COMMAND = f"OUTP 1"
 OUTPUT_0_COMMAND = f"OUTP 0"
 GET_ERRORS_COMMAND = "SYST:ERR?"
 GET_CURRENT_ACTUAL = "SOURce:CURRent?"  # 10-4-32
+GET_CURRENT_MEASURE = "MEASure:CURRent?"  # ???
 GET_VOLTAGE_ACTUAL = "SOURce:VOLTage?"  # 10-4-35
+GET_VOLTAGE_MEASURE = "MEASure:VOLTage?"  # ???
 SET_MAX_VOLTAGE_LIMIT = "SOUR:VOLT:PROT:LEV 13.75"  # 10-4-36 Max voltage limit
 SET_ZERO_VOLTAGE_LIMIT = "SOUR:VOLT:PROT:LEV 0"  # 10-4-36 Max voltage limit
 # max_current_limit = "SOURce:CURRent:PROTection:LEVel 132"  # 10-4-43 Max current limit
@@ -76,13 +78,15 @@ class CurrentSourceController(AbstractController):
 
         # Repeat commands for updating values
         self.add_command(BaseCommand(
-            command=GET_CURRENT_ACTUAL,
+            # command=GET_CURRENT_ACTUAL,
+            command=GET_CURRENT_MEASURE,
             repeat=True,
             with_answer=True,
             on_answer=self._on_get_current_value,
         ))
         self.add_command(BaseCommand(
-            command=GET_VOLTAGE_ACTUAL,
+            # command=GET_VOLTAGE_ACTUAL,
+            command=GET_VOLTAGE_MEASURE,
             repeat=True,
             with_answer=True,
             on_answer=self._on_get_voltage_value,
