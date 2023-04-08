@@ -8,12 +8,12 @@ from .base import BaseCommunicationMethod
 from ...conf import settings
 
 LOCAL_MODE = settings.LOCAL_MODE
-SERIAL_PORT = settings.SERIAL_PORT
+# SERIAL_PORT = settings.SERIAL_PORT
 
 
 class SerialAsciiCommunicationMethod(BaseCommunicationMethod):
     def __init__(self,
-                 port=SERIAL_PORT,
+                 port=None,
                  baudrate=19200,  # 115200 - was for vakumetr early
                  parity=serial.PARITY_NONE,
                  stopbits=serial.STOPBITS_ONE,
@@ -79,9 +79,6 @@ class SerialAsciiCommunicationMethod(BaseCommunicationMethod):
         self.instrument.close()
 
     def _send(self, command=None):
-        # if LOCAL_MODE:
-        #     return
-        #     # return "0011MV079.999e2u"
         self._last_command = command
         self.instrument.write(bytearray(command.encode("ASCII")))
         # sleep(self.pause)

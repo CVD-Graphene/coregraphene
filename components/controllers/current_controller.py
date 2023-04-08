@@ -37,6 +37,7 @@ class CurrentSourceController(AbstractController):
     device_class = CurrentSourceDevice
 
     def __init__(self,
+                 port=settings.CURRENT_SOURCE_PORT,
                  on_change_voltage=None,
                  on_change_current=None,
                  on_set_current=None,
@@ -113,7 +114,7 @@ class CurrentSourceController(AbstractController):
     def _is_error_check_command(self, command: BaseCommand = None):
         if command is None:
             return True
-        return command.command in [GET_ERRORS_COMMAND, CLEAR_COMMAND]
+        return command.kwargs.get("command", "") in [GET_ERRORS_COMMAND, CLEAR_COMMAND]
 
     def _run_thread_command(self, command: BaseCommand):
         if not self._is_error_check_command(command):
@@ -128,17 +129,17 @@ class CurrentSourceController(AbstractController):
             BaseCommand(command=OUTPUT_0_COMMAND),
         ]
 
-    def destructor(self):
-        super().destructor()
-        print("|> Current source destructor")
-        # runc_commands   below
-        # # self.exec_command(command=SET_ZERO_CURRENT_ACTUAL)
-        # # sleep(SLEEP_TIME)
-        # self.exec_command(command=SET_ZERO_CURRENT_ACTUAL)
-        # sleep(SLEEP_TIME)
-        # self.exec_command(command=SET_ZERO_VOLTAGE_ACTUAL)
-        # sleep(SLEEP_TIME)
-        # self.exec_command(command=OUTPUT_0_COMMAND)
+    # def destructor(self):
+    #     super().destructor()
+    #     print("|> Current source destructor")
+    #     # runc_commands   below
+    #     # # self.exec_command(command=SET_ZERO_CURRENT_ACTUAL)
+    #     # # sleep(SLEEP_TIME)
+    #     # self.exec_command(command=SET_ZERO_CURRENT_ACTUAL)
+    #     # sleep(SLEEP_TIME)
+    #     # self.exec_command(command=SET_ZERO_VOLTAGE_ACTUAL)
+    #     # sleep(SLEEP_TIME)
+    #     # self.exec_command(command=OUTPUT_0_COMMAND)
 
     @AbstractController.device_command()
     def exec_command(self, command=None, value=None):
