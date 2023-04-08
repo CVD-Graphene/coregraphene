@@ -13,6 +13,7 @@ from ..exceptions.system import BaseConditionException
 from ..components.controllers import AbstractController
 from ..recipe import RECIPE_STATES, RecipeRunner
 from ..system_actions import SetCurrentRecipeStepAction
+from ..utils import get_available_usb_ports
 
 TABLE_COLUMN_NAMES = settings.TABLE_COLUMN_NAMES
 
@@ -38,6 +39,10 @@ class BaseSystem(object):
         self._event_logs = []
         self._is_working = True
         self._actions_list = actions_list
+
+        self.ports = {}
+        self._controllers_check_classes = {}
+        self._ports_attr_names = {}
 
         self._recipe = None
         self._recipe_runner = self.recipe_class(
@@ -77,6 +82,43 @@ class BaseSystem(object):
         :return:
         """
         pass
+
+    def get_potential_controller_port(self, controller_port, controller_code):
+        new_port = controller_port
+        try:
+            used_ports = [value for key, value in self.ports.items() if key != controller_code]
+            usb_ports = get_available_usb_ports()
+            for used_port in used_ports:
+                try:
+                    usb_ports.remove(used_port)
+                except:
+                    continue
+
+            controller_check_class = self._controllers_check_classes[controller_code]
+            for port in usb_ports:
+                controller: AbstractController = controller_check_class(port=port)
+                controller.setup()
+
+                if controller.check_command():
+                    new_port = port
+                    setattr(self, self._ports_attr_names[controller_code], new_port)
+                    self.ports[controller_code] = new_port
+
+                    controller.destructor()
+                    del controller
+                    break
+
+                controller.destructor()
+                del controller
+
+            # new_port = usb_ports[0]
+            # setattr(self, self._ports_attr_names[controller_code], new_port)
+            # self.ports[controller_code] = new_port
+        except Exception as e:
+            print("|<<< NEW PORT GET ERROR:", e)
+
+        print(f"\n|>>> NEW PORT FOR {controller_code}: {new_port}\n")
+        return new_port
 
     @abstractmethod
     def _init_controllers(self):
