@@ -172,8 +172,6 @@ class AbstractController(object):
                     self._last_thread_command = command
                     # print("|> CURRENT COMMAND [c]:", command.command)
 
-                    if command.repeat:
-                        self._commands_queue.append(command)
                     if command.with_answer:
                         self._is_thread_reading = True
 
@@ -182,6 +180,10 @@ class AbstractController(object):
                         # command.on_answer(answer)
                     else:
                         self._run_thread_command(command)
+
+                    # Must be the last to avoid duplicates because of errors
+                    if command.repeat:
+                        self._commands_queue.append(command)
 
                 else:
                     if to_exit:
