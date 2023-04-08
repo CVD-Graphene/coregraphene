@@ -80,7 +80,7 @@ class SerialAsciiCommunicationMethod(BaseCommunicationMethod):
 
     def _send(self, command=None):
         self._last_command = command
-        print("COMMAND SERIAL ASCII:", command)
+        # print("COMMAND SERIAL ASCII:", command)
         self.instrument.write(bytearray(command.encode("ASCII")))
         # sleep(self.pause)
         # sleep(1)
@@ -92,7 +92,7 @@ class SerialAsciiCommunicationMethod(BaseCommunicationMethod):
     def _read(self, **kwargs):
         x = self.instrument.readline()
         answer = x.decode('ASCII')
-        print("SERIAL ASCII READLINE:", answer)
+        # print("SERIAL ASCII READLINE:", answer)
         # print("@ Q&A: ", self._last_command.strip(), " |", answer.strip(), " | End")
         return answer
 
