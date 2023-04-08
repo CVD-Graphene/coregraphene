@@ -8,7 +8,7 @@ from ...exceptions.devices import (
     BaseDeviceException,
     SetupDeviceException,
     InactiveDeviceException,
-    DoubleDeclarationCommunicatorException,
+    # DoubleDeclarationCommunicatorException,
 )
 
 
@@ -21,16 +21,21 @@ class AbstractDevice(object):
 
     def __init__(
             self,
-            communicator: AbstractCommunicator = None,
+            # communicator: AbstractCommunicator = None,
             **kwargs,
     ):
         # if communicator is not None and self.communicator_class is not None:
         #     raise DoubleDeclarationCommunicatorException(device_id=self.__class__.__name__)
 
-        if communicator:
-            self.communicator: AbstractCommunicator = communicator
-        elif self.communicator_class is not None:
-            self.communicator: AbstractCommunicator = self.communicator_class()
+        # if communicator:
+        #     self.communicator: AbstractCommunicator = communicator
+        self.communicator = None
+        self.kwargs = kwargs
+
+        if self.communicator_class is not None:
+            self.communicator: AbstractCommunicator = self.communicator_class(
+                **kwargs,
+            )
         self._last_command = None
         self._status = DEVICE_STATUS.INACTIVE
         self._errors = []

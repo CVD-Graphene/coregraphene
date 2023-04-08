@@ -14,14 +14,24 @@ REGISTER_SPEED_SET = 377
 
 
 class TermodatModbusDevice(AbstractDevice):
+    communicator_class = ModbusAsciiCommunicator
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        if kwargs.get('baudrate', None) is None:
-            kwargs['baudrate'] = settings.DEFAULT_MODBUS_TERMODAT_BAUDRATE
-        self.communicator = ModbusAsciiCommunicator(
-            **kwargs,
-        )
+    def __init__(self, baudrate=None, **kwargs):
+        baudrate = baudrate or settings.DEFAULT_MODBUS_TERMODAT_BAUDRATE
+        super().__init__(baudrate=baudrate, **kwargs)
+        # if kwargs.get('baudrate', None) is None:
+        #     kwargs['baudrate'] = settings.DEFAULT_MODBUS_TERMODAT_BAUDRATE
+        # self.communicator = ModbusAsciiCommunicator(
+        #     **kwargs,
+        # )
+
+    # def __init__(self, **kwargs):
+    #     super().__init__(**kwargs)
+    #     if kwargs.get('baudrate', None) is None:
+    #         kwargs['baudrate'] = settings.DEFAULT_MODBUS_TERMODAT_BAUDRATE
+    #     self.communicator = ModbusAsciiCommunicator(
+    #         **kwargs,
+    #     )
 
     def _preprocessing_value(self, **kwargs):
         if kwargs.get("precision", None) is None:

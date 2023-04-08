@@ -7,12 +7,12 @@ from ..communication_methods import ModbusCommunicationMethod
 class ModbusRtuCommunicator(AbstractCommunicator):
 
     def __init__(self,
-                 *args,
+                 # *args,
                  instrument_number=None,
                  baudrate=None,
                  timeout=None,
                  **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__(**kwargs)
         self.communication_method = ModbusCommunicationMethod(
             port=self.port,
             mode=mm.MODE_RTU,

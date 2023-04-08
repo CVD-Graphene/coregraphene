@@ -16,31 +16,23 @@ class AbstractCommunicator(object):
 
     def __init__(
             self,
-            speed=None,
+            # speed=None,
             port=None,
-            communication_method: BaseCommunicationMethod = None,
             **kwargs
     ):
         self.communicator_id = self.__class__.__name__
 
-        if communication_method is not None and\
-                self.communication_method_class is not None:
-            raise DoubleDeclarationMethodCommunicatorException(
-                communicator_id=self.communicator_id
-            )
+        if self.communication_method_class is not None:
+            self.communication_method: BaseCommunicationMethod = \
+                self.communication_method_class(port=port, **kwargs)
 
-        if communication_method is not None:
-            self.communication_method: BaseCommunicationMethod = communication_method
-
-        elif self.communication_method_class is not None:
-            self.communication_method: BaseCommunicationMethod = self.communication_method_class()
-
-        self.speed = speed
+        # self.speed = speed
         self.port = port
 
         self._status = COMMUNICATION_INTERFACE_STATUS.INACTIVE
         self._errors = []
-        # self.setup_configuration()
+
+        self.kwargs = kwargs
 
     def setup(self):
         try:

@@ -8,14 +8,14 @@ from .base import AbstractDevice
 class AccurateVakumetrDevice(AbstractDevice):
     communicator_class = SerialAsciiCommunicator
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.communicator = self.communicator_class(
-            *args,
-            port_communicator=settings.ACCURATE_VAKUMETR_PORT,
-            **kwargs,
-        )
-        self.kwargs = kwargs
+    # def __init__(self, **kwargs):
+    #     super().__init__(**kwargs)
+    #     self.communicator = self.communicator_class(
+    #         # *args,
+    #         # port_communicator=settings.ACCURATE_VAKUMETR_PORT,
+    #         **kwargs,
+    #     )
+    #     self.kwargs = kwargs
 
     def get_value(self):
         # return self.exec_command("MV", "00")

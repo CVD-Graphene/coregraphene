@@ -9,13 +9,14 @@ REGISTER_STATE_FLAGS_1_MIN_MASK = 0b10011
 
 
 class RrgModbusDevice(AbstractDevice):
+    communicator_class = ModbusRtuCommunicator
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.communicator = ModbusRtuCommunicator(
-            **kwargs,
-            # port=settings.RRG_MODBUS_DEVICE_PORT,
-        )
+    # def __init__(self, **kwargs):
+    #     super().__init__(**kwargs)
+    #     self.communicator = ModbusRtuCommunicator(
+    #         **kwargs,
+    #         # port=settings.RRG_MODBUS_DEVICE_PORT,
+    #     )
 
     def _preprocessing_value(self, register=None, value=None, **kwargs):
         # if register == REGISTER_STATE_FLAGS_1:
