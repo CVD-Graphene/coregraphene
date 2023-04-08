@@ -43,6 +43,7 @@ class BaseSystem(object):
         self.ports = {}
         self._controllers_check_classes = {}
         self._ports_attr_names = {}
+        self._default_controllers_kwargs = {}
 
         self._recipe = None
         self._recipe_runner = self.recipe_class(
@@ -96,7 +97,10 @@ class BaseSystem(object):
 
             controller_check_class = self._controllers_check_classes[controller_code]
             for port in usb_ports:
-                controller: AbstractController = controller_check_class(port=port)
+                controller: AbstractController = controller_check_class(
+                    port=port,
+                    **self._default_controllers_kwargs.get(controller_code, {})
+                )
                 controller.setup()
 
                 if controller.check_command():
