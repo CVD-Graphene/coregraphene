@@ -81,6 +81,7 @@ class SerialAsciiSimpleCommunicator(AbstractCommunicator):
     communication_method_class = SerialAsciiCommunicationMethod
 
     def _preprocessing_value(self, value="") -> dict:
+        # print("VALUE", value)
         return {
             "command": value,
         }

@@ -14,6 +14,7 @@ class PyrometerTemperatureDevice(AbstractDevice):
     #     return r
 
     def _preprocessing_value(self, command=None):
+        # print("Comcom:", command)
         return command  # NO STRIP!!!!
 
     def _postprocessing_value(self, value=None):

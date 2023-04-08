@@ -21,10 +21,8 @@ class PyrometerTemperatureController(AbstractController):
         self.port = kwargs.get("port", None)
         self._get_potential_port = get_potential_port
 
-        # self.device = AccurateVakumetrDevice(port=self.port, **kwargs)
         self.temperature_value = 0.0
         self.loop_delay = 0.2
-
         self._thread_using = True
 
         self.get_temperature_action = GetCurrentTemperaturePyrometerControllerAction(controller=self)
@@ -42,7 +40,8 @@ class PyrometerTemperatureController(AbstractController):
         self.add_command(BaseCommand(
             command="\x0201RD000001\x031B\0",
             repeat=True,
-            immediate_answer=True,
+            # immediate_answer=True,
+            with_answer=True,  # NOT IMMEDIATE ANSWER because we need to send firstly
             # on_answer=self._on_get_temperature_value,
             on_answer=self.get_temperature_action,
         ))
