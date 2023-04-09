@@ -41,6 +41,12 @@ class RecipeRunner:
     def start_recipe(self):
         self._recipe_state = RECIPE_STATES.RUN
 
+    def _is_stop_recipe(self):
+        return self.get_current_recipe_state() == RECIPE_STATES.STOP
+
+    def _is_pause_recipe(self):
+        return self.get_current_recipe_state() == RECIPE_STATES.PAUSE
+
     def thread_run(self):
         while self._system.is_working():
             sleep(1)
@@ -113,6 +119,8 @@ class RecipeRunner:
                     system=self._system,
                     get_current_recipe_state=self.get_current_recipe_state,
                 )
+                action_obj.is_stop_state_function = self._is_stop_recipe
+                action_obj.is_pause_state_function = self._is_pause_recipe
 
                 args = action[1:1 + action_obj.args_amount]
                 action_obj.action(*args)

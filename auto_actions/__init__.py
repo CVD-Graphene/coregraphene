@@ -122,6 +122,8 @@ class AppAction:
     _args_amount = 0
     key = None
     name = None
+    is_stop_state_function = None
+    is_pause_state_function = None
 
     # def __init__(self, name: str = None, key: str = None, args_info: list = None):
     #     self.name = name
@@ -131,6 +133,16 @@ class AppAction:
 
     def __init__(self):
         self._args_amount = len(self.args_info)
+
+    def _is_stop_state(self):
+        if self.is_stop_state_function is not None:
+            return self.is_stop_state_function()
+        return False
+
+    def _is_pause_state(self):
+        if self.is_pause_state_function is not None:
+            return self.is_pause_state_function()
+        return False
 
     def set_functions(self,
                       system=None,
