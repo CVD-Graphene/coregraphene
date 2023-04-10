@@ -115,10 +115,7 @@ class RecipeRunner:
 
                 action_obj, index = get_action_by_name(action_table_name, self._actions_list)
                 action_obj: AppAction = action_obj
-                action_obj.set_functions(
-                    system=self._system,
-                    get_current_recipe_state=self.get_current_recipe_state,
-                )
+                action_obj.system = self._system
                 action_obj.is_stop_state_function = self._is_stop_recipe
                 action_obj.is_pause_state_function = self._is_pause_recipe
 
