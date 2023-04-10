@@ -8,6 +8,7 @@ from threading import Thread
 
 from .constants import NOTIFICATIONS
 from .event_log import EventLog
+from ..auto_actions import BaseThreadAction
 from ..conf import settings
 from ..exceptions.system import BaseConditionException
 from ..components.controllers import AbstractController
@@ -59,6 +60,10 @@ class BaseSystem(object):
         self._recipe_history = []
         self._recipe_current_step = ""
         self._recipe_state = RECIPE_STATES.STOP
+
+        self._actions_thread = None
+        self._active_actions_array = []
+        self._potential_actions_array = []
 
         # CONTROLLERS
         self._controllers: list[AbstractController] = []
@@ -179,6 +184,9 @@ class BaseSystem(object):
         self._recipe_thread = Thread(target=self._recipe_runner.thread_run)
         self._recipe_thread.start()
 
+        self._actions_thread = Thread(target=self._run_actions_loop)
+        self._actions_thread.start()
+
     def stop(self):
         """
         Function for execute before closing main ui program to destroy all threads
@@ -199,6 +207,11 @@ class BaseSystem(object):
             try:
                 self.on_stop_recipe()
                 self._recipe_thread.join()
+            except Exception as e:
+                print("Join recipe thread error:", e)
+        if self._actions_thread is not None:
+            try:
+                self._actions_thread.join()
             except Exception as e:
                 print("Join recipe thread error:", e)
 
@@ -271,6 +284,32 @@ class BaseSystem(object):
             self._get_values()
         except Exception as e:
             self._add_error_log(e)
+
+    def _run_actions_loop(self):
+        while self.is_working() or self._active_actions_array:
+            try:
+                time.sleep(1)
+                pop_indexes = []
+                for i, thread in enumerate(self._active_actions_array):
+                    if not thread.is_alive():
+                        thread.join()
+                        pop_indexes.append(i)
+                self._active_actions_array = list(
+                    filter(lambda x: x[0] not in pop_indexes, enumerate(self._active_actions_array))
+                )
+
+                if len(self._potential_actions_array) > 0 and self.is_working():
+                    action: BaseThreadAction = self._potential_actions_array[0]
+                    thread = Thread(target=action.run)
+                    thread.start()
+                    self._potential_actions_array.pop(0)
+                    self._active_actions_array.append(thread)
+
+            except Exception as e:
+                print("_run_actions_loop error:", e)
+
+    def _add_action_to_loop(self, thread_action: BaseThreadAction):
+        self._potential_actions_array.append(thread_action)
 
     @abstractmethod
     def _get_values(self):
