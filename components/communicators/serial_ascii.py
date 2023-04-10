@@ -32,7 +32,7 @@ class SerialAsciiCommunicator(AbstractCommunicator):
         address = str(self.port).zfill(self.ADDRESS_PORT_LEN)
         command = f"{address}{value}"
         command = f"{self._add_check_sum(command)}\r"
-        print("SerialAsciiCommunicator COMMAND::", command.strip())
+        # print("SerialAsciiCommunicator COMMAND::", command.strip())
         return {
             "command": command,
         }
