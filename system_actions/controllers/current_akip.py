@@ -12,8 +12,8 @@ class GetCurrentControllerAction(ControllerAction):
         self._controller.current_value = value
 
     def _call_function(self, value):
-        # if LOCAL_MODE:
-        #     value = round(random() * 1, 2)
+        if LOCAL_MODE:
+            value = round(random() * 2, 2)
         return float(value)
 
 
@@ -22,4 +22,6 @@ class GetVoltageControllerAction(ControllerAction):
         self._controller.voltage_value = value
 
     def _call_function(self, value):
+        if LOCAL_MODE:
+            value = round(random() * 3, 2)
         return float(value)

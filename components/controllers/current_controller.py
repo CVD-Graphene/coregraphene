@@ -88,14 +88,14 @@ class CurrentSourceController(AbstractController):
             command=GET_CURRENT_MEASURE,
             repeat=True,
             with_answer=True,
-            on_answer=self._on_get_current_value,
+            on_answer=self.get_current_action,
         ))
         self.add_command(BaseCommand(
             # command=GET_VOLTAGE_ACTUAL,
             command=GET_VOLTAGE_MEASURE,
             repeat=True,
             with_answer=True,
-            on_answer=self._on_get_voltage_value,
+            on_answer=self.get_voltage_action,
         ))
         self._create_base_commands()
 
