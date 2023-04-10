@@ -6,11 +6,12 @@ from ..devices import CurrentSourceDevice
 from ...conf import settings
 
 from .base import AbstractController
+from ...system_actions import GetCurrentControllerAction, GetVoltageControllerAction
 
 LOCAL_MODE = settings.LOCAL_MODE
 
 MAX_CURRENT = 132.0
-MAX_SET_CURRENT = 1.0  # MAX_CURRENT
+MAX_SET_CURRENT = 4.0  # MAX_CURRENT
 CLEAR_COMMAND = "*CLS"
 REMOTE_COMMAND = f"SYST:REM"
 OUTPUT_1_COMMAND = f"OUTP 1"
@@ -39,20 +40,25 @@ class CurrentSourceController(AbstractController):
     device_class = CurrentSourceDevice
 
     def __init__(self,
-                 on_change_voltage=None,
-                 on_change_current=None,
-                 on_set_current=None,
+                 # on_change_voltage=None,
+                 # on_change_current=None,
                  **kwargs,
                  ):
         super().__init__(**kwargs)
         self._thread_using = True
-        self.on_change_voltage = on_change_voltage
-        self.on_change_current = on_change_current
-        self.on_set_current = on_set_current
+        # self.on_change_voltage = on_change_voltage
+        # self.on_change_current = on_change_current
+
         self.voltage_value = 0.0
         self.current_value = 0.0
 
-        self.loop_delay = 0.1
+        # self.target_voltage_value = 0.0
+        self.target_current_value = 0.0
+
+        self.loop_delay = 0.05
+
+        self.get_current_action = GetCurrentControllerAction(controller=self)
+        self.get_voltage_action = GetVoltageControllerAction(controller=self)
 
     def setup(self):
         super().setup()
@@ -106,7 +112,6 @@ class CurrentSourceController(AbstractController):
             command=SET_CURRENT_ACTUAL,
             value=value,
             with_answer=False,
-            # on_answer=self.on_set_current
         )
 
     def _on_thread_error(self, exception: Exception):
@@ -171,8 +176,6 @@ class CurrentSourceController(AbstractController):
             value = random.random() * 100
         value = float(value)
         self.current_value = value
-        if self.on_change_current is not None:
-            self.on_change_current(value)
 
     @AbstractController.thread_command
     def _on_get_voltage_value(self, value):
@@ -180,19 +183,18 @@ class CurrentSourceController(AbstractController):
             value = random.random() * 100
         value = float(value)
         self.voltage_value = value
-        if self.on_change_voltage is not None:
-            self.on_change_voltage(value)
+        # if self.on_change_voltage is not None:
+        #     self.on_change_voltage(value)
         # return self.exec_command(command=GET_CURRENT_ACTUAL)
 
     @AbstractController.thread_command
-    def set_current_value(self, value):
+    def set_target_current(self, value):
         value = float(value)
         value = min(value, MAX_SET_CURRENT)
         command = self._create_set_current_command_obj(value)
-        print("Set value function:", value)
+        self.target_current_value = value
+        print("Set value current:", self.target_current_value)
         self.add_command(command)
         # ans = self.exec_command(command=SET_CURRENT_ACTUAL, value=value)
         # raise Exception("Ошибка установки значения тока: ...")
-        if self.on_set_current is not None:
-            self.on_set_current(value)
         return value
