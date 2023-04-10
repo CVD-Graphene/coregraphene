@@ -190,8 +190,6 @@ class SeveralTermodatModbusController(AbstractControllerManyDevices):
             value = random.random() * 100
         value = round(float(value), 1)
         self.current_temperatures[self._last_thread_command.device_num] = value
-        # if self.on_change_current is not None:
-        #     self.on_change_current(value)
 
     @AbstractController.thread_command
     def _on_get_target_temperature(self, value):
@@ -279,8 +277,6 @@ class TermodatModbusController(AbstractController):
             value = random.random() * 100
         value = float(value)
         self.current_temperature = value
-        # if self.on_change_current is not None:
-        #     self.on_change_current(value)
 
     @AbstractController.thread_command
     def _on_get_target_temperature(self, value):
