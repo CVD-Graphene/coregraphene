@@ -63,6 +63,7 @@ class BaseSystem(object):
 
         self._actions_thread = None
         self._active_actions_array = []
+        self._history_actions_array = []
         self._potential_actions_array = []
 
         # CONTROLLERS
@@ -292,10 +293,12 @@ class BaseSystem(object):
                 pop_indexes = []
                 for i, thread in enumerate(self._active_actions_array):
                     # print("AUAU", i, thread)
-                    if not thread.is_alive() or True:  # Fix for working on raspberry PI
+                    if not thread.is_alive():  # Fix for working on raspberry PI
                         thread.join()
                         pop_indexes.append(i)
                         print("ACTION THREAD JOINED!")
+                        self._history_actions_array.append(thread)
+
                 self._active_actions_array = list(
                     map(
                         lambda x: x[1],
