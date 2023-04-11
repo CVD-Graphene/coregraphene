@@ -294,7 +294,7 @@ class BaseSystem(object):
                 for i, action in enumerate(self._active_actions_array):
                     # print("AUAU", i, thread)
                     if not action.is_alive():  # Fix for working on raspberry PI
-                        action.join()
+                        # action.join()
                         pop_indexes.append(i)
                         print("ACTION THREAD JOINED!")
                         self._history_actions_array.append(action)
