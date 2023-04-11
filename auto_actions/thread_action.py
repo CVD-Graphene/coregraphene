@@ -1,8 +1,9 @@
+from threading import Thread
+
 from .actions_base import AppAction
 
 
 class BaseThreadAction(object):
-    action: AppAction = None
     _action_args = None
 
     def __init__(
@@ -11,7 +12,8 @@ class BaseThreadAction(object):
             action=None,
     ):
         self.system = system
-        self.action = action or self.action
+        self.action = action
+        self._thread = None
         if self.action:
             self.action = action()
             self.action.system = self.system
@@ -19,8 +21,17 @@ class BaseThreadAction(object):
     def set_action_args(self, *args):
         self._action_args = args
 
-    def run(self):
+    def is_alive(self):
+        return bool(self._thread and self._thread.is_alive())
+
+    def join(self):
+        if self._thread:
+            self._thread.join()
+
+    def start(self):
         try:
-            self.action.action(*self._action_args)
+            self._thread = Thread(target=self.action.action, args=self._action_args or [])
+            self._thread.start()
+            # self.action.action(*self._action_args)
         except Exception as e:
-            print("BaseThreadAction run error", e)
+            print("BaseThreadAction start error", e)

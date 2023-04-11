@@ -291,13 +291,13 @@ class BaseSystem(object):
             try:
                 time.sleep(1)
                 pop_indexes = []
-                for i, thread in enumerate(self._active_actions_array):
+                for i, action in enumerate(self._active_actions_array):
                     # print("AUAU", i, thread)
-                    if True or not thread.is_alive():  # Fix for working on raspberry PI
-                        thread.join()
+                    if not action.is_alive():  # Fix for working on raspberry PI
+                        action.join()
                         pop_indexes.append(i)
                         print("ACTION THREAD JOINED!")
-                        self._history_actions_array.append(thread)
+                        self._history_actions_array.append(action)
 
                 self._active_actions_array = list(
                     map(
@@ -310,10 +310,11 @@ class BaseSystem(object):
                 if len(self._potential_actions_array) > 0 and self.is_working():
                     # print("IN POTENTIAL ARR:", len(self._potential_actions_array))
                     action: BaseThreadAction = self._potential_actions_array[0]
-                    thread = Thread(target=action.run)
-                    thread.start()
+                    action.start()
+                    # thread = Thread(target=action.run)
+                    # thread.start()
                     self._potential_actions_array.pop(0)
-                    self._active_actions_array.append(thread)
+                    self._active_actions_array.append(action)
 
             except Exception as e:
                 print("_run_actions_loop error:", e)
