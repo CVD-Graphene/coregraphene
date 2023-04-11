@@ -292,20 +292,20 @@ class BaseSystem(object):
                 pop_indexes = []
                 for i, thread in enumerate(self._active_actions_array):
                     # print("AUAU", i, thread)
-                    if not thread.is_alive():
+                    if not thread.is_alive() or True:  # Fix for working on raspberry PI
                         thread.join()
                         pop_indexes.append(i)
-                        print("THREAD JOINED!")
+                        print("ACTION THREAD JOINED!")
                 self._active_actions_array = list(
                     map(
                         lambda x: x[1],
                         filter(lambda x: x[0] not in pop_indexes, enumerate(self._active_actions_array))
                         )
                 )
-                print("ACT ARR LEN:", len(self._active_actions_array))
+                # print("ACT ARR LEN:", len(self._active_actions_array))
 
                 if len(self._potential_actions_array) > 0 and self.is_working():
-                    print("IN POTENTIAL ARR:", len(self._potential_actions_array))
+                    # print("IN POTENTIAL ARR:", len(self._potential_actions_array))
                     action: BaseThreadAction = self._potential_actions_array[0]
                     thread = Thread(target=action.run)
                     thread.start()
