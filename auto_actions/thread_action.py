@@ -23,4 +23,4 @@ class BaseThreadAction(object):
         try:
             self.action.action(*self._action_args)
         except Exception as e:
-            print("BaseThreadAction run error")
+            print("BaseThreadAction run error", e)

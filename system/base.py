@@ -291,12 +291,18 @@ class BaseSystem(object):
                 time.sleep(1)
                 pop_indexes = []
                 for i, thread in enumerate(self._active_actions_array):
+                    # print("AUAU", i, thread)
                     if not thread.is_alive():
                         thread.join()
                         pop_indexes.append(i)
+                        print("THREAD JOINED!")
                 self._active_actions_array = list(
-                    filter(lambda x: x[0] not in pop_indexes, enumerate(self._active_actions_array))
+                    map(
+                        lambda x: x[1],
+                        filter(lambda x: x[0] not in pop_indexes, enumerate(self._active_actions_array))
+                        )
                 )
+                print("ACT ARR LEN:", len(self._active_actions_array))
 
                 if len(self._potential_actions_array) > 0 and self.is_working():
                     action: BaseThreadAction = self._potential_actions_array[0]
