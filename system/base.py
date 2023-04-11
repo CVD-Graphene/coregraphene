@@ -317,7 +317,7 @@ class BaseSystem(object):
                     self._potential_actions_array.pop(0)
                     self._active_actions_array.append(action)
 
-                time.sleep(1)
+                # time.sleep(1)
 
             except Exception as e:
                 print("_run_actions_loop error:", e)
