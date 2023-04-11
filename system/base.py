@@ -291,21 +291,21 @@ class BaseSystem(object):
         while self.is_working() or self._active_actions_array:
             try:
                 # asyncio.sleep(1)
-                pop_indexes = []
-                for i, action in enumerate(self._active_actions_array):
-                    # print("AUAU", i, thread)
-                    if not action.is_alive():  # Fix for working on raspberry PI
-                        # action.join()
-                        pop_indexes.append(i)
-                        print("ACTION THREAD JOINED!")
-                        self._history_actions_array.append(action)
+                # pop_indexes = []
+                # for i, action in enumerate(self._active_actions_array):
+                #     # print("AUAU", i, thread)
+                #     if not action.is_alive():  # Fix for working on raspberry PI
+                #         # action.join()
+                #         pop_indexes.append(i)
+                #         print("ACTION THREAD JOINED!")
+                        # self._history_actions_array.append(action)
 
-                self._active_actions_array = list(
-                    map(
-                        lambda x: x[1],
-                        filter(lambda x: x[0] not in pop_indexes, enumerate(self._active_actions_array))
-                        )
-                )
+                # self._active_actions_array = list(
+                #     map(
+                #         lambda x: x[1],
+                #         filter(lambda x: x[0] not in pop_indexes, enumerate(self._active_actions_array))
+                #         )
+                # )
                 # print("ACT ARR LEN:", len(self._active_actions_array))
 
                 if len(self._potential_actions_array) > 0 and self.is_working():
@@ -317,7 +317,7 @@ class BaseSystem(object):
                     self._potential_actions_array.pop(0)
                     self._active_actions_array.append(action)
 
-                # time.sleep(1)
+                time.sleep(1)
 
             except Exception as e:
                 print("_run_actions_loop error:", e)
