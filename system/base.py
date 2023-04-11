@@ -192,11 +192,11 @@ class BaseSystem(object):
         self._recipe_thread = Thread(target=self._recipe_runner.thread_run)
         self._recipe_thread.start()
 
-        for action in self._background_actions_array:
-            action.run()
+        # for action in self._background_actions_array:
+        #     action.run()
 
-        # self._actions_thread = Thread(target=self._run_actions_loop)
-        # self._actions_thread.start()
+        self._actions_thread = Thread(target=self._run_actions_loop)
+        self._actions_thread.start()
 
     def stop(self):
         """
@@ -303,7 +303,7 @@ class BaseSystem(object):
     def _run_actions_loop(self):
         while self.is_working() or self._active_actions_array:
             try:
-                # asyncio.sleep(1)
+
                 # pop_indexes = []
                 # for i, action in enumerate(self._active_actions_array):
                 #     # print("AUAU", i, thread)
@@ -311,8 +311,8 @@ class BaseSystem(object):
                 #         # action.join()
                 #         pop_indexes.append(i)
                 #         print("ACTION THREAD JOINED!")
-                        # self._history_actions_array.append(action)
-
+                #         self._history_actions_array.append(action)
+                #
                 # self._active_actions_array = list(
                 #     map(
                 #         lambda x: x[1],
@@ -321,14 +321,18 @@ class BaseSystem(object):
                 # )
                 # print("ACT ARR LEN:", len(self._active_actions_array))
 
-                if len(self._potential_actions_array) > 0 and self.is_working():
-                    # print("IN POTENTIAL ARR:", len(self._potential_actions_array))
-                    action: BaseThreadAction = self._potential_actions_array[0]
-                    action.start()
-                    # thread = Thread(target=action.run)
-                    # thread.start()
-                    self._potential_actions_array.pop(0)
-                    self._active_actions_array.append(action)
+                for action in self._potential_actions_array:
+                    if not action.is_active():
+                        action.start()
+
+                # if len(self._potential_actions_array) > 0 and self.is_working():
+                #     # print("IN POTENTIAL ARR:", len(self._potential_actions_array))
+                #     action: BaseThreadAction = self._potential_actions_array[0]
+                #     action.start()
+                #     # thread = Thread(target=action.run)
+                #     # thread.start()
+                #     self._potential_actions_array.pop(0)
+                #     self._active_actions_array.append(action)
 
                 time.sleep(1)
 
@@ -336,7 +340,7 @@ class BaseSystem(object):
                 print("_run_actions_loop error:", e)
 
     def _add_action_to_loop(self, thread_action: BaseThreadAction):
-        thread_action.start()
+        # thread_action.start()
         self._potential_actions_array.append(thread_action)
 
     @abstractmethod

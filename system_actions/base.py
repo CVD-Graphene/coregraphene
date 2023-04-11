@@ -1,5 +1,6 @@
 import uuid
 from abc import abstractmethod
+from threading import Lock
 
 
 class ConnectFunction:
@@ -17,6 +18,9 @@ class BaseSignalAction(object):
     def __init__(self, *args, **kwargs):
         self._callback_array = []
         self._last_values = None
+
+        self._lock = Lock()
+        # self._
 
     def _pre_call(self, *args, **kwargs):
         pass

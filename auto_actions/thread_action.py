@@ -30,14 +30,20 @@ class BaseThreadAction(object):
         if self._thread:
             self._thread.join()
 
+    def start(self):
+        try:
+            self.activate()
+            self._thread = Thread(target=self.action.action, args=self._action_args or [])
+            self._thread.start()
+            # self.action.action(*self._action_args)
+        except Exception as e:
+            print("BaseThreadAction start error", e)
+
     def activate(self):
         self._active = True
-        # try:
-        #     self._thread = Thread(target=self.action.action, args=self._action_args or [])
-        #     self._thread.start()
-        #     # self.action.action(*self._action_args)
-        # except Exception as e:
-        #     print("BaseThreadAction start error", e)
+
+    def is_active(self):
+        return self._active
 
     def run(self):
         self._thread = Thread(target=self._run)
