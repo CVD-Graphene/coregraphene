@@ -186,8 +186,8 @@ class BaseSystem(object):
         self._recipe_thread = Thread(target=self._recipe_runner.thread_run)
         self._recipe_thread.start()
 
-        self._actions_thread = Thread(target=self._run_actions_loop)
-        self._actions_thread.start()
+        # self._actions_thread = Thread(target=self._run_actions_loop)
+        # self._actions_thread.start()
 
     def stop(self):
         """
@@ -216,6 +216,8 @@ class BaseSystem(object):
                 self._actions_thread.join()
             except Exception as e:
                 print("Join recipe thread error:", e)
+        for action in self._potential_actions_array:
+            action.join()
 
     @abstractmethod
     def check_conditions(self):
@@ -323,6 +325,7 @@ class BaseSystem(object):
                 print("_run_actions_loop error:", e)
 
     def _add_action_to_loop(self, thread_action: BaseThreadAction):
+        thread_action.start()
         self._potential_actions_array.append(thread_action)
 
     @abstractmethod
