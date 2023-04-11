@@ -293,7 +293,7 @@ class BaseSystem(object):
                 pop_indexes = []
                 for i, thread in enumerate(self._active_actions_array):
                     # print("AUAU", i, thread)
-                    if not thread.is_alive():  # Fix for working on raspberry PI
+                    if True or not thread.is_alive():  # Fix for working on raspberry PI
                         thread.join()
                         pop_indexes.append(i)
                         print("ACTION THREAD JOINED!")
