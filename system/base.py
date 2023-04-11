@@ -1,3 +1,4 @@
+import asyncio
 import os
 import time
 from abc import abstractmethod
@@ -289,7 +290,7 @@ class BaseSystem(object):
     def _run_actions_loop(self):
         while self.is_working() or self._active_actions_array:
             try:
-                time.sleep(1)
+                # asyncio.sleep(1)
                 pop_indexes = []
                 for i, action in enumerate(self._active_actions_array):
                     # print("AUAU", i, thread)
@@ -315,6 +316,8 @@ class BaseSystem(object):
                     # thread.start()
                     self._potential_actions_array.pop(0)
                     self._active_actions_array.append(action)
+
+                time.sleep(1)
 
             except Exception as e:
                 print("_run_actions_loop error:", e)
