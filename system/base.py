@@ -305,6 +305,7 @@ class BaseSystem(object):
                 print("ACT ARR LEN:", len(self._active_actions_array))
 
                 if len(self._potential_actions_array) > 0 and self.is_working():
+                    print("IN POTENTIAL ARR:", len(self._potential_actions_array))
                     action: BaseThreadAction = self._potential_actions_array[0]
                     thread = Thread(target=action.run)
                     thread.start()
