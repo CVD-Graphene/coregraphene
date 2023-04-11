@@ -66,6 +66,7 @@ class BaseSystem(object):
         self._active_actions_array = []
         self._history_actions_array = []
         self._potential_actions_array = []
+        self._background_actions_array = []
 
         # CONTROLLERS
         self._controllers: list[AbstractController] = []
@@ -78,6 +79,8 @@ class BaseSystem(object):
         self._init_values()
 
         self._init_actions()
+
+        self._init_background_actions()
 
         # self._add_error_log("Тупая тупая ошибка где много букв self.accurate_vakumetr_value = "
         #                     "self.accurate_vakume self.accurate_vakumetr_value = "
@@ -139,6 +142,9 @@ class BaseSystem(object):
         """
         pass
 
+    def _init_background_actions(self):
+        pass
+
     def _init_actions(self):
         """
         Init auto_actions
@@ -186,6 +192,9 @@ class BaseSystem(object):
         self._recipe_thread = Thread(target=self._recipe_runner.thread_run)
         self._recipe_thread.start()
 
+        for action in self._background_actions_array:
+            action.run()
+
         # self._actions_thread = Thread(target=self._run_actions_loop)
         # self._actions_thread.start()
 
@@ -217,6 +226,8 @@ class BaseSystem(object):
             except Exception as e:
                 print("Join recipe thread error:", e)
         for action in self._potential_actions_array:
+            action.join()
+        for action in self._background_actions_array:
             action.join()
 
     @abstractmethod

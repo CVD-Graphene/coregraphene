@@ -1,3 +1,4 @@
+import time
 from threading import Thread
 
 from .actions_base import AppAction
@@ -5,6 +6,7 @@ from .actions_base import AppAction
 
 class BaseThreadAction(object):
     _action_args = None
+    _active = False
 
     def __init__(
             self,
@@ -28,10 +30,26 @@ class BaseThreadAction(object):
         if self._thread:
             self._thread.join()
 
-    def start(self):
-        try:
-            self._thread = Thread(target=self.action.action, args=self._action_args or [])
-            self._thread.start()
-            # self.action.action(*self._action_args)
-        except Exception as e:
-            print("BaseThreadAction start error", e)
+    def activate(self):
+        self._active = True
+        # try:
+        #     self._thread = Thread(target=self.action.action, args=self._action_args or [])
+        #     self._thread.start()
+        #     # self.action.action(*self._action_args)
+        # except Exception as e:
+        #     print("BaseThreadAction start error", e)
+
+    def run(self):
+        self._thread = Thread(target=self._run)
+        self._thread.start()
+
+    def _run(self):
+        while self.system.is_working():
+            time.sleep(1)
+            if not self._active:
+                continue
+            try:
+                self.action.action(*self._action_args)
+            except Exception as e:
+                print("ERROR _run base_thread_action:", e)
+            self._active = False
