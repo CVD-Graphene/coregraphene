@@ -265,8 +265,8 @@ class BaseSystem(object):
 
         self._system_actions_callbacks_thread.join()
 
-        for action in self._potential_actions_array:
-            action.join()
+        # for action in self._potential_actions_array:
+        #     action.join()
 
         for action in self._background_actions_array:
             action.join()
@@ -344,28 +344,29 @@ class BaseSystem(object):
     def _run_actions_loop(self):
         while self.is_working() or self._active_actions_array:
             try:
-                time.sleep(1)  # OUTSIDE LOCK
-
-                # pop_indexes = []
-                # for i, action in enumerate(self._active_actions_array):
-                #     # print("AUAU", i, thread)
-                #     if not action.is_alive():  # Fix for working on raspberry PI
-                #         # action.join()
-                #         pop_indexes.append(i)
-                #         print("ACTION THREAD JOINED!")
-                #         self._history_actions_array.append(action)
-                #
-                # self._active_actions_array = list(
-                #     map(
-                #         lambda x: x[1],
-                #         filter(lambda x: x[0] not in pop_indexes, enumerate(self._active_actions_array))
-                #         )
-                # )
-                # print("ACT ARR LEN:", len(self._active_actions_array))
+                time.sleep(0.4)  # OUTSIDE LOCK
                 self._actions_array_lock.acquire()
+                pop_indexes = []
+                for i, action in enumerate(self._active_actions_array):
+                    # print("AUAU", i, thread)
+                    if not action.is_alive():
+                        action.join()
+                        pop_indexes.append(i)
+                        print("ACTION THREAD JOINED!")
+                        # self._history_actions_array.append(action)
+
+                self._active_actions_array = list(
+                    map(
+                        lambda x: x[1],
+                        filter(lambda x: x[0] not in pop_indexes, enumerate(self._active_actions_array))
+                        )
+                )
+                # print("ACT ARR LEN:", len(self._active_actions_array))
+
                 for action in self._potential_actions_array:
-                    if not action.is_active():
-                        action.start()
+                    action.start()
+                    self._active_actions_array.append(action)
+                self._potential_actions_array.clear()
 
                 # if len(self._potential_actions_array) > 0 and self.is_working():
                 #     # print("IN POTENTIAL ARR:", len(self._potential_actions_array))

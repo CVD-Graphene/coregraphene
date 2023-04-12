@@ -14,7 +14,7 @@ class ConnectFunction:
 
 
 class BaseSignalAction(object):
-    _immediate_callback = False
+    _immediate_callback = True
 
     def __init__(self, *args, **kwargs):
         self._callback_functions_array = []
