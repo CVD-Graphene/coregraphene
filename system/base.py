@@ -1,4 +1,3 @@
-import asyncio
 import os
 import time
 from abc import abstractmethod
@@ -65,7 +64,6 @@ class BaseSystem(object):
 
         self._actions_thread = None
         self._active_actions_array = []
-        self._potential_actions_array = []
 
         self._system_actions_array = []
         self._system_actions_callbacks_thread = None
@@ -83,11 +81,6 @@ class BaseSystem(object):
         self._init_actions()
 
         self._collect_actions()
-
-        # self._add_error_log("Тупая тупая ошибка где много букв self.accurate_vakumetr_value = "
-        #                     "self.accurate_vakume self.accurate_vakumetr_value = "
-        #                     "self.accurate_vakumetr_controller.get_value()")
-        # self._add_log("Тупая тупая заметка!!!!!", log_type=NOTIFICATIONS.LOG)
 
     def _determine_attributes(self):
         """
@@ -255,9 +248,6 @@ class BaseSystem(object):
         if self._active_actions_array is not None:
             self._system_actions_callbacks_thread.join()
 
-        # for action in self._potential_actions_array:
-        #     action.join()
-
     @abstractmethod
     def check_conditions(self):
         """
@@ -331,11 +321,11 @@ class BaseSystem(object):
     def _run_actions_loop(self):
         while self.is_working() or self._active_actions_array:
             try:
-                time.sleep(0.5)  # OUTSIDE LOCK
+                time.sleep(0.5)  # OUTSIDE LOCK!
+
                 self._actions_array_lock.acquire()
                 pop_indexes = []
                 for i, action in enumerate(self._active_actions_array):
-                    # print("AUAU", i, thread)
                     if not action.is_alive():
                         action.join()
                         pop_indexes.append(i)
@@ -347,23 +337,6 @@ class BaseSystem(object):
                         filter(lambda x: x[0] not in pop_indexes, enumerate(self._active_actions_array))
                         )
                 )
-                # print("ACT ARR LEN:", len(self._active_actions_array))
-
-                # for action in self._potential_actions_array:
-                #     action.start()
-                #     self._active_actions_array.append(action)
-                # self._potential_actions_array.clear()
-
-                # if len(self._potential_actions_array) > 0 and self.is_working():
-                #     # print("IN POTENTIAL ARR:", len(self._potential_actions_array))
-                #     action: BaseThreadAction = self._potential_actions_array[0]
-                #     action.start()
-                #     # thread = Thread(target=action.run)
-                #     # thread.start()
-                #     self._potential_actions_array.pop(0)
-                #     self._active_actions_array.append(action)
-
-                # time.sleep(1)
 
             except Exception as e:
                 print("_run_actions_loop error:", e)
