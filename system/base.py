@@ -14,7 +14,7 @@ from ..conf import settings
 from ..exceptions.system import BaseConditionException
 from ..components.controllers import AbstractController
 from ..recipe import RECIPE_STATES, RecipeRunner
-from ..system_actions import SetCurrentRecipeStepAction
+from ..system_actions import SetCurrentRecipeStepAction, BaseSignalAction
 from ..utils import get_available_usb_ports
 
 TABLE_COLUMN_NAMES = settings.TABLE_COLUMN_NAMES
@@ -68,6 +68,9 @@ class BaseSystem(object):
         self._potential_actions_array = []
         self._background_actions_array = []
 
+        self._system_actions_array = []
+        self._system_actions_callbacks_thread = None
+
         # CONTROLLERS
         self._controllers: list[AbstractController] = []
 
@@ -81,6 +84,8 @@ class BaseSystem(object):
         self._init_actions()
 
         self._init_background_actions()
+
+        self._collect_actions()
 
         # self._add_error_log("Тупая тупая ошибка где много букв self.accurate_vakumetr_value = "
         #                     "self.accurate_vakume self.accurate_vakumetr_value = "
@@ -152,6 +157,32 @@ class BaseSystem(object):
         """
         self.set_current_recipe_step_action = SetCurrentRecipeStepAction(system=self)
 
+    def _collect_actions(self):
+        # method_list = []
+
+        # attribute is a string representing the attribute name
+        for attribute in dir(self):
+            # Get the attribute value
+            attribute_value = getattr(self, attribute)
+            # Check that it is callable
+            if callable(attribute_value) and isinstance(
+                attribute_value, BaseSignalAction
+            ):
+                # Filter all dunder (__ prefix) methods
+                if not attribute.startswith('__'):
+                    self._system_actions_array.append(attribute_value)
+
+        # print("_system_actions_array:", self._system_actions_array)
+
+    def _system_actions_callbacks_loop(self):
+        while self.is_working():
+            time.sleep(0.3)
+            for system_action in self._system_actions_array:
+                try:
+                    system_action.send_delayed_callbacks()
+                except Exception as e:
+                    print("_system_actions_callbacks_loop error:", e)
+
     @abstractmethod
     def _init_values(self):
         pass
@@ -198,6 +229,11 @@ class BaseSystem(object):
         self._actions_thread = Thread(target=self._run_actions_loop)
         self._actions_thread.start()
 
+        self._system_actions_callbacks_thread = Thread(
+            target=self._system_actions_callbacks_loop
+        )
+        self._system_actions_callbacks_thread.start()
+
     def stop(self):
         """
         Function for execute before closing main ui program to destroy all threads
@@ -225,8 +261,12 @@ class BaseSystem(object):
                 self._actions_thread.join()
             except Exception as e:
                 print("Join recipe thread error:", e)
+
+        self._system_actions_callbacks_thread.join()
+
         for action in self._potential_actions_array:
             action.join()
+
         for action in self._background_actions_array:
             action.join()
 

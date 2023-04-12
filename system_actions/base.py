@@ -14,13 +14,14 @@ class ConnectFunction:
 
 
 class BaseSignalAction(object):
+    _immediate_callback = False
 
     def __init__(self, *args, **kwargs):
-        self._callback_array = []
+        self._callback_functions_array = []
         self._last_values = None
 
         self._lock = Lock()
-        # self._
+        self._callbacks_queue = []
 
     def _pre_call(self, *args, **kwargs):
         pass
@@ -39,7 +40,7 @@ class BaseSignalAction(object):
     def _additional_kwargs_to_func(self):
         return {}
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self, *args, immediate_callback=None, **kwargs):
         try:
             self._pre_call(*args, **kwargs)
 
@@ -50,14 +51,57 @@ class BaseSignalAction(object):
 
             changed_answer = self._check_answer_changed(value)
 
+            _immediate_callback = self._immediate_callback if immediate_callback is None else immediate_callback
+            # print(f"LEN [{self.__class__.__name__}]", len(self._callbacks_queue))
+
             if changed_answer:
-                filtered_array = self._filter_callback_array(*args, **kwargs)
-                for connect_func in filtered_array:
-                    connect_func.func(*value, **self._additional_kwargs_to_func)
+                # print("CALLB2", _immediate_callback)
+                if _immediate_callback:
+                    self._send_callback_value(value, args, kwargs)
+                    # filtered_array = self._filter_callback_array(*args, **kwargs)
+                    # for connect_func in filtered_array:
+                    #     connect_func.func(*value, **self._additional_kwargs_to_func)
+                else:
+                    try:
+                        self._lock.acquire()
+                        self._callbacks_queue.append({
+                            'args': args,
+                            'kwargs': kwargs,
+                            'value': value,
+                        })
+                        # print(f"LEN [{self.__class__.__name__}]", len(self._callbacks_queue))
+                    except Exception as e:
+                        print("Err callb2:::", e)
+                    finally:
+                        # print("RELEASE!")
+                        self._lock.release()
 
             return value
         except Exception as e:
             return self._handle_exception(e)
+
+    def _send_callback_value(self, value, filter_args, filter_kwargs):
+        filtered_array = self._filter_callback_array(*filter_args, **filter_kwargs)
+        for connect_func in filtered_array:
+            connect_func.func(*value, **self._additional_kwargs_to_func)
+
+    def send_delayed_callbacks(self):
+        try:
+            self._lock.acquire()
+            # print(f"LOCK GET! [{self.__class__.__name__}]", len(self._callbacks_queue))
+            for callback in self._callbacks_queue:
+                # print("IN...")
+                filter_args = callback.get('args', [])
+                filter_kwargs = callback.get('kwargs', {})
+                value = callback.get('value', [])
+                # print(f"CALLBACK [{self.__class__.__name__}]", callback)
+                self._send_callback_value(value, filter_args, filter_kwargs)
+
+            self._callbacks_queue.clear()
+        except Exception as e:
+            print("send_delayed_callbacks error", e)
+        finally:
+            self._lock.release()
 
     @abstractmethod
     def _handle_exception(self, e: Exception):
@@ -75,7 +119,7 @@ class BaseSignalAction(object):
         # return False
 
     def _filter_callback_array(self, *args, **kwargs):
-        return self._callback_array
+        return self._callback_functions_array
 
     @abstractmethod
     def _call_function(self, *args, **kwargs):
@@ -83,12 +127,12 @@ class BaseSignalAction(object):
 
     def connect(self, func, **kwargs):
         connect_func = ConnectFunction(func, **kwargs)
-        self._callback_array.append(connect_func)
+        self._callback_functions_array.append(connect_func)
         return connect_func.uid
 
     def unsubscribe(self, uid):
-        self._callback_array = list(
-            filter(lambda x: x.uid != uid, self._callback_array))
+        self._callback_functions_array = list(
+            filter(lambda x: x.uid != uid, self._callback_functions_array))
 
 
 class SystemAction(BaseSignalAction):
@@ -113,8 +157,8 @@ class SystemAction(BaseSignalAction):
 #             # print('Dev num::', _device_num, device_num)
 #             return _device_num == device_num or _device_num is None
 #
-#         arr = list(filter(check_device, self._callback_array))
-#         # print("CHECK ARGS:", device_num, kwargs, args, self._callback_array)
+#         arr = list(filter(check_device, self._callback_functions_array))
+#         # print("CHECK ARGS:", device_num, kwargs, args, self._callback_functions_array)
 #         # print("SORTED ARR ACTION", arr)
 #         return arr
 
@@ -127,13 +171,15 @@ class ManyDeviceSystemAction(SystemAction):
             # print('Dev num::', _device_num, device_num)
             return _device_num == device_num or _device_num is None
 
-        arr = list(filter(check_device, self._callback_array))
-        # print("CHECK ARGS:", device_num, kwargs, args, self._callback_array)
+        arr = list(filter(check_device, self._callback_functions_array))
+        # print("CHECK ARGS:", device_num, kwargs, args, self._callback_functions_array)
         # print("SORTED ARR ACTION", arr)
         return arr
 
 
 class ControllerAction(BaseSignalAction):
+    _immediate_callback = True
+
     def __init__(self, controller, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._controller = controller
@@ -167,7 +213,7 @@ class ManyDeviceControllerAction(ControllerAction):
             # print('Dev num::', _device_num, device_num)
             return _device_num == device_num or _device_num is None
 
-        arr = list(filter(check_device, self._callback_array))
-        # print("CHECK ARGS:", device_num, kwargs, args, self._callback_array)
+        arr = list(filter(check_device, self._callback_functions_array))
+        # print("CHECK ARGS:", device_num, kwargs, args, self._callback_functions_array)
         # print("SORTED ARR ACTION", arr)
         return arr
