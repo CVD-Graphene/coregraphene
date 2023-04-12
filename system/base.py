@@ -65,9 +65,7 @@ class BaseSystem(object):
 
         self._actions_thread = None
         self._active_actions_array = []
-        self._history_actions_array = []
         self._potential_actions_array = []
-        self._background_actions_array = []
 
         self._system_actions_array = []
         self._system_actions_callbacks_thread = None
@@ -83,8 +81,6 @@ class BaseSystem(object):
         self._init_values()
 
         self._init_actions()
-
-        self._init_background_actions()
 
         self._collect_actions()
 
@@ -146,9 +142,6 @@ class BaseSystem(object):
         Init controllers and save (!!!) them to `_controllers` list
         :return:
         """
-        pass
-
-    def _init_background_actions(self):
         pass
 
     def _init_actions(self):
@@ -224,16 +217,13 @@ class BaseSystem(object):
         self._recipe_thread = Thread(target=self._recipe_runner.thread_run)
         self._recipe_thread.start()
 
-        # for action in self._background_actions_array:
-        #     action.run()
-
         self._actions_thread = Thread(target=self._run_actions_loop)
         self._actions_thread.start()
 
-        self._system_actions_callbacks_thread = Thread(
-            target=self._system_actions_callbacks_loop
-        )
-        self._system_actions_callbacks_thread.start()
+        # self._system_actions_callbacks_thread = Thread(
+        #     target=self._system_actions_callbacks_loop
+        # )
+        # self._system_actions_callbacks_thread.start()
 
     def stop(self):
         """
@@ -262,14 +252,11 @@ class BaseSystem(object):
                 self._actions_thread.join()
             except Exception as e:
                 print("Join recipe thread error:", e)
-
-        self._system_actions_callbacks_thread.join()
+        if self._active_actions_array is not None:
+            self._system_actions_callbacks_thread.join()
 
         # for action in self._potential_actions_array:
         #     action.join()
-
-        for action in self._background_actions_array:
-            action.join()
 
     @abstractmethod
     def check_conditions(self):
@@ -344,7 +331,7 @@ class BaseSystem(object):
     def _run_actions_loop(self):
         while self.is_working() or self._active_actions_array:
             try:
-                time.sleep(0.4)  # OUTSIDE LOCK
+                time.sleep(0.5)  # OUTSIDE LOCK
                 self._actions_array_lock.acquire()
                 pop_indexes = []
                 for i, action in enumerate(self._active_actions_array):
@@ -353,7 +340,6 @@ class BaseSystem(object):
                         action.join()
                         pop_indexes.append(i)
                         print("ACTION THREAD JOINED!")
-                        # self._history_actions_array.append(action)
 
                 self._active_actions_array = list(
                     map(
@@ -363,10 +349,10 @@ class BaseSystem(object):
                 )
                 # print("ACT ARR LEN:", len(self._active_actions_array))
 
-                for action in self._potential_actions_array:
-                    action.start()
-                    self._active_actions_array.append(action)
-                self._potential_actions_array.clear()
+                # for action in self._potential_actions_array:
+                #     action.start()
+                #     self._active_actions_array.append(action)
+                # self._potential_actions_array.clear()
 
                 # if len(self._potential_actions_array) > 0 and self.is_working():
                 #     # print("IN POTENTIAL ARR:", len(self._potential_actions_array))
@@ -385,9 +371,9 @@ class BaseSystem(object):
                 self._actions_array_lock.release()
 
     def _add_action_to_loop(self, thread_action: BaseThreadAction):
-        # thread_action.start()
         self._actions_array_lock.acquire()
-        self._potential_actions_array.append(thread_action)
+        thread_action.start()
+        self._active_actions_array.append(thread_action)
         self._actions_array_lock.release()
 
     @abstractmethod
