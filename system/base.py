@@ -5,7 +5,7 @@ from abc import abstractmethod
 from math import isnan
 
 import pandas as pd
-from threading import Thread
+from threading import Thread, Lock
 
 from .constants import NOTIFICATIONS
 from .event_log import EventLog
@@ -34,6 +34,7 @@ class BaseSystem(object):
     """
 
     recipe_class = RecipeRunner
+    _actions_array_lock = Lock()
 
     def __init__(self, actions_list=None):
         self._last_action_answer = None
@@ -343,6 +344,7 @@ class BaseSystem(object):
     def _run_actions_loop(self):
         while self.is_working() or self._active_actions_array:
             try:
+                time.sleep(1)  # OUTSIDE LOCK
 
                 # pop_indexes = []
                 # for i, action in enumerate(self._active_actions_array):
@@ -360,7 +362,7 @@ class BaseSystem(object):
                 #         )
                 # )
                 # print("ACT ARR LEN:", len(self._active_actions_array))
-
+                self._actions_array_lock.acquire()
                 for action in self._potential_actions_array:
                     if not action.is_active():
                         action.start()
@@ -374,14 +376,18 @@ class BaseSystem(object):
                 #     self._potential_actions_array.pop(0)
                 #     self._active_actions_array.append(action)
 
-                time.sleep(1)
+                # time.sleep(1)
 
             except Exception as e:
                 print("_run_actions_loop error:", e)
+            finally:
+                self._actions_array_lock.release()
 
     def _add_action_to_loop(self, thread_action: BaseThreadAction):
         # thread_action.start()
+        self._actions_array_lock.acquire()
         self._potential_actions_array.append(thread_action)
+        self._actions_array_lock.release()
 
     @abstractmethod
     def _get_values(self):
