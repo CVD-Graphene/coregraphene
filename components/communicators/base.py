@@ -91,7 +91,8 @@ class AbstractCommunicator(object):
         self.is_valid(raise_exception=raise_exception)
 
         try:
-            answer = self.communication_method.read(**kwargs)
+            preprocessing_ans: dict = self._preprocessing_read_value(**kwargs)
+            answer = self.communication_method.read(**preprocessing_ans)
             return self._postprocessing_value(answer)
         except BaseCommunicationMethodException:
             raise
@@ -102,6 +103,9 @@ class AbstractCommunicator(object):
         # ans = dict(kwargs)
         # ans["value"] = value
         # return ans
+        return kwargs
+
+    def _preprocessing_read_value(self, **kwargs) -> dict:
         return kwargs
 
     def _postprocessing_value(self, value=None):

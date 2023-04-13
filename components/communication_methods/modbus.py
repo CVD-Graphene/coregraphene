@@ -34,8 +34,8 @@ class ModbusCommunicationMethod(BaseCommunicationMethod):
         self.baudrate = baudrate or settings.DEFAULT_MODBUS_BAUDRATE
         self.timeout = timeout or settings.DEFAULT_MODBUS_TIMEOUT
 
-        print("|>>>> MODBUS: PORT=", port, "INST NUM:", self.instrument_number,
-              "MODE", self.mode, "baudrate", self.baudrate)
+        # print("|>>>> MODBUS: PORT=", port, "INST NUM:", self.instrument_number,
+        #       "MODE", self.mode, "baudrate", self.baudrate)
 
         self.instrument = None
 
