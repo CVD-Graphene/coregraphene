@@ -136,7 +136,7 @@ class AbstractController(object):
             # print("3333")
             read_value = self.read(**self._last_thread_command.kwargs)
             # print("4444,", read_value)
-            com_name = self._last_thread_command.kwargs.get("command", "SMTH")
+            # com_name = self._last_thread_command.kwargs.get("command", "SMTH")
             # print(f"|> [Controller thread {self.__class__.__name__}] "
             #       f"Read [command={com_name}]: value={read_value}.")
             if read_value is not None and not\
