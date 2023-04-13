@@ -18,6 +18,7 @@ class AbstractDevice(object):
 
     """
     communicator_class: AbstractCommunicator = None
+    default_communicator_key = 'default'
 
     def __init__(
             self,
@@ -30,7 +31,9 @@ class AbstractDevice(object):
         # if communicator:
         #     self.communicator: AbstractCommunicator = communicator
         self.communicator = None
+
         self.kwargs = kwargs
+        self.communicators_dict = {}
 
         if self.communicator_class is not None:
             self.communicator: AbstractCommunicator = self.communicator_class(
@@ -44,7 +47,12 @@ class AbstractDevice(object):
 
     def setup(self):
         try:
-            self.communicator.setup()
+            if len(self.communicators_dict.keys()) == 0:
+                self.communicators_dict[self.default_communicator_key] = self.communicator
+
+            for communicator in self.communicators_dict.values():
+                communicator.setup()
+            #self.communicator.setup()
             self._status = DEVICE_STATUS.ACTIVE
         except (BaseCommunicatorException, BaseCommunicationMethodException):
             raise
@@ -54,10 +62,14 @@ class AbstractDevice(object):
             raise SetupDeviceException(device_id=self.device_id) from e
 
     def destructor(self):
-        self.communicator.destructor()
+        for communicator in self.communicators_dict.values():
+            communicator.destructor()
+        # self.communicator.destructor()
 
     def update_communication(self, **kwargs):
-        self.communicator.update_communication(**kwargs)
+        for communicator in self.communicators_dict.values():
+            communicator.update_communication(**kwargs)
+        # self.communicator.update_communication(**kwargs)
 
     def is_valid(self, raise_exception=True):
         e = None
@@ -76,11 +88,10 @@ class AbstractDevice(object):
         return not bool(self._errors)
 
     # def on/off/
-    def exec_command(self, **kwargs):
+    def exec_command(self, _communicator_key=None, **kwargs):
         """
         Main function for execution user commands
-        :param command:
-        :param value:
+        :param _communicator_key: key for using communicator from local dict, left None for using default
         :return:
         """
         self.is_valid()
@@ -90,10 +101,14 @@ class AbstractDevice(object):
 
         self._last_command = command
         try:
+            if _communicator_key is None:
+                _communicator_key = self.default_communicator_key
+            communicator = self.communicators_dict.get(_communicator_key)
+
             preprocessing_ans = self._preprocessing_value(**kwargs)
             if type(preprocessing_ans) != dict:
                 preprocessing_ans = {"value": preprocessing_ans}
-            answer = self.communicator.send(**preprocessing_ans)
+            answer = communicator.send(**preprocessing_ans)
 
             return self._postprocessing_value(answer)
 
@@ -105,12 +120,17 @@ class AbstractDevice(object):
             print("MY COOL DEVICE ERROR", s)
             return self._handle_exception(e)
 
-    def read(self, **kwargs):
+    def read(self, _communicator_key=None, **kwargs):
         self.is_valid()
 
         try:
+            if _communicator_key is None:
+                _communicator_key = self.default_communicator_key
+            communicator = self.communicators_dict.get(_communicator_key)
+
+            preprocessing_ans = self._preprocessing_read_value(**kwargs)
             return self._postprocessing_value(
-                self.communicator.read(**kwargs)
+                communicator.read(**preprocessing_ans)
             )
 
         except (BaseCommunicatorException, BaseCommunicationMethodException):
@@ -139,6 +159,9 @@ class AbstractDevice(object):
         # if command is not None and value is not None:
         #     ans["value"] = f"{command}{value}".strip(),
         # return ans
+
+    def _preprocessing_read_value(self, **kwargs) -> dict:
+        return kwargs
 
     def _postprocessing_value(self, value=None):
         return value
