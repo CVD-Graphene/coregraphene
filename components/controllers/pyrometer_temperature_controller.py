@@ -27,6 +27,15 @@ class PyrometerTemperatureController(AbstractController):
 
         self.get_temperature_action = GetCurrentTemperaturePyrometerControllerAction(controller=self)
 
+        self._main_command = BaseCommand(
+            command="\x0201RD000001\x031B\0",
+            repeat=True,
+            # immediate_answer=True,
+            with_answer=True,  # NOT IMMEDIATE ANSWER because we need to send firstly
+            # on_answer=self._on_get_temperature_value,
+            on_answer=self.get_temperature_action,
+        )
+
     def _reinitialize_communication(self):
         try:
             if self._get_potential_port is not None:
@@ -36,15 +45,15 @@ class PyrometerTemperatureController(AbstractController):
         except Exception as e:
             print(f"|<<< REINITIALIZE {self.code} COMMUNICATION ERR:", e)
 
+    def _check_command(self, **kwargs):
+        self._exec_command(self._main_command)
+        time.sleep(self.loop_delay)
+        read_value = self.read(**self._main_command.kwargs)
+        temp = self._on_get_temperature_value(read_value)
+        assert temp >= 1.0
+
     def _thread_setup_additional(self, **kwargs):
-        self.add_command(BaseCommand(
-            command="\x0201RD000001\x031B\0",
-            repeat=True,
-            # immediate_answer=True,
-            with_answer=True,  # NOT IMMEDIATE ANSWER because we need to send firstly
-            # on_answer=self._on_get_temperature_value,
-            on_answer=self.get_temperature_action,
-        ))
+        self.add_command(self._main_command)
 
     @AbstractController.thread_command
     def _on_get_temperature_value(self, value):
@@ -52,7 +61,4 @@ class PyrometerTemperatureController(AbstractController):
             value = round(random.random() * 1000, 1)
         value = float(value)
         self.temperature_value = value
-
-    def _check_command(self, **kwargs):
-        value = -1
-        assert value >= 0.0
+        return self.temperature_value

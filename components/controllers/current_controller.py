@@ -38,6 +38,7 @@ SLEEP_TIME = 0.05
 
 class CurrentSourceController(AbstractController):
     device_class = CurrentSourceDevice
+    code = 'current_source'
 
     def __init__(self,
                  # on_change_voltage=None,
@@ -59,6 +60,14 @@ class CurrentSourceController(AbstractController):
 
         self.get_current_action = GetCurrentControllerAction(controller=self)
         self.get_voltage_action = GetVoltageControllerAction(controller=self)
+
+    def _check_command(self, **kwargs):
+        self._exec_command(BaseCommand(command=CLEAR_COMMAND))
+        sleep(0.2)
+        self._exec_command(self._CHECK_ERRORS_COMMAND_OBJ)
+        sleep(0.5)
+        read_value = self.read(**self._CHECK_ERRORS_COMMAND_OBJ.kwargs)
+        assert read_value.lower() == "0 no error"
 
     def setup(self):
         super().setup()

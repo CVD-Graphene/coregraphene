@@ -10,7 +10,7 @@ LOCAL_MODE = settings.LOCAL_MODE
 
 
 class SeveralRrgAdcDacController(AbstractControllerManyDevices):
-    code = 'rrg_adc_dac'
+    code = 'rrg'
 
     def __init__(self, config, **kwargs):
         super().__init__(**kwargs)
