@@ -17,6 +17,7 @@ class SpidevCommunicationMethod(BaseCommunicationMethod):
                  speed=None,  # 2000
                  device=None,  # f.e., 0 1 2...
                  default_register_value=0,  # For LOCAL_MODE
+                 **kwargs
                  ):
         """
         Save initial params for communication using spidev
@@ -61,7 +62,7 @@ class SpidevCommunicationMethod(BaseCommunicationMethod):
 
         self.spi = spidev.SpiDev()
         self.instrument = spidev.SpiDev()
-        self.spi.open(self.channel, self.device)  # 0 - выбор чипа
+        self.spi.open(self.channel, self.device)  # device 0, 1 - выбор чипа
         self.spi.max_speed_hz = self.speed
 
         self.spi.lsbfirst = False

@@ -12,10 +12,9 @@ LOCAL_MODE = settings.LOCAL_MODE
 class SeveralRrgAdcDacController(AbstractControllerManyDevices):
     code = 'rrg_adc_dac'
 
-    def __init__(self, config, get_potential_port=None, **kwargs):
-        super().__init__()
+    def __init__(self, config, **kwargs):
+        super().__init__(**kwargs)
 
-        self._get_potential_port = get_potential_port
         self._thread_using = True
         self._rrgs_config = config
 
@@ -23,12 +22,12 @@ class SeveralRrgAdcDacController(AbstractControllerManyDevices):
         for rrg_config in config:
             rrg = RrgAdcDacDevice(
                 address=rrg_config['ADDRESS'],
-                **kwargs
+                **kwargs,
             )
             self.devices.append(rrg)
 
         self.devices_amount = len(self.devices)
-        self.loop_delay = 1.0
+        self.loop_delay = 0.05
 
         self.target_sccms = [0.0 for _ in self.devices]
         self.current_sccms = [0.0 for _ in self.devices]
@@ -49,6 +48,7 @@ class SeveralRrgAdcDacController(AbstractControllerManyDevices):
                 immediate_answer=True,
                 on_answer=self.get_current_flow,
             ))
+            # break
 
     @AbstractController.device_command()
     def set_target_sccm(self, sccm: float, device_num):
@@ -59,6 +59,7 @@ class SeveralRrgAdcDacController(AbstractControllerManyDevices):
 
         self.target_sccms[device_num] = sccm
         # target_flow = sccm / max_sccm * 100 * 100
+        # print("CREATE SCCM TARGET COMMAND")
 
         self.add_command(BaseCommand(
             value=sccm,

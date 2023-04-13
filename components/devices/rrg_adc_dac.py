@@ -27,12 +27,14 @@ class RrgAdcDacDevice(AbstractDevice):
 
         self.communicator = AdcDacCommunicator(
             channel=self.kwargs.get('write_channel'),
+            device=self.kwargs.get('write_device'),
             **kwargs,
         )
         self.write_communicator = self.communicator
 
         self.read_communicator = AdcDacCommunicator(
             channel=self.kwargs.get('read_channel'),
+            device=self.kwargs.get('read_device'),
             **kwargs,
         )
         self.communicators_dict = {
@@ -41,32 +43,39 @@ class RrgAdcDacDevice(AbstractDevice):
         }
 
     def read(self, **kwargs):
+        # print("R1")
         return super().read(_communicator_key=self._read_communicator_key, **kwargs)
 
     def exec_command(self, **kwargs):
-        return super().read(_communicator_key=self._write_communicator_key, **kwargs)
+        # print("START EXEC DEVICE")
+        return super().exec_command(_communicator_key=self._write_communicator_key, **kwargs)
 
     def _preprocessing_value(self, value=0, **kwargs):
+        # print("\n\n|>>> PREPR WRITE VALUE\n\n")
         return {
             'address': self.write_address,
-            'value': int((max(self._min_value, min(value, self._max_value)) - self._min_value) *
+            'value': int((max(self._min_value, min(value, self._max_value)) - self._min_value
+                          ) / self._delta_value *
                          self._delta_scale_value + self._min_scale_value),
         }
 
     def _preprocessing_read_value(self, **kwargs) -> dict:
+        # print("R2")
         return {
             'address': self.read_address,
             'value': 0,
         }
 
     def _postprocessing_value(self, value=0):
+        # print("R10")
         try:
             # if len(value) >= 3:
             #     s = ''.join(map(lambda x: int2base(x).zfill(8), value[:3]))
             #     n = int(s[8:18], 2)
             total_value = int((
                     max(self._min_scale_value,
-                        min(value, self._max_scale_value)) - self._min_scale_value) *
+                        min(value, self._max_scale_value)) - self._min_scale_value
+                              ) / self._delta_scale_value *
                      self._delta_value + self._min_value)
             print("POSTPROC VALUE:", value, total_value)
             return total_value
