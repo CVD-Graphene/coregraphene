@@ -71,7 +71,7 @@ class SpidevCommunicationMethod(BaseCommunicationMethod):
         # print("spi.mode = " + str(spi.mode))
         self.instrument.cshigh = False
 
-        gc.collect()
+        # gc.collect()
 
     def update_communication(self, **kwargs):
         self._create_instrument()
