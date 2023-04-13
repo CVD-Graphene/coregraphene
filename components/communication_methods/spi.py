@@ -60,16 +60,16 @@ class SpidevCommunicationMethod(BaseCommunicationMethod):
         if settings.LOCAL_MODE:
             return
 
-        self.spi = spidev.SpiDev()
+        # self.spi = spidev.SpiDev()
         self.instrument = spidev.SpiDev()
-        self.spi.open(self.channel, self.device)  # device 0, 1 - выбор чипа
-        self.spi.max_speed_hz = self.speed
+        self.instrument.open(self.channel, self.device)  # device 0, 1 - выбор чипа
+        self.instrument.max_speed_hz = self.speed
 
-        self.spi.lsbfirst = False
-        self.spi.bits_per_word = 8
-        # spi.mode = 0b01
+        self.instrument.lsbfirst = False
+        self.instrument.bits_per_word = 8
+        self.instrument.mode = 0b01
         # print("spi.mode = " + str(spi.mode))
-        self.spi.cshigh = False
+        self.instrument.cshigh = False
 
         gc.collect()
 
