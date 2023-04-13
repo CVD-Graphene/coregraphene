@@ -1,6 +1,5 @@
 from ..communicators import AdcDacCommunicator
 from .base import AbstractDevice
-from ...utils import int2base
 
 
 class RrgAdcDacDevice(AbstractDevice):
@@ -60,17 +59,18 @@ class RrgAdcDacDevice(AbstractDevice):
             'value': 0,
         }
 
-    def _postprocessing_value(self, value=None):
+    def _postprocessing_value(self, value=0):
         try:
-            if len(value) >= 3:
-                s = ''.join(map(lambda x: int2base(x).zfill(8), value[:4]))
-                n = int(s[8:18], 2)
-                total_value = int((
-                        max(self._min_scale_value, min(n, self._max_scale_value)) - self._min_scale_value) *
-                         self._delta_value + self._min_value)
-                print("POSTPROC VALUE:", n, total_value)
-                return total_value
+            # if len(value) >= 3:
+            #     s = ''.join(map(lambda x: int2base(x).zfill(8), value[:3]))
+            #     n = int(s[8:18], 2)
+            total_value = int((
+                    max(self._min_scale_value,
+                        min(value, self._max_scale_value)) - self._min_scale_value) *
+                     self._delta_value + self._min_value)
+            print("POSTPROC VALUE:", value, total_value)
+            return total_value
         except Exception as e:
-            print("POSTROC RRG ERROR:", e)
+            print("|> POSTROC RRG DEVICE ERROR:", e)
 
         return 0

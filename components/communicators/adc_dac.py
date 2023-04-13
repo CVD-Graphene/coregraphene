@@ -21,3 +21,16 @@ class AdcDacCommunicator(AbstractCommunicator):
 
     def _preprocessing_read_value(self, **kwargs) -> dict:
         return self._common_preprocessing_value(**kwargs)
+
+    def _postprocessing_value(self, value=None):
+        try:
+            print("POSTPROC COMMUN SPI VALUE:", value)
+            if len(value) >= 3:
+                s = ''.join(map(lambda x: int2base(x).zfill(8), value[:3]))
+                n = int(s[8:18], 2)
+                print("POSTPROC VALUE COMMUNICATOR:", n)
+                return n
+        except Exception as e:
+            print("POSTROC RRG ERROR:", e)
+
+        return 0

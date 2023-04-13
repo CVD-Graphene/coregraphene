@@ -28,7 +28,7 @@ class SeveralRrgAdcDacController(AbstractControllerManyDevices):
             self.devices.append(rrg)
 
         self.devices_amount = len(self.devices)
-        self.loop_delay = 0.01
+        self.loop_delay = 1.0
 
         self.target_sccms = [0.0 for _ in self.devices]
         self.current_sccms = [0.0 for _ in self.devices]

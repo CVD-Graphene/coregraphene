@@ -1,4 +1,5 @@
 import gc
+import random
 
 try:
     import spidev
@@ -92,4 +93,12 @@ class SpidevCommunicationMethod(BaseCommunicationMethod):
 
     def _local_read(self, data=None, **kwargs):
         _data = data.copy()
-        return _data
+        return [
+            0,
+            random.randint(0, 1023),
+            random.randint(0, 1) * 512 +
+            random.randint(0, 1) * 256 +
+            random.randint(0, 128),
+            random.randint(0, 1023),
+        ]
+        # return _data
