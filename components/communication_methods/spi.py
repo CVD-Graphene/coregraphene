@@ -68,7 +68,7 @@ class SpidevCommunicationMethod(BaseCommunicationMethod):
 
         self.instrument.lsbfirst = False
         self.instrument.bits_per_word = 8
-        self.instrument.mode = 0b01
+        # self.instrument.mode = 0b01
         # print("spi.mode = " + str(spi.mode))
         self.instrument.cshigh = False
 
