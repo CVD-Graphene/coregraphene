@@ -25,7 +25,7 @@ class SeveralRrgAdcDacController(AbstractControllerManyDevices):
                 **kwargs,
             )
             self.devices.append(rrg)
-            break
+            # break
 
         self.devices_amount = len(self.devices)
         self.loop_delay = 0.05
