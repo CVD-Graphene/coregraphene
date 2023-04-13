@@ -6,3 +6,4 @@ from .rrg_modbus_controller import RrgModbusController, SeveralRrgModbusControll
 from .termodat_modbus_controller import TermodatModbusController, SeveralTermodatModbusController
 from .pyrometer_temperature_controller import PyrometerTemperatureController
 from .rrg_adc_dac_controller import SeveralRrgAdcDacController
+from .digital_fuse_controller import DigitalFuseController
