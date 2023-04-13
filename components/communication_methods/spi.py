@@ -62,6 +62,7 @@ class SpidevCommunicationMethod(BaseCommunicationMethod):
 
         # self.spi = spidev.SpiDev()
         self.instrument = spidev.SpiDev()
+        print("SPI CI:::", self.channel, type(self.channel), self.device, type(self.device))
         self.instrument.open(self.channel, self.device)  # device 0, 1 - выбор чипа
         self.instrument.max_speed_hz = self.speed
 
