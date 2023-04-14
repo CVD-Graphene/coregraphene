@@ -12,8 +12,9 @@ class AdcDacCommunicator(AbstractCommunicator):
 
         device_base = int2base(address, base=2)
         value_base = int2base(min(2**12 - 1, value), base=2)
-        start_bit = "0" if sending else "0"
-        add_str = "" if sending else ("0" * n * 2)
+        start_bit = "0" if sending else "1"
+        add_sending_str = "0" * n * 2
+        add_str = "" if sending else add_sending_str
         # print("Bases:", device_base, address, value_base, value)
         data_str = f"{start_bit}{device_base.zfill(3)}{value_base.zfill(12)}" + add_str
 
@@ -23,11 +24,11 @@ class AdcDacCommunicator(AbstractCommunicator):
         return {"data": data}
 
     def _preprocessing_value(self, **kwargs) -> dict:
-        return self._common_preprocessing_value(sending=False, **kwargs)
+        return self._common_preprocessing_value(sending=True, **kwargs)
 
     def _preprocessing_read_value(self, **kwargs) -> dict:
         # print("R3")
-        return self._common_preprocessing_value(sending=True, **kwargs)
+        return self._common_preprocessing_value(sending=False, **kwargs)
 
     def _postprocessing_value(self, value=None):
         try:
