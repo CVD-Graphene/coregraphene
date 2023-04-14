@@ -12,11 +12,11 @@ class AdcDacCommunicator(AbstractCommunicator):
 
         device_base = int2base(address, base=2)
         value_base = int2base(min(2**12 - 1, value), base=2)
-        start_bit = "0" if sending else "1"
-        add_sending_str = "0" * n * 2
-        add_str = "" if sending else add_sending_str
+        start_bit = "0" # if sending else "1"
+        #add_sending_str = "0" * n * 2
+        add_str = "" #if sending else add_sending_str
         # print("Bases:", device_base, address, value_base, value)
-        data_str = f"{start_bit}{device_base.zfill(3)}{value_base.zfill(12)}" + add_str
+        data_str = f"{start_bit}{device_base.zfill(3)}{value_base.zfill(12)}"  # + add_str
 
         # print("D1:", len(data_str))
         data = [int(data_str[i:i + n], 2) for i in range(0, len(data_str), n)]
@@ -26,9 +26,24 @@ class AdcDacCommunicator(AbstractCommunicator):
     def _preprocessing_value(self, **kwargs) -> dict:
         return self._common_preprocessing_value(sending=True, **kwargs)
 
-    def _preprocessing_read_value(self, **kwargs) -> dict:
+    def _preprocessing_read_value(self, address=0, **kwargs) -> dict:
         # print("R3")
-        return self._common_preprocessing_value(sending=False, **kwargs)
+        n = 8
+
+        device_address_base = int2base(address, base=2)
+        start_bit = "1"
+        # add_sending_str = "0" * n * 2
+        # add_str = "" if sending else add_sending_str
+        # print("Bases:", device_base, address, value_base, value)
+        data_str = "0" * (n - 1) + "1" + \
+                   f"{start_bit}{device_address_base.zfill(3)}" + "0000" + \
+                   "0" * n
+
+        # print("D1:", len(data_str))
+        data = [int(data_str[i:i + n], 2) for i in range(0, len(data_str), n)]
+        print("ADC DATA TO READ:", data_str, data)
+        return {"data": data}
+        # return self._common_preprocessing_value(sending=False, **kwargs)
 
     def _postprocessing_value(self, value=None):
         try:
@@ -36,7 +51,7 @@ class AdcDacCommunicator(AbstractCommunicator):
             if len(value) >= 3:
                 s = ''.join(map(lambda x: int2base(x).zfill(8), value[:3]))
                 # print("S:::", s)
-                n = int(s[8:18], 2)
+                n = int(s[14:24], 2)
                 # print("POSTPROC VALUE COMMUNICATOR:", n)
                 return n
         except Exception as e:
