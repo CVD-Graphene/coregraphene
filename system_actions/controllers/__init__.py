@@ -1,3 +1,3 @@
-from .rrg import GetCurrentFlowRrgControllerAction
+from .rrg import GetCurrentFlowRrgControllerAction, GetCurrentSccmRrgAdcControllerAction
 from .pyrometer import GetCurrentTemperaturePyrometerControllerAction
 from .current_akip import GetCurrentControllerAction, GetVoltageControllerAction

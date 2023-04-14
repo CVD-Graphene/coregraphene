@@ -1,6 +1,6 @@
 import random
 
-from ...system_actions import GetCurrentFlowRrgControllerAction
+from ...system_actions import GetCurrentFlowRrgControllerAction, GetCurrentSccmRrgAdcControllerAction
 from .base import AbstractController, AbstractControllerManyDevices
 from ..commands import BaseCommand
 from ..devices import RrgAdcDacDevice
@@ -33,7 +33,7 @@ class SeveralRrgAdcDacController(AbstractControllerManyDevices):
         self.target_sccms = [0.0 for _ in self.devices]
         self.current_sccms = [0.0 for _ in self.devices]
 
-        self.get_current_flow = GetCurrentFlowRrgControllerAction(controller=self)
+        self.get_current_flow = GetCurrentSccmRrgAdcControllerAction(controller=self)
 
     def get_max_sccm_device(self, device_num=None):
         if device_num is None:
