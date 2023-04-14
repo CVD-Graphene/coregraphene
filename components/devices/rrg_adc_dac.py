@@ -11,7 +11,7 @@ class RrgAdcDacDevice(AbstractDevice):
             min_value=0,
             max_value=200,
             min_scale_value=0,
-            max_scale_value=1023,
+            max_scale_value=2**12 - 1,
             **kwargs):
         super().__init__(**kwargs)
         self.address = self.kwargs.get('address', 0)
