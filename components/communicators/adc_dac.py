@@ -68,8 +68,11 @@ class DacCommunicator(AbstractCommunicator):
         data_str = f"{start_bit}{device_base.zfill(3)}{value_base.zfill(12)}"  # + add_str
 
         data = [int(data_str[i:i + n], 2) for i in range(0, len(data_str), n)]
-        # print("ADC DAC DATA:", data_str, data)
+        print("!!!! DAC DATA TO SEND:", data_str, data)
         return {"data": data}
 
     def read(self, raise_exception=True, **kwargs):
         raise Exception(f"{self.communicator_id} is only for writing values, not for read")
+
+    def _postprocessing_value(self, value=None):
+        return 0
