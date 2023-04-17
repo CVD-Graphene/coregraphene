@@ -1,4 +1,4 @@
-from ..communicators import AdcDacCommunicator
+from ..communicators import AdcCommunicator, DacCommunicator
 from .base import AbstractDevice
 
 
@@ -25,14 +25,14 @@ class RrgAdcDacDevice(AbstractDevice):
         self._max_scale_value = max_scale_value
         self._delta_scale_value = self._max_scale_value - self._min_scale_value
 
-        self.communicator = AdcDacCommunicator(
+        self.communicator = DacCommunicator(
             channel=self.kwargs.get('write_channel'),
             device=self.kwargs.get('write_device'),
             **kwargs,
         )
         self.write_communicator = self.communicator
 
-        self.read_communicator = AdcDacCommunicator(
+        self.read_communicator = AdcCommunicator(
             channel=self.kwargs.get('read_channel'),
             device=self.kwargs.get('read_device'),
             **kwargs,
