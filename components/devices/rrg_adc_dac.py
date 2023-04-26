@@ -77,7 +77,7 @@ class RrgAdcDacDevice(AbstractDevice):
                         min(value, self._max_scale_value)) - self._min_scale_value
                               ) / self._delta_scale_value *
                      self._delta_value + self._min_value)
-            print("POSTPROC VALUE:", value, total_value)
+            # print("POSTPROC VALUE:", value, total_value)
             return total_value
         except Exception as e:
             print("|> POSTROC RRG DEVICE ERROR:", e)

@@ -28,13 +28,13 @@ class AdcCommunicator(AbstractCommunicator):
 
         # print("D1:", len(data_str))
         data = [int(data_str[i:i + n], 2) for i in range(0, len(data_str), n)]
-        print("ADC DATA TO READ:", data_str, data)
+        # print("ADC DATA TO READ:", data_str, data)
         return {"data": data}
         # return self._common_preprocessing_value(sending=False, **kwargs)
 
     def _postprocessing_value(self, value=None):
         try:
-            print("POSTPROC COMMUN SPI VALUE:", value)
+            # print("POSTPROC COMMUN SPI VALUE:", value)
             if len(value) >= 3:
                 s = ''.join(map(lambda x: int2base(x).zfill(8), value[:3]))
                 # print("S:::", s)
@@ -68,7 +68,7 @@ class DacCommunicator(AbstractCommunicator):
         data_str = f"{start_bit}{device_base.zfill(3)}{value_base.zfill(12)}"  # + add_str
 
         data = [int(data_str[i:i + n], 2) for i in range(0, len(data_str), n)]
-        print("!!!! DAC DATA TO SEND:", data_str, data)
+        # print("!!!! DAC DATA TO SEND:", data_str, data)
         return {"data": data}
 
     def read(self, raise_exception=True, **kwargs):
