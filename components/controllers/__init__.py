@@ -7,3 +7,4 @@ from .termodat_modbus_controller import TermodatModbusController, SeveralTermoda
 from .pyrometer_temperature_controller import PyrometerTemperatureController
 from .rrg_adc_dac_controller import SeveralRrgAdcDacController
 from .digital_fuse_controller import DigitalFuseController
+from .back_pressure_valve_controller import BackPressureValveController
