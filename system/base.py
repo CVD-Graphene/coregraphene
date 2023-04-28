@@ -35,6 +35,9 @@ class BaseSystem(object):
     recipe_class = RecipeRunner
     _actions_array_lock = Lock()
 
+    _ports_attr_names = {}
+    _default_controllers_kwargs = {}
+
     def __init__(self, actions_list=None):
         self._last_action_answer = None
         self._errors = []
@@ -44,8 +47,6 @@ class BaseSystem(object):
 
         self.ports = {}
         self._controllers_check_classes = {}
-        self._ports_attr_names = {}
-        self._default_controllers_kwargs = {}
 
         self._recipe = None
         self._recipe_runner = self.recipe_class(

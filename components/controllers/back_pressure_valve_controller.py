@@ -13,7 +13,7 @@ LOCAL_MODE = settings.LOCAL_MODE
 
 
 class BackPressureValveController(AbstractController):
-    code = 'back_pressure_valve'
+    code = 'throttle'
     device_class = BackPressureValveDevice
 
     def __init__(self, get_potential_port=None, port=None, **kwargs):

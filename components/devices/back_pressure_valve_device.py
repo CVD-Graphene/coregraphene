@@ -3,7 +3,7 @@ from time import sleep
 from ...conf import settings
 
 from ..communicators import SerialAsciiCommunicator
-from ...constants.components import BACK_PRESSURE_VALVE_STATE, BACK_PRESSURE_VALVE_CONSTANTS
+from ...constants.components import BACK_PRESSURE_VALVE_CONSTANTS
 from .base import AbstractDevice
 
 LOCAL_MODE = settings.LOCAL_MODE
