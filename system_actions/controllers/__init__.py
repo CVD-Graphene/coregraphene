@@ -6,3 +6,4 @@ from .back_pressure_valve import (
     GetPressureBackPressureValveControllerAction,
     GetTargetPressureBackPressureValveControllerAction,
 )
+from .vakumetr_adc import GetCurrentPressureVakumetrAdcControllerAction

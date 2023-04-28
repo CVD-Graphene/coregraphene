@@ -8,3 +8,4 @@ from .pyrometer_temperature_controller import PyrometerTemperatureController
 from .rrg_adc_dac_controller import SeveralRrgAdcDacController
 from .digital_fuse_controller import DigitalFuseController
 from .back_pressure_valve_controller import BackPressureValveController
+from .vakumetr_adc_controller import VakumetrAdcController

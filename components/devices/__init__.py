@@ -7,3 +7,4 @@ from .termodat_modbus import TermodatModbusDevice
 from .pyrometer_temperature_device import PyrometerTemperatureDevice
 from .rrg_adc_dac import RrgAdcDacDevice
 from .back_pressure_valve_device import BackPressureValveDevice
+from .vakumetr_adc_device import VakumetrAdcDevice
