@@ -14,9 +14,9 @@ class RrgAdcDacDevice(AbstractDevice):
             max_scale_value=2**12 - 1,
             **kwargs):
         super().__init__(**kwargs)
-        self.address = self.kwargs.get('address', 0)
-        self.read_address = self.address
-        self.write_address = self.address
+        # self.address = self.kwargs.get('address', 0)
+        self.read_address = self.kwargs.get('read_address', 0)
+        self.write_address = self.kwargs.get('write_address', 0)
 
         self._min_value = min_value
         self._max_value = max_value

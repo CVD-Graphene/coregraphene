@@ -21,7 +21,8 @@ class SeveralRrgAdcDacController(AbstractControllerManyDevices):
         self.devices = []
         for rrg_config in config:
             rrg = RrgAdcDacDevice(
-                address=rrg_config['ADDRESS'],
+                read_address=rrg_config['ADDRESS'],
+                write_address=rrg_config['DAC_ADDRESS'],
                 **kwargs,
             )
             self.devices.append(rrg)
