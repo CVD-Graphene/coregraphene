@@ -118,6 +118,8 @@ class AbstractController(object):
     def _run_thread_command(self, command: BaseCommand):
         self._last_thread_command = command
         self._exec_command(command=command)
+        if command.on_completed:
+            command.on_completed()
 
     def _thread_read_command(self):
         # print("1111")
