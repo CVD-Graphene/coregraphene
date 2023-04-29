@@ -37,6 +37,7 @@ class BackPressureValveDevice(AbstractDevice):
         pass
 
     def _preprocessing_value(self, command=None, value=None):
+        print("BACK PRESSURE PREPROC:::", command, value)
         if command == BACK_PRESSURE_VALVE_CONSTANTS.WRITE_TARGET_PRESSURE:
             value = round(self._pressure_to_percent(value), 2)
             self.local_target_pressure_percent = value
@@ -46,6 +47,10 @@ class BackPressureValveDevice(AbstractDevice):
         return f"{command}\r"
 
     def _postprocessing_value(self, value=None):
+        v = value
+        if v:
+            v = v.strip()
+        print("BACK PRESSURE POSTPROC:!:!:", v)
         if LOCAL_MODE:
             value = "0\r"
         if not value:
