@@ -2,7 +2,7 @@ import random
 from time import sleep
 from ...conf import settings
 
-from ..communicators import SerialAsciiCommunicator
+from ..communicators import SerialAsciiCommunicator, BaseSerialAsciiCommunicator
 from ...constants.components import BACK_PRESSURE_VALVE_CONSTANTS
 from .base import AbstractDevice
 
@@ -13,7 +13,7 @@ PRESSURE_MARGIN = BACK_PRESSURE_VALVE_CONSTANTS.MAX_PRESSURE_BORDER - \
 
 
 class BackPressureValveDevice(AbstractDevice):
-    communicator_class = SerialAsciiCommunicator
+    communicator_class = BaseSerialAsciiCommunicator
     local_target_pressure_percent = 0.0
 
     def get_value_with_waiting(self):
@@ -47,7 +47,7 @@ class BackPressureValveDevice(AbstractDevice):
         return f"{command}\r"
 
     def _postprocessing_value(self, value=None):
-        v = value
+        v = str(value)
         if v:
             v = v.strip()
         print("BACK PRESSURE POSTPROC:!:!:", v)

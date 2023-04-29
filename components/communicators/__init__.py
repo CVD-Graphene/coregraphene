@@ -3,6 +3,7 @@ from .serial_ascii import (
     SerialAsciiCommunicator,
     SerialAsciiAkipCommunicator,
     SerialAsciiPyrometerCommunicator,
+    BaseSerialAsciiCommunicator,
 )
 from .digital_gpio import DigitalGpioCommunicator
 from .modbus_ascii import ModbusAsciiCommunicator

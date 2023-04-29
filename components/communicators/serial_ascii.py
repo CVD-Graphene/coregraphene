@@ -50,6 +50,50 @@ class SerialAsciiCommunicator(AbstractCommunicator):
         return answer[8:8 + ans_length]
 
 
+class BaseSerialAsciiCommunicator(AbstractCommunicator):
+    communication_method_class = SerialAsciiCommunicationMethod
+
+    # def __init__(self, port_communicator=None, **kwargs):
+    #     super().__init__(**kwargs)
+    #     self.port = port_communicator
+    #     # self.communication_method = SerialAsciiCommunicationMethod(
+    #     #     **kwargs,
+    #     #     # port=ACCURATE_VAKUMETR_USB_PORT
+    #     # )
+    #     # self.communication_method = SerialAsciiCommunicationMethod()
+    #
+    # def _add_check_sum(self, command):
+    #     summ = 0
+    #     for c in command:
+    #         summ += ord(c)
+    #         # print(ord(c))
+    #
+    #     summ = (summ % 64) + 64
+    #     # print(chr(summ))
+    #     return f"{command}{chr(summ)}"
+    #
+    # def _preprocessing_value(self, value="0MV00"):
+    #     address = str(self.port).zfill(self.ADDRESS_PORT_LEN)
+    #     command = f"{address}{value}"
+    #     command = f"{self._add_check_sum(command)}\r"
+    #     # print("SerialAsciiCommunicator COMMAND::", command.strip())
+    #     return {
+    #         "command": command,
+    #     }
+    #
+    # def _postprocessing_value(self, value: str = None):
+    #     if LOCAL_MODE:
+    #         return value
+    #     # print("|>>>> VAK VALUE:", value)
+    #     if value is None:
+    #         value = ""
+    #     answer = value.split('\r')[0]
+    #     if len(answer) < 8:
+    #         return ""
+    #     ans_length = int(answer[6:8])
+    #     return answer[8:8 + ans_length]
+
+
 class SerialAsciiAkipCommunicator(AbstractCommunicator):
     communication_method_class = SerialAsciiCommunicationMethod
     ADDRESS_PORT_LEN = 3
