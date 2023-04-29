@@ -38,6 +38,9 @@ class BackPressureValveController(AbstractController):
         self.get_target_pressure_action = GetTargetPressureBackPressureValveControllerAction(controller=self)
         self.get_target_open_percent_action = GetTargetOpenPercentBackPressureValveControllerAction(controller=self)
 
+    def _check_command(self, **kwargs):
+        pass
+
     def _reinitialize_communication(self):
         try:
             if self._get_potential_port is not None:
