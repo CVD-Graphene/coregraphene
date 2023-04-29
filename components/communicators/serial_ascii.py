@@ -40,7 +40,7 @@ class SerialAsciiCommunicator(AbstractCommunicator):
     def _postprocessing_value(self, value: str = None):
         if LOCAL_MODE:
             return value
-
+        print("|>>>> VAK VALUE:", value)
         if value is None:
             value = ""
         answer = value.split('\r')[0]
