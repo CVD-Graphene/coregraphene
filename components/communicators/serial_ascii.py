@@ -53,6 +53,11 @@ class SerialAsciiCommunicator(AbstractCommunicator):
 class BaseSerialAsciiCommunicator(AbstractCommunicator):
     communication_method_class = SerialAsciiCommunicationMethod
 
+    def _preprocessing_value(self, value=""):
+        return {
+            "command": value,
+        }
+
     # def __init__(self, port_communicator=None, **kwargs):
     #     super().__init__(**kwargs)
     #     self.port = port_communicator
