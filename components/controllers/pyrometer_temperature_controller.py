@@ -47,7 +47,7 @@ class PyrometerTemperatureController(AbstractController):
 
     def _check_command(self, **kwargs):
         self._exec_command(self._main_command)
-        time.sleep(self.loop_delay)
+        time.sleep(self.loop_delay * 2)
         read_value = self.read(**self._main_command.kwargs)
         temp = self._on_get_temperature_value(read_value)
         assert temp >= 1.0
