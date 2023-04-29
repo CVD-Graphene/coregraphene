@@ -6,6 +6,7 @@ from ...conf import settings
 from .base import AbstractController
 from ..commands import BaseCommand
 from ..devices import AccurateVakumetrDevice
+from ...system_actions import GetCurrentPressureVakumetrControllerAction
 
 LOCAL_MODE = settings.LOCAL_MODE
 
@@ -25,6 +26,7 @@ class AccurateVakumetrController(AbstractController):
         self.loop_delay = 0.3
 
         self._thread_using = True
+        self.get_pressure_action = GetCurrentPressureVakumetrControllerAction(controller=self)
 
     def _reinitialize_communication(self):
         try:

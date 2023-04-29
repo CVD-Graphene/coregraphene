@@ -8,6 +8,7 @@ from ...system_actions import (
     GetPressureBackPressureValveControllerAction,
     GetTargetPressureBackPressureValveControllerAction,
 )
+from ...system_actions.controllers.back_pressure_valve import GetTargetOpenPercentBackPressureValveControllerAction
 
 LOCAL_MODE = settings.LOCAL_MODE
 FULL_OPEN_BORDER = 85.0
@@ -30,10 +31,12 @@ class BackPressureValveController(AbstractController):
         self.state = BACK_PRESSURE_VALVE_STATE.CLOSE
         self.current_pressure = 0.0
         self.target_pressure = 0.0
+        self.target_open_percent = 0.0
 
         self.get_state_action = GetCurrentStateBackPressureValveControllerAction(controller=self)
         self.get_current_pressure_action = GetPressureBackPressureValveControllerAction(controller=self)
         self.get_target_pressure_action = GetTargetPressureBackPressureValveControllerAction(controller=self)
+        self.get_target_open_percent_action = GetTargetOpenPercentBackPressureValveControllerAction(controller=self)
 
     def _reinitialize_communication(self):
         try:
@@ -91,6 +94,7 @@ class BackPressureValveController(AbstractController):
     @AbstractController.thread_command
     def on_full_open(self):
         # print("On full open start!")
+        self.get_target_open_percent_action(100.0)
         self.add_command(BaseCommand(
             command=BACK_PRESSURE_VALVE_CONSTANTS.FULL_OPEN,
         ))
@@ -113,6 +117,7 @@ class BackPressureValveController(AbstractController):
 
     @AbstractController.thread_command
     def on_full_close(self):
+        self.get_target_open_percent_action(0.0)
         self.add_command(BaseCommand(
             command=BACK_PRESSURE_VALVE_CONSTANTS.FULL_CLOSE,
         ))

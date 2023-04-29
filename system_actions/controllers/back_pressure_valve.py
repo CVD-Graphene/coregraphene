@@ -1,10 +1,10 @@
-from ...system_actions import ManyDeviceControllerAction
+from ...system_actions import ManyDeviceControllerAction, ControllerAction
 from coregraphene.conf import settings
 
 LOCAL_MODE = settings.LOCAL_MODE
 
 
-class GetCurrentStateBackPressureValveControllerAction(ManyDeviceControllerAction):
+class GetCurrentStateBackPressureValveControllerAction(ControllerAction):
 
     def _on_get_value(self, value):
         self._controller.state = value
@@ -13,7 +13,7 @@ class GetCurrentStateBackPressureValveControllerAction(ManyDeviceControllerActio
         return value
 
 
-class GetPressureBackPressureValveControllerAction(ManyDeviceControllerAction):
+class GetPressureBackPressureValveControllerAction(ControllerAction):
     def _on_get_value(self, value):
         self._controller.current_pressure = value
 
@@ -21,9 +21,17 @@ class GetPressureBackPressureValveControllerAction(ManyDeviceControllerAction):
         return float(value)
 
 
-class GetTargetPressureBackPressureValveControllerAction(ManyDeviceControllerAction):
+class GetTargetPressureBackPressureValveControllerAction(ControllerAction):
     def _on_get_value(self, value):
         self._controller.target_pressure = value
+
+    def _call_function(self, value):
+        return float(value)
+
+
+class GetTargetOpenPercentBackPressureValveControllerAction(ControllerAction):
+    def _on_get_value(self, value):
+        self._controller.target_open_percent = value
 
     def _call_function(self, value):
         return float(value)
