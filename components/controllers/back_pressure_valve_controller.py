@@ -11,8 +11,8 @@ from ...system_actions import (
 from ...system_actions.controllers.back_pressure_valve import GetTargetOpenPercentBackPressureValveControllerAction
 
 LOCAL_MODE = settings.LOCAL_MODE
-FULL_OPEN_BORDER = 99.5
-FULL_CLOSE_BORDER = 0.5
+FULL_OPEN_BORDER = 99.7
+FULL_CLOSE_BORDER = 0.3
 
 
 class BackPressureValveController(AbstractController):
