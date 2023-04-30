@@ -11,8 +11,8 @@ from ...system_actions import (
 from ...system_actions.controllers.back_pressure_valve import GetTargetOpenPercentBackPressureValveControllerAction
 
 LOCAL_MODE = settings.LOCAL_MODE
-FULL_OPEN_BORDER = 85.0
-FULL_CLOSE_BORDER = 15.0
+FULL_OPEN_BORDER = 99.5
+FULL_CLOSE_BORDER = 0.5
 
 
 class BackPressureValveController(AbstractController):
@@ -94,6 +94,12 @@ class BackPressureValveController(AbstractController):
             value=pressure,
         )
 
+    def _create_set_target_percent_command_obj(self, percent):
+        return BaseCommand(
+            command=BACK_PRESSURE_VALVE_CONSTANTS.WRITE_TARGET_PERCENT,
+            value=percent,
+        )
+
     @AbstractController.thread_command
     def on_full_open(self):
         # print("On full open start!")
@@ -158,4 +164,23 @@ class BackPressureValveController(AbstractController):
 
     def _on_turn_on_regulation(self):
         # print("_on_turn_on_regulation!!!!!")
+        return self.get_state_action(BACK_PRESSURE_VALVE_STATE.REGULATION)
+
+    @AbstractController.thread_command
+    def set_target_percent(self, percent):
+        percent = float(percent)
+        # print("Turn on keeping percent to", percent)
+        self.add_command(self._create_set_target_percent_command_obj(percent))
+        self.add_command(BaseCommand(
+            command=BACK_PRESSURE_VALVE_CONSTANTS.KEEP_TARGET_PERCENT,
+            on_completed=self._on_turn_on_keeping_percent,
+        ))
+        # self.add_command(self._create_read_target_pressure_command_obj())
+        self.get_state_action(BACK_PRESSURE_VALVE_STATE.WAITING)
+        return percent
+        # self.state = BACK_PRESSURE_VALVE_STATE.WAITING
+        # return self.state
+
+    def _on_turn_on_keeping_percent(self):
+        # print("_on_turn_on_keeping_percent!!!!!")
         return self.get_state_action(BACK_PRESSURE_VALVE_STATE.REGULATION)
