@@ -45,10 +45,10 @@ class AppAction:
             f"Check correct arguments in {self.__class__.__name__}"
         prepared_args = list(map(lambda x: self._prepare_argument(*x),
                                  zip(args, self.args_info)))
-        return self._action(*prepared_args)
+        return self.do_action(*prepared_args)
 
     @abstractmethod
-    def _action(self, *args):
+    def do_action(self, *args):
         pass
 
     @property
