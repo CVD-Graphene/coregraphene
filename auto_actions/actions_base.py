@@ -38,7 +38,7 @@ class AppAction:
 
     def _prepare_argument(self, arg, arg_class: Argument):
         # print("ARGS!", arg, arg_class)
-        return arg_class().prepare_value(arg)
+        return arg_class.prepare_value(arg)
 
     def action(self, *args):
         assert len(args) == len(self.args_info), \

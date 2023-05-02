@@ -21,7 +21,8 @@ class Argument:
     def _check(self, value):
         self.prepare_value(value)
 
-    def prepare_value(self, value):
+    @staticmethod
+    def prepare_value(value):
         return value
 
 
@@ -29,7 +30,8 @@ class FloatArgument(Argument):
     arg_type = float
     arg_default = 0.0
 
-    def prepare_value(self, value):
+    @staticmethod
+    def prepare_value(value):
         return float(value)
 
 
@@ -47,7 +49,8 @@ class SccmArgument(FloatArgument):
         # if not range_list[0] <= value <= range_list[1]:
         #     raise Exception(f"SCCM value {value} not in range {range_list}")
 
-    def prepare_value(self, value):
+    @staticmethod
+    def prepare_value(value):
         return float(value)
 
 
@@ -56,7 +59,8 @@ class IntKeyArgument(Argument):
     arg_type = int
     arg_default = 0
 
-    def prepare_value(self, value):
+    @staticmethod
+    def prepare_value(value):
         return int(value)
 
 
@@ -72,7 +76,8 @@ class FloatKeyArgument(Argument):
     arg_type = float
     arg_default = 0.0
 
-    def prepare_value(self, value):
+    @staticmethod
+    def prepare_value(value):
         return float(value)
 
 
@@ -96,7 +101,8 @@ class GasListArgument(Argument):
         if value not in self.arg_list:
             raise Exception(f"Gas {value} not in gas list")
 
-    def prepare_value(self, value):
+    @staticmethod
+    def prepare_value(value):
         return str(value).strip()
 
 
@@ -109,14 +115,16 @@ class ValveListArgument(Argument):
         if value not in self.arg_list:
             raise Exception(f"Valve {value} not in valve list")
 
-    def prepare_value(self, value):
+    @staticmethod
+    def prepare_value(value):
         return str(value).strip()
 
 
 class TimeEditArgument(Argument):
     key = "time"
 
-    def prepare_value(self, value):
+    @staticmethod
+    def prepare_value(value):
         if type(value) in [int, float]:
             return value
         value = str(value)
