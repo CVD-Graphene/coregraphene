@@ -93,15 +93,31 @@ class RecipeRunner:
         return True
 
     def run_recipe(self):
-        # self._recipe_state = RECIPE_STATES.RUN
-        success = True
-        sleep(1)
+        actions_array = []
+
         for action_index, action in enumerate(self._recipe):
-            # print("ACTION NOW...", action_index, action)
             try:
                 if len(action) == 0:
                     continue
 
+                action_table_name = action[0]
+                action_obj, index = get_action_by_name(action_table_name, self._actions_list)
+                actions_array.append([action_obj, action[1:1 + action_obj.args_amount]])
+
+                # args = action[1:1 + action_obj.args_amount]
+                # action_obj.action(*args)
+
+            except Exception as e:
+                print("Error preparation recipe run:", e)
+                return
+
+        self.run_recipe_actions(actions_array)
+
+    def run_recipe_actions(self, actions: list):
+        success = True
+        sleep(0.5)
+        for action_index, (action_obj, action_args) in enumerate(actions):
+            try:
                 if self._recipe_state == RECIPE_STATES.STOP:
                     self._system.add_error(f"Принудительное завершение рецепта.")
                     return
@@ -109,18 +125,15 @@ class RecipeRunner:
                 while self._recipe_state == RECIPE_STATES.PAUSE:
                     sleep(1)
 
-                action_table_name = action[0]
-                # self._set_current_recipe_step(f"ШАГ №{action_index + 1}: {action_table_name}")
-                self._set_current_recipe_step(f"{action_table_name}")
-
-                action_obj, index = get_action_by_name(action_table_name, self._actions_list)
                 action_obj: AppAction = action_obj
+
+                # self._set_current_recipe_step(f"ШАГ №{action_index + 1}: {action_table_name}")
+                self._set_current_recipe_step(f"{action_obj.name}")
+
                 action_obj.system = self._system
                 action_obj.is_stop_state_function = self._is_stop_recipe
                 action_obj.is_pause_state_function = self._is_pause_recipe
-
-                args = action[1:1 + action_obj.args_amount]
-                action_obj.action(*args)
+                action_obj.action(*action_args)
 
             except NotAchievingRecipeStepGoal:
                 self._system.add_error(f"Цель шага №{action_index + 1} не достигнута. "

@@ -1,5 +1,7 @@
 from abc import abstractmethod
 
+from coregraphene.auto_actions import Argument
+
 
 class AppAction:
     args_info = []
@@ -34,8 +36,19 @@ class AppAction:
     #                   **kwargs):
     #     self.system = system
 
+    def _prepare_argument(self, arg, arg_class: Argument):
+        # print("ARGS!", arg, arg_class)
+        return arg_class().prepare_value(arg)
+
+    def action(self, *args):
+        assert len(args) == len(self.args_info), \
+            f"Check correct arguments in {self.__class__.__name__}"
+        prepared_args = list(map(lambda x: self._prepare_argument(*x),
+                                 zip(args, self.args_info)))
+        return self._action(*prepared_args)
+
     @abstractmethod
-    def action(self, *args, **kwargs):
+    def _action(self, *args):
         pass
 
     @property
