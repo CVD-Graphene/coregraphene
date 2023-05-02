@@ -54,7 +54,7 @@ class BaseSerialAsciiCommunicator(AbstractCommunicator):
     communication_method_class = SerialAsciiCommunicationMethod
 
     def _preprocessing_value(self, value=""):
-        print("SEND WRITE VALUE COMMUN >>>>", value)
+        # print("SEND WRITE VALUE COMMUN >>>>", value)
         return {
             "command": value,
         }
