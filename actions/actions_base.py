@@ -1,3 +1,4 @@
+import time
 from abc import abstractmethod
 
 from coregraphene.actions import Argument
@@ -20,6 +21,7 @@ class AppAction:
 
     def __init__(self):
         self._args_amount = len(self.args_info)
+        self.start_time = time.time()
 
     def _is_stop_state(self):
         if self.is_stop_state_function is not None:
@@ -43,8 +45,11 @@ class AppAction:
     def action(self, *args):
         assert len(args) == len(self.args_info), \
             f"Check correct arguments in {self.__class__.__name__}"
+
         prepared_args = list(map(lambda x: self._prepare_argument(*x),
                                  zip(args, self.args_info)))
+
+        self.start_time = time.time()
         return self.do_action(*prepared_args)
 
     @abstractmethod
