@@ -13,7 +13,7 @@ from ..conf import settings
 from ..exceptions.system import BaseConditionException
 from ..components.controllers import AbstractController
 from ..recipe import RECIPE_STATES, RecipeRunner
-from ..system_effects import SetCurrentRecipeStepEffect, BaseSignalEffect
+from ..system_effects import SetCurrentRecipeStepEffect, BaseSignalEffect, RecipeStartEffect
 from ..utils import get_available_usb_ports
 
 TABLE_COLUMN_NAMES = settings.TABLE_COLUMN_NAMES
@@ -69,6 +69,8 @@ class BaseSystem(object):
         self._system_actions_array = []
         self._system_actions_callbacks_thread = None
 
+        self._background_actions_array = []
+
         # CONTROLLERS
         self._controllers: list[AbstractController] = []
 
@@ -79,9 +81,15 @@ class BaseSystem(object):
         # VALUES
         self._init_values()
 
+        self._init_base_actions()
         self._init_actions()
 
         self._collect_actions()
+
+        self._background_actions_array = self.create_background_actions_array() or []
+
+    def create_background_actions_array(self):
+        return []
 
     def _determine_attributes(self):
         """
@@ -138,12 +146,20 @@ class BaseSystem(object):
         """
         pass
 
+    def _init_base_actions(self):
+        """
+        Init actions
+        :return:
+        """
+        self.current_recipe_step_effect = SetCurrentRecipeStepEffect(system=self)
+        self.recipe_start_effect = RecipeStartEffect(system=self)
+
     def _init_actions(self):
         """
         Init actions
         :return:
         """
-        self.set_current_recipe_step_action = SetCurrentRecipeStepEffect(system=self)
+        pass
 
     def _collect_actions(self):
         # method_list = []
@@ -214,6 +230,9 @@ class BaseSystem(object):
         self._actions_thread = Thread(target=self._run_actions_loop)
         self._actions_thread.start()
 
+        for background_action in self._background_actions_array:
+            background_action.run()
+
         # self._system_actions_callbacks_thread = Thread(
         #     target=self._system_actions_callbacks_loop
         # )
@@ -248,6 +267,9 @@ class BaseSystem(object):
                 print("Join recipe thread error:", e)
         if self._active_actions_array is not None:
             self._system_actions_callbacks_thread.join()
+
+        for background_action in self._background_actions_array:
+            background_action.join()
 
     @abstractmethod
     def check_conditions(self):
@@ -431,14 +453,18 @@ class BaseSystem(object):
         return ready
 
     def run_recipe(self):
-        self._recipe_history = []
+        if self._recipe_runner.recipe_state == RECIPE_STATES.RUN:
+            return
+
+        self.recipe_start_effect()
+        #self._recipe_history = []
         # if type(recipe) != list:
         #     self._add_error_log(Exception("Чтение рецепта завершилось с ошибками"))
         #     return False
 
         # self._recipe = recipe
         # self._recipe_runner.set_recipe(self._recipe)
-        self._recipe_runner.start_recipe()
+        #self._recipe_runner.start_recipe()
         # ready = self._recipe_runner.check_recipe()
         # if ready:
         #     self._recipe_thread = Thread(target=self._recipe_runner.run_recipe)
@@ -447,7 +473,7 @@ class BaseSystem(object):
         # return ready
 
     def set_current_recipe_step(self, name, index=None):
-        return self.set_current_recipe_step_action(name, index=index)
+        return self.current_recipe_step_effect(name, index=index)
 
     def _set_current_recipe_step(self, name, index=None):
         index = index if index else (len(self._recipe_history) + 1)
