@@ -1,6 +1,6 @@
-from .base import SystemAction
+from .base import SystemEffect
 
 
-class SetCurrentRecipeStepAction(SystemAction):
+class SetCurrentRecipeStepEffect(SystemEffect):
     def _call_function(self, name, index=None):
         return self._system._set_current_recipe_step(name, index=index)

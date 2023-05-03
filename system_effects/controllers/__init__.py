@@ -1,4 +1,4 @@
-from .rrg import GetCurrentFlowRrgControllerAction, GetCurrentSccmRrgAdcControllerAction
+from .rrg import GetCurrentFlowRrgControllerEffect, GetCurrentSccmRrgAdcControllerEffect
 from .pyrometer import GetCurrentTemperaturePyrometerControllerAction
 from .current_akip import GetCurrentControllerAction, GetVoltageControllerAction
 from .back_pressure_valve import (
@@ -6,5 +6,5 @@ from .back_pressure_valve import (
     GetPressureBackPressureValveControllerAction,
     GetTargetPressureBackPressureValveControllerAction,
 )
-from .vakumetr_adc import GetCurrentPressureVakumetrAdcControllerAction
+from .vakumetr_adc import GetCurrentPressureVakumetrAdcControllerEffect
 from .vakumetr import GetCurrentPressureVakumetrControllerAction

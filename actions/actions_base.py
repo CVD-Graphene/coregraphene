@@ -1,6 +1,6 @@
 from abc import abstractmethod
 
-from coregraphene.auto_actions import Argument
+from coregraphene.actions import Argument
 
 
 class AppAction:

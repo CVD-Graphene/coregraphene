@@ -1,12 +1,12 @@
 from random import random
 
-from ...system_actions import ControllerAction
+from ...system_effects import ControllerEffect
 from coregraphene.conf import settings
 
 LOCAL_MODE = settings.LOCAL_MODE
 
 
-class GetCurrentPressureVakumetrControllerAction(ControllerAction):
+class GetCurrentPressureVakumetrControllerAction(ControllerEffect):
 
     def _on_get_value(self, value):
         # print("CALL FUNC VAKUMETR ACTION:", value)

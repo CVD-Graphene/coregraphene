@@ -6,7 +6,7 @@ from ...conf import settings
 from .base import AbstractController
 from ..commands import BaseCommand
 from ..devices import AccurateVakumetrDevice
-from ...system_actions import GetCurrentPressureVakumetrControllerAction
+from ...system_effects import GetCurrentPressureVakumetrControllerAction
 
 LOCAL_MODE = settings.LOCAL_MODE
 

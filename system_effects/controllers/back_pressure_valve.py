@@ -1,10 +1,10 @@
-from ...system_actions import ManyDeviceControllerAction, ControllerAction
+from ...system_effects import ManyDeviceControllerEffect, ControllerEffect
 from coregraphene.conf import settings
 
 LOCAL_MODE = settings.LOCAL_MODE
 
 
-class GetCurrentStateBackPressureValveControllerAction(ControllerAction):
+class GetCurrentStateBackPressureValveControllerAction(ControllerEffect):
 
     def _on_get_value(self, value):
         self._controller.state = value
@@ -13,7 +13,7 @@ class GetCurrentStateBackPressureValveControllerAction(ControllerAction):
         return value
 
 
-class GetPressureBackPressureValveControllerAction(ControllerAction):
+class GetPressureBackPressureValveControllerAction(ControllerEffect):
     def _on_get_value(self, value):
         self._controller.current_pressure = value
 
@@ -21,7 +21,7 @@ class GetPressureBackPressureValveControllerAction(ControllerAction):
         return float(value)
 
 
-class GetTargetPressureBackPressureValveControllerAction(ControllerAction):
+class GetTargetPressureBackPressureValveControllerAction(ControllerEffect):
     def _on_get_value(self, value):
         self._controller.target_pressure = value
 
@@ -29,7 +29,7 @@ class GetTargetPressureBackPressureValveControllerAction(ControllerAction):
         return float(value)
 
 
-class GetTargetOpenPercentBackPressureValveControllerAction(ControllerAction):
+class GetTargetOpenPercentBackPressureValveControllerAction(ControllerEffect):
     def _on_get_value(self, value):
         self._controller.target_open_percent = value
 
@@ -37,7 +37,7 @@ class GetTargetOpenPercentBackPressureValveControllerAction(ControllerAction):
         return float(value)
 
 
-class GetCurrentSccmRrgAdcControllerAction(ManyDeviceControllerAction):
+class GetCurrentSccmRrgAdcControllerEffect(ManyDeviceControllerEffect):
 
     def _on_get_value(self, value):
         # print("CALL FUNC CURRENT FLOW CONTROLLER 2:", value)

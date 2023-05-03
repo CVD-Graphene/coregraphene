@@ -1,6 +1,6 @@
 import random
 
-from ...system_actions import GetCurrentFlowRrgControllerAction
+from ...system_effects import GetCurrentFlowRrgControllerEffect
 from .base import AbstractController, AbstractControllerManyDevices
 from ..commands import BaseCommand
 from ..devices import RrgModbusDevice
@@ -44,7 +44,7 @@ class SeveralRrgModbusController(AbstractControllerManyDevices):
         self.target_sccms = [0.0 for _ in self.devices]
         self.current_sccms = [0.0 for _ in self.devices]
 
-        self.get_current_flow = GetCurrentFlowRrgControllerAction(controller=self)
+        self.get_current_flow = GetCurrentFlowRrgControllerEffect(controller=self)
 
     def _reinitialize_communication(self):
         try:

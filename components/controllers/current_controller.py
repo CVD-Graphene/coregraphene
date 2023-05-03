@@ -6,7 +6,7 @@ from ..devices import CurrentSourceDevice
 from ...conf import settings
 
 from .base import AbstractController
-from ...system_actions import GetCurrentControllerAction, GetVoltageControllerAction
+from ...system_effects import GetCurrentControllerAction, GetVoltageControllerAction
 
 LOCAL_MODE = settings.LOCAL_MODE
 
@@ -58,8 +58,8 @@ class CurrentSourceController(AbstractController):
 
         self.loop_delay = 0.05
 
-        self.get_current_action = GetCurrentControllerAction(controller=self)
-        self.get_voltage_action = GetVoltageControllerAction(controller=self)
+        self.actual_current_effect = GetCurrentControllerAction(controller=self)
+        self.actual_voltage_effect = GetVoltageControllerAction(controller=self)
 
     def _check_command(self, **kwargs):
         self._exec_command(BaseCommand(command=CLEAR_COMMAND))
@@ -97,14 +97,14 @@ class CurrentSourceController(AbstractController):
             command=GET_CURRENT_MEASURE,
             repeat=True,
             with_answer=True,
-            on_answer=self.get_current_action,
+            on_answer=self.actual_current_effect,
         ))
         self.add_command(BaseCommand(
             # command=GET_VOLTAGE_ACTUAL,
             command=GET_VOLTAGE_MEASURE,
             repeat=True,
             with_answer=True,
-            on_answer=self.get_voltage_action,
+            on_answer=self.actual_voltage_effect,
         ))
         self._create_base_commands()
 

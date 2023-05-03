@@ -3,12 +3,12 @@ from ..commands import BaseCommand
 from ..devices import BackPressureValveDevice
 from ...conf import settings
 from ...constants.components import BACK_PRESSURE_VALVE_STATE, BACK_PRESSURE_VALVE_CONSTANTS
-from ...system_actions import (
+from ...system_effects import (
     GetCurrentStateBackPressureValveControllerAction,
     GetPressureBackPressureValveControllerAction,
     GetTargetPressureBackPressureValveControllerAction,
 )
-from ...system_actions.controllers.back_pressure_valve import GetTargetOpenPercentBackPressureValveControllerAction
+from ...system_effects.controllers.back_pressure_valve import GetTargetOpenPercentBackPressureValveControllerAction
 
 LOCAL_MODE = settings.LOCAL_MODE
 FULL_OPEN_BORDER = 99.7

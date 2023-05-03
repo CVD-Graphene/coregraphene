@@ -8,12 +8,12 @@ from threading import Thread, Lock
 
 from .constants import NOTIFICATIONS
 from .event_log import EventLog
-from ..auto_actions import BaseThreadAction
+from ..actions import BaseThreadAction
 from ..conf import settings
 from ..exceptions.system import BaseConditionException
 from ..components.controllers import AbstractController
 from ..recipe import RECIPE_STATES, RecipeRunner
-from ..system_actions import SetCurrentRecipeStepAction, BaseSignalAction
+from ..system_effects import SetCurrentRecipeStepEffect, BaseSignalEffect
 from ..utils import get_available_usb_ports
 
 TABLE_COLUMN_NAMES = settings.TABLE_COLUMN_NAMES
@@ -140,10 +140,10 @@ class BaseSystem(object):
 
     def _init_actions(self):
         """
-        Init auto_actions
+        Init actions
         :return:
         """
-        self.set_current_recipe_step_action = SetCurrentRecipeStepAction(system=self)
+        self.set_current_recipe_step_action = SetCurrentRecipeStepEffect(system=self)
 
     def _collect_actions(self):
         # method_list = []
@@ -154,7 +154,7 @@ class BaseSystem(object):
             attribute_value = getattr(self, attribute)
             # Check that it is callable
             if callable(attribute_value) and isinstance(
-                attribute_value, BaseSignalAction
+                attribute_value, BaseSignalEffect
             ):
                 # Filter all dunder (__ prefix) methods
                 if not attribute.startswith('__'):
@@ -259,7 +259,7 @@ class BaseSystem(object):
 
     def action(func):
         """
-        Decorator for auto_actions, that check all conditions and system state
+        Decorator for actions, that check all conditions and system state
         :return: new decorated function
         """
 

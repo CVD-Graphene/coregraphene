@@ -1,7 +1,7 @@
 from abc import abstractmethod
 
 from coregraphene.utils.actions import get_action_by_name
-from coregraphene.auto_actions import AppAction, Argument
+from coregraphene.actions import AppAction, Argument
 from time import sleep
 from .constants import RECIPE_STATES
 from .exceptions import NotAchievingRecipeStepGoal

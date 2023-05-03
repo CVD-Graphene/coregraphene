@@ -13,7 +13,7 @@ class ConnectFunction:
         self.filter_kwargs = kwargs
 
 
-class BaseSignalAction(object):
+class BaseSignalEffect(object):
     _immediate_callback = True
 
     def __init__(self, *args, **kwargs):
@@ -135,7 +135,7 @@ class BaseSignalAction(object):
             filter(lambda x: x.uid != uid, self._callback_functions_array))
 
 
-class SystemAction(BaseSignalAction):
+class SystemEffect(BaseSignalEffect):
     def __init__(self, system, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._system = system
@@ -150,7 +150,7 @@ class SystemAction(BaseSignalAction):
         return self._system._handle_exception(e)
 
 
-# class ManyDeviceSignalAction(BaseSignalAction):
+# class ManyDeviceSignalAction(BaseSignalEffect):
 #     def _filter_callback_array(self, *args, device_num=None, **kwargs):
 #         def check_device(connect_function):
 #             _device_num = connect_function.filter_kwargs.get('device_num', None)
@@ -163,7 +163,7 @@ class SystemAction(BaseSignalAction):
 #         return arr
 
 
-class ManyDeviceSystemAction(SystemAction):
+class ManyDeviceSystemEffect(SystemEffect):
     # pass
     def _filter_callback_array(self, *args, device_num=None, **kwargs):
         def check_device(connect_function):
@@ -177,7 +177,7 @@ class ManyDeviceSystemAction(SystemAction):
         return arr
 
 
-class ControllerAction(BaseSignalAction):
+class ControllerEffect(BaseSignalEffect):
     _immediate_callback = True
 
     def __init__(self, controller, *args, **kwargs):
@@ -204,7 +204,7 @@ class ControllerAction(BaseSignalAction):
     #     return value
 
 
-class ManyDeviceControllerAction(ControllerAction):
+class ManyDeviceControllerEffect(ControllerEffect):
     def _filter_callback_array(self, *args, **kwargs):
         device_num = self.current_device_num()
 

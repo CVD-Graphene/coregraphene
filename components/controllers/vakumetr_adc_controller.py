@@ -1,4 +1,4 @@
-from ...system_actions import GetCurrentPressureVakumetrAdcControllerAction
+from ...system_effects import GetCurrentPressureVakumetrAdcControllerEffect
 from .base import AbstractControllerManyDevices
 from ..commands import BaseCommand
 from ..devices import VakumetrAdcDevice
@@ -26,7 +26,7 @@ class VakumetrAdcController(AbstractControllerManyDevices):
         self.loop_delay = 0.3
 
         self.current_pressures = [0.0 for _ in self.devices]
-        self.get_current_pressure_action = GetCurrentPressureVakumetrAdcControllerAction(controller=self)
+        self.get_current_pressure_action = GetCurrentPressureVakumetrAdcControllerEffect(controller=self)
 
     def _thread_setup_additional(self, **kwargs):
         for i in range(self.devices_amount):

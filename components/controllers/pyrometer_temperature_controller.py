@@ -6,7 +6,7 @@ from ...conf import settings
 from .base import AbstractController
 from ..commands import BaseCommand
 from ..devices import PyrometerTemperatureDevice
-from ...system_actions import GetCurrentTemperaturePyrometerControllerAction
+from ...system_effects import GetCurrentTemperaturePyrometerControllerAction
 
 LOCAL_MODE = settings.LOCAL_MODE
 

@@ -1,12 +1,12 @@
 from random import random
 
-from ...system_actions import ManyDeviceControllerAction
+from ...system_effects import ManyDeviceControllerEffect
 from coregraphene.conf import settings
 
 LOCAL_MODE = settings.LOCAL_MODE
 
 
-class GetCurrentFlowRrgControllerAction(ManyDeviceControllerAction):
+class GetCurrentFlowRrgControllerEffect(ManyDeviceControllerEffect):
 
     def _on_get_value(self, value):
         # print("CALL FUNC CURRENT FLOW CONTROLLER 2:", value)
@@ -22,7 +22,7 @@ class GetCurrentFlowRrgControllerAction(ManyDeviceControllerAction):
         return value
 
 
-class GetCurrentSccmRrgAdcControllerAction(ManyDeviceControllerAction):
+class GetCurrentSccmRrgAdcControllerEffect(ManyDeviceControllerEffect):
 
     def _on_get_value(self, value):
         # print("CALL FUNC CURRENT FLOW CONTROLLER 2:", value)
