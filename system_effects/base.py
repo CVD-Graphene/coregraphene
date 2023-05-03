@@ -30,6 +30,8 @@ class BaseSignalEffect(object):
         pass
 
     def _update_value_for_functions(self, value):
+        if value is None:
+            return []
         if type(value) == set:
             value = list(value)
         if type(value) not in [list, ]:
