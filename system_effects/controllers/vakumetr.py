@@ -6,7 +6,7 @@ from coregraphene.conf import settings
 LOCAL_MODE = settings.LOCAL_MODE
 
 
-class GetCurrentPressureVakumetrControllerAction(ControllerEffect):
+class GetCurrentPressureVakumetrControllerEffect(ControllerEffect):
 
     def _on_get_value(self, value):
         # print("CALL FUNC VAKUMETR ACTION:", value)

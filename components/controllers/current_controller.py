@@ -199,11 +199,9 @@ class CurrentSourceController(AbstractController):
     @AbstractController.thread_command
     def set_target_current(self, value):
         value = float(value)
-        value = min(value, MAX_SET_CURRENT)
+        value = round(max(0.0, min(value, MAX_SET_CURRENT)), 2)
         command = self._create_set_current_command_obj(value)
         self.target_current_value = value
         print("Set value current:", self.target_current_value)
         self.add_command(command)
-        # ans = self.exec_command(command=SET_CURRENT_ACTUAL, value=value)
-        # raise Exception("Ошибка установки значения тока: ...")
         return value
