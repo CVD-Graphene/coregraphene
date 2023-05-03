@@ -1,7 +1,8 @@
 import time
 from abc import abstractmethod
 
-from coregraphene.actions import Argument
+from .exceptions import NotAchievingActionGoal
+from ..actions import Argument
 
 
 class AppAction:
@@ -28,6 +29,16 @@ class AppAction:
             return self.is_stop_state_function()
         return False
 
+    def _on_alert_interrupt(self):
+        pass
+        # self.system.add_error_log(f"Выполнение остановлено")
+
+    def interrupt_if_stop_state(self):
+        if self.is_stop_state_function is not None and self.is_stop_state_function() \
+                and self.system is not None:
+            self._on_alert_interrupt()
+            raise NotAchievingActionGoal
+
     def _is_pause_state(self):
         if self.is_pause_state_function is not None:
             return self.is_pause_state_function()
@@ -50,7 +61,8 @@ class AppAction:
                                  zip(args, self.args_info)))
 
         self.start_time = time.time()
-        return self.do_action(*prepared_args)
+        self.do_action(*prepared_args)
+        self.interrupt_if_stop_state()
 
     @abstractmethod
     def do_action(self, *args):

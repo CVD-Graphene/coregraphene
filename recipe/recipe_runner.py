@@ -4,7 +4,7 @@ from coregraphene.utils.actions import get_action_by_name
 from coregraphene.actions import AppAction, Argument
 from time import sleep
 from .constants import RECIPE_STATES
-from .exceptions import NotAchievingRecipeStepGoal
+from ..actions.exceptions import NotAchievingActionGoal
 
 RECIPE_STATES_TO_STR = {
     RECIPE_STATES.RUN: "Running",
@@ -135,7 +135,7 @@ class RecipeRunner:
                 action_obj.is_pause_state_function = self._is_pause_recipe
                 action_obj.action(*action_args)
 
-            except NotAchievingRecipeStepGoal:
+            except NotAchievingActionGoal:
                 self._system.add_error(f"Цель шага №{action_index + 1} не достигнута. "
                                        f"Завершение рецепта.")
                 self._on_not_achieving_recipe_step_action()
