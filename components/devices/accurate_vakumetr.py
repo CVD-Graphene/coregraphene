@@ -28,7 +28,7 @@ class AccurateVakumetrDevice(AbstractDevice):
     def get_value_with_waiting(self):
         """For testing"""
         self.exec_command(command="MV", value="00")
-        sleep(0.5)
+        sleep(0.6)
         r = self.read()
         print("Read accurate vakumetr value:", r)#, "KW", self.kwargs)
         return r

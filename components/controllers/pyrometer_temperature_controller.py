@@ -50,7 +50,9 @@ class PyrometerTemperatureController(AbstractController):
         time.sleep(self.loop_delay * 2)
         read_value = self.read(**self._main_command.kwargs)
         temp = self._on_get_temperature_value(read_value)
+        print("Pyrometer get value::", temp)
         assert temp >= 1.0
+        print("Pyrometer >>> DONE!")
 
     def _thread_setup_additional(self, **kwargs):
         self.add_command(self._main_command)

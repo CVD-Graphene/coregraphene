@@ -66,8 +66,10 @@ class CurrentSourceController(AbstractController):
         sleep(0.2)
         self._exec_command(self._CHECK_ERRORS_COMMAND_OBJ)
         sleep(0.5)
-        read_value = self.read(**self._CHECK_ERRORS_COMMAND_OBJ.kwargs)
+        read_value = self.read(**self._CHECK_ERRORS_COMMAND_OBJ.kwargs).strip()
+        print("Current source read value::", read_value)
         assert read_value.lower() == "0 no error"
+        print("Current source >>> DONE!")
 
     def setup(self):
         super().setup()

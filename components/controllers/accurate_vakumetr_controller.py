@@ -86,6 +86,7 @@ class AccurateVakumetrController(AbstractController):
         # print(self.device.read(), "REBOOT READ")
         value = self.device.get_value_with_waiting()
         assert value >= 0.0
+        print("Vakumetr >>> DONE!")
 
     def get_value(self):
         return self.device.get_value()

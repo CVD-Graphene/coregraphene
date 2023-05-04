@@ -1,3 +1,5 @@
+import time
+
 from .base import AbstractController
 from ..commands import BaseCommand
 from ..devices import BackPressureValveDevice
@@ -39,7 +41,12 @@ class BackPressureValveController(AbstractController):
         self.get_target_open_percent_action = GetTargetOpenPercentBackPressureValveControllerAction(controller=self)
 
     def _check_command(self, **kwargs):
-        pass
+        self._exec_command(BaseCommand(command=BACK_PRESSURE_VALVE_CONSTANTS.READ_PRESSURE,))
+        time.sleep(self.loop_delay * 2)
+        read_value = float(self.read())
+        print("Throttle get value::", read_value)
+        assert read_value >= 0.0
+        print("Throttle >>> DONE!")
 
     def _reinitialize_communication(self):
         try:
