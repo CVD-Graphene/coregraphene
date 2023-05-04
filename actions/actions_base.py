@@ -33,6 +33,13 @@ class AppAction:
         pass
         # self.system.add_error_log(f"Выполнение остановлено")
 
+    def sub_action(self, action_class):
+        sub_action = action_class()
+        sub_action.system = self.system
+        sub_action.is_stop_state_function = self.is_stop_state_function
+        sub_action.is_pause_state_function = self.is_pause_state_function
+        return sub_action
+
     def interrupt_if_stop_state(self):
         if self.is_stop_state_function is not None and self.is_stop_state_function() \
                 and self.system is not None:
