@@ -52,6 +52,8 @@ class SerialAsciiCommunicationMethod(BaseCommunicationMethod):
             bytesize=self.bytesize,
             timeout=self.timeout,
         )
+        self.instrument.reset_input_buffer()
+        self.instrument.reset_output_buffer()
 
         gc.collect()
 
@@ -76,6 +78,9 @@ class SerialAsciiCommunicationMethod(BaseCommunicationMethod):
     def destructor(self):
         if LOCAL_MODE:
             return
+        self.instrument.reset_input_buffer()
+        self.instrument.reset_output_buffer()
+
         self.instrument.close()
 
     def _send(self, command=None):
