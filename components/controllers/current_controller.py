@@ -66,8 +66,10 @@ class CurrentSourceController(AbstractController):
         print("|> Current source exec 1 command...")
         self._exec_command(BaseCommand(command=REMOTE_COMMAND))
         print("|> Current source exec 2 command...")
+        # self._exec_command(BaseCommand(command=OUTPUT_1_COMMAND))
+        # print("|> Current source exec 3 command...")
         # sleep(self.loop_delay)
-        self._exec_command(self._CHECK_ERRORS_COMMAND_OBJ)
+        self._exec_command(BaseCommand(command=GET_ERRORS_COMMAND,))
         print("|> Current source exec 3 command...")
         sleep(self.loop_delay * 2)
         read_value = self.read().strip()  # **self._CHECK_ERRORS_COMMAND_OBJ.kwargs
