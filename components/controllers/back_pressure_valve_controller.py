@@ -42,7 +42,7 @@ class BackPressureValveController(AbstractController):
 
     def _check_command(self, **kwargs):
         self._exec_command(BaseCommand(command=BACK_PRESSURE_VALVE_CONSTANTS.READ_PRESSURE,))
-        time.sleep(self.loop_delay * 2)
+        time.sleep(self.loop_delay * 3)
         read_value = str(self.read())
         print("Throttle get value::", read_value)
         assert read_value >= 0.0
