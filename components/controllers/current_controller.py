@@ -63,10 +63,14 @@ class CurrentSourceController(AbstractController):
 
     def _check_command(self, **kwargs):
         self._exec_command(BaseCommand(command=CLEAR_COMMAND))
-        sleep(0.2)
+        print("|> Current source exec 1 command...")
+        self._exec_command(BaseCommand(command=REMOTE_COMMAND))
+        print("|> Current source exec 2 command...")
+        # sleep(self.loop_delay)
         self._exec_command(self._CHECK_ERRORS_COMMAND_OBJ)
-        sleep(0.5)
-        read_value = self.read(**self._CHECK_ERRORS_COMMAND_OBJ.kwargs).strip()
+        print("|> Current source exec 3 command...")
+        sleep(self.loop_delay * 2)
+        read_value = self.read().strip()  # **self._CHECK_ERRORS_COMMAND_OBJ.kwargs
         print("Current source read value::", read_value)
         assert read_value.lower() == "0 no error"
         print("Current source >>> DONE!")
