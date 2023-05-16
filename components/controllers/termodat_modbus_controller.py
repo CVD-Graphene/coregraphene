@@ -17,6 +17,8 @@ REGISTER_SPEED_SET = 355
 
 MAX_TEMPERATURE = 100.0
 
+temperature_label = "Температура Термодат №"
+
 
 class SeveralTermodatModbusController(AbstractControllerManyDevices):
 
@@ -27,6 +29,7 @@ class SeveralTermodatModbusController(AbstractControllerManyDevices):
 
         self.port = port
         self._get_potential_port = get_potential_port
+        self._config = config
 
         self.devices = []
         for termodat_config in config:
@@ -46,6 +49,18 @@ class SeveralTermodatModbusController(AbstractControllerManyDevices):
         self.target_temperatures = [0.0 for _ in self.devices]
         self.current_temperatures = [0.0 for _ in self.devices]
         self.speeds = [0.0 for _ in self.devices]
+
+    def _set_logs_parameters_array(self):
+        arr = []
+        for i, _ in enumerate(self._config):
+            arr.append(f"{temperature_label}{i + 1}")
+        return arr
+
+    def _get_log_values(self):
+        values = dict()
+        for i, temperature in enumerate(self.current_temperatures):
+            values[self.logs_parameters[i]] = temperature
+        return values
 
     def _reinitialize_communication(self):
         try:

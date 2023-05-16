@@ -35,10 +35,14 @@ SET_ZERO_CURRENT_ACTUAL = "SOUR:CURR 0"  # 10-4-40 Current limit for actual valu
 
 SLEEP_TIME = 0.05
 
+current_label = 'Текущий ток (А)'
+voltage_label = 'Текущее напряжение'
+
 
 class CurrentSourceController(AbstractController):
     device_class = CurrentSourceDevice
     code = 'current_source'
+    logs_parameters = [current_label, voltage_label, ]
 
     def __init__(self,
                  # on_change_voltage=None,
@@ -61,6 +65,12 @@ class CurrentSourceController(AbstractController):
         self.actual_current_effect = GetCurrentControllerAction(controller=self)
         self.actual_voltage_effect = GetVoltageControllerAction(controller=self)
 
+    def _get_log_values(self):
+        return {
+            current_label: self.current_value,
+            voltage_label: self.voltage_value,
+        }
+
     def _check_command(self, **kwargs):
         self._exec_command(BaseCommand(command=CLEAR_COMMAND))
         print("|> Current source exec 1 command...")
@@ -74,7 +84,7 @@ class CurrentSourceController(AbstractController):
         sleep(self.loop_delay * 2)
         read_value = self.read().strip()  # **self._CHECK_ERRORS_COMMAND_OBJ.kwargs
         print("Current source read value::", read_value)
-        assert read_value.lower() == "0 no error"
+        assert (read_value.lower() == "0 no error" or LOCAL_MODE)
         print("Current source >>> DONE!")
 
     def setup(self):

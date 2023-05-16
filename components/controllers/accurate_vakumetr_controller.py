@@ -10,10 +10,14 @@ from ...system_effects import GetCurrentPressureVakumetrControllerEffect
 
 LOCAL_MODE = settings.LOCAL_MODE
 
+parameter_label = 'Точный вакуметр'
+
 
 class AccurateVakumetrController(AbstractController):
     device_class = AccurateVakumetrDevice
     code = 'vakumetr'
+
+    logs_parameters = [parameter_label, ]
 
     def __init__(self, *args, get_potential_port=None, **kwargs):
         super().__init__(*args, **kwargs)
@@ -36,6 +40,9 @@ class AccurateVakumetrController(AbstractController):
                 self.device.update_communication(port=new_port)
         except Exception as e:
             print(f"|<<< REINITIALIZE {self.code} COMMUNICATION ERR:", e)
+
+    def _get_log_values(self):
+        return {parameter_label: self.vakumetr_value}
 
     def _thread_setup_additional(self, **kwargs):
         # self.add_command(BaseCommand(

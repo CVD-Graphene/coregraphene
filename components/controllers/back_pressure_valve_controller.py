@@ -16,10 +16,14 @@ LOCAL_MODE = settings.LOCAL_MODE
 FULL_OPEN_BORDER = 99.7
 FULL_CLOSE_BORDER = 0.3
 
+pressure_label = 'Давление дросселя'
+
 
 class BackPressureValveController(AbstractController):
     code = 'throttle'
     device_class = BackPressureValveDevice
+
+    logs_parameters = [pressure_label, ]
 
     def __init__(self, get_potential_port=None, port=None, **kwargs):
         super().__init__(port=port, **kwargs)
@@ -56,6 +60,9 @@ class BackPressureValveController(AbstractController):
                 self.device.update_communication(port=new_port)
         except Exception as e:
             print(f"|<<< REINITIALIZE {self.code} COMMUNICATION ERR:", e)
+
+    def _get_log_values(self):
+        return {pressure_label: self.current_pressure}
 
     def _thread_setup_additional(self, **kwargs):
         self.add_command(BaseCommand(

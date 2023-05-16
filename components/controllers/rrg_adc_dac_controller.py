@@ -8,6 +8,8 @@ from ...conf import settings
 
 LOCAL_MODE = settings.LOCAL_MODE
 
+sccm_label = "РРГ sccm "
+
 
 class SeveralRrgAdcDacController(AbstractControllerManyDevices):
     code = 'rrg'
@@ -35,6 +37,18 @@ class SeveralRrgAdcDacController(AbstractControllerManyDevices):
         self.current_sccms = [0.0 for _ in self.devices]
 
         self.get_current_flow = GetCurrentSccmRrgAdcControllerEffect(controller=self)
+
+    def _set_logs_parameters_array(self):
+        arr = []
+        for rrg_config in self._rrgs_config:
+            arr.append(sccm_label + rrg_config["NAME"])
+        return arr
+
+    def _get_log_values(self):
+        values = dict()
+        for i, sccm in enumerate(self.current_sccms):
+            values[self.logs_parameters[i]] = sccm
+        return values
 
     def get_max_sccm_device(self, device_num=None):
         if device_num is None:

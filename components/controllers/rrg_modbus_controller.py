@@ -16,6 +16,8 @@ REGISTER_STATE_FLAGS_2 = 3
 REGISTER_SET_FLOW = 4
 REGISTER_GET_FLOW = REGISTER_SET_FLOW if LOCAL_MODE else 5
 
+sccm_label = "РРГ sccm "
+
 
 class SeveralRrgModbusController(AbstractControllerManyDevices):
     code = 'rrg'
@@ -56,6 +58,18 @@ class SeveralRrgModbusController(AbstractControllerManyDevices):
                     device.update_communication(port=new_port)
         except Exception as e:
             print(f"|<<< REINITIALIZE {self.code} COMMUNICATION ERR:", e)
+
+    def _set_logs_parameters_array(self):
+        arr = []
+        for rrg_config in self._rrgs_config:
+            arr.append(sccm_label + rrg_config["NAME"])
+        return arr
+
+    def _get_log_values(self):
+        values = dict()
+        for i, sccm in enumerate(self.current_sccms):
+            values[self.logs_parameters[i]] = sccm
+        return values
 
     def get_max_sccm_device(self, device_num=None):
         if device_num is None:

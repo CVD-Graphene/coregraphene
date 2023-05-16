@@ -10,10 +10,13 @@ from ...system_effects import GetCurrentTemperaturePyrometerControllerAction
 
 LOCAL_MODE = settings.LOCAL_MODE
 
+temperature_label = 'Температура (пирометр)'
+
 
 class PyrometerTemperatureController(AbstractController):
     device_class = PyrometerTemperatureDevice
     code = 'pyrometer'
+    logs_parameters = [temperature_label, ]
 
     def __init__(self, *args, get_potential_port=None, **kwargs):
         super().__init__(*args, **kwargs)
@@ -35,6 +38,9 @@ class PyrometerTemperatureController(AbstractController):
             # on_answer=self._on_get_temperature_value,
             on_answer=self.get_temperature_action,
         )
+
+    def _get_log_values(self):
+        return {temperature_label: self.temperature_value}
 
     def _reinitialize_communication(self):
         try:
