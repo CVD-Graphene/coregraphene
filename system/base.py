@@ -8,6 +8,7 @@ from threading import Thread, Lock
 
 from .constants import NOTIFICATIONS
 from .event_log import EventLog
+from .logger.base import BaseLogger
 from ..actions import BaseThreadAction
 from ..conf import settings
 from ..exceptions.system import BaseConditionException
@@ -33,6 +34,10 @@ class BaseSystem(object):
     """
 
     recipe_class = RecipeRunner
+    logger_class = BaseLogger
+    logger_pause = 0.5
+    log_parameters = None
+
     _actions_array_lock = Lock()
 
     _ports_attr_names = {}
@@ -87,6 +92,21 @@ class BaseSystem(object):
         self._collect_actions()
 
         self._background_actions_array = self.create_background_actions_array() or []
+
+        self.logger = self.logger_class(parameter_names=self.get_log_parameters_array())
+        self.log_parameters = self.logger.parameter_names
+        self._logger_thread = None
+
+    def get_log_parameters_array(self):
+        names = []
+        for controller in self._controllers:
+            try:
+                controller.set_logs_parameters_array()
+                names += controller.logs_parameters
+            except Exception as e:
+                print(controller.__class__.__name__, e)
+                raise
+        return names
 
     def create_background_actions_array(self):
         return []
@@ -230,6 +250,9 @@ class BaseSystem(object):
         self._actions_thread = Thread(target=self._run_actions_loop)
         self._actions_thread.start()
 
+        self._logger_thread = Thread(target=self._logger_loop)
+        self._logger_thread.start()
+
         for background_action in self._background_actions_array:
             background_action.run()
 
@@ -237,6 +260,18 @@ class BaseSystem(object):
         #     target=self._system_actions_callbacks_loop
         # )
         # self._system_actions_callbacks_thread.start()
+
+    def _logger_loop(self):
+        while self.is_working():
+            time.sleep(self.logger_pause)
+            log_parameters = self._get_log_parameters()
+            self.logger.add_logs(**log_parameters)
+
+    def _get_log_parameters(self):
+        values = dict()
+        for controller in self._controllers:
+            values.update(controller.get_log_values())
+        return values
 
     def stop(self):
         """
@@ -267,6 +302,9 @@ class BaseSystem(object):
                 print("Join recipe thread error:", e)
         if self._active_actions_array is not None:
             self._system_actions_callbacks_thread.join()
+
+        if self._logger_thread is not None:
+            self._logger_thread.join()
 
         for background_action in self._background_actions_array:
             background_action.join()

@@ -18,6 +18,8 @@ class AbstractController(object):
     device_class = None
     code = None  # str controller code
 
+    logs_parameters = None
+
     def __init__(self, *args, active=True, **kwargs):
         self._active = active
 
@@ -103,6 +105,27 @@ class AbstractController(object):
         if type(self._is_global_working) == bool:
             return self._is_global_working
         return self._is_global_working()
+
+    def set_logs_parameters_array(self):
+        if self.logs_parameters is None:
+            logs_parameters = self._set_logs_parameters_array()
+            if logs_parameters is not None:
+                self.logs_parameters = logs_parameters
+
+    def _set_logs_parameters_array(self):
+        return []
+
+    def get_log_values(self):
+        values = self._get_log_values()
+
+        for name in values.keys():
+            assert name in self.logs_parameters, \
+                f'Parameter {name} not in logs_parameters list in {self.__class__.__name__}'
+
+        return values
+
+    def _get_log_values(self):
+        return {}
 
     def _on_thread_error(self, exception: Exception):
         self._add_error(exception)
