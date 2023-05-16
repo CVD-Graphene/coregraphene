@@ -14,9 +14,9 @@ class BaseLogger(object):
     parameter_time_name = "Время"
     time_index = 0  # const
 
-    actual_logs_amount = 200  # 10000
-    actual_logs_buffer = 40  # 1000
-    step_to_history = 10  # 100
+    actual_logs_amount = 10000  # 10000
+    actual_logs_buffer = 1000  # 1000
+    step_to_history = 100  # 100
 
     history_logs = None
     actual_logs = None
