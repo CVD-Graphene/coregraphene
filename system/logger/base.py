@@ -97,8 +97,10 @@ class BaseLogger(object):
         if type(indexes) == tuple:
             indexes = indexes[0]
         # print("next indexes:", indexes)
-
-        self.history_logs = self.history_logs[:, indexes]
+        if indexes.size == 0:
+            self.history_logs = None
+        else:
+            self.history_logs = self.history_logs[:, indexes]
 
     def _to_log_file(self, np_array):
         pass
