@@ -37,12 +37,13 @@ SLEEP_TIME = 0.05
 
 current_label = 'Текущий ток (А)'
 voltage_label = 'Текущее напряжение'
+resistance_label = 'Текущее сопротивление'
 
 
 class CurrentSourceController(AbstractController):
     device_class = CurrentSourceDevice
     code = 'current_source'
-    logs_parameters = [current_label, voltage_label, ]
+    logs_parameters = [current_label, voltage_label, resistance_label]
 
     def __init__(self,
                  # on_change_voltage=None,
@@ -56,6 +57,7 @@ class CurrentSourceController(AbstractController):
 
         self.voltage_value = 0.0
         self.current_value = 0.0
+        self.resistance_value = 0.0
 
         # self.target_voltage_value = 0.0
         self.target_current_value = 0.0
@@ -65,10 +67,14 @@ class CurrentSourceController(AbstractController):
         self.actual_current_effect = GetCurrentControllerAction(controller=self)
         self.actual_voltage_effect = GetVoltageControllerAction(controller=self)
 
+        self.actual_current_effect.connect(self.update_resistance)
+        self.actual_voltage_effect.connect(self.update_resistance)
+
     def _get_log_values(self):
         return {
             current_label: self.current_value,
             voltage_label: self.voltage_value,
+            resistance_label: self.resistance_value,
         }
 
     def _check_command(self, **kwargs):
@@ -223,3 +229,8 @@ class CurrentSourceController(AbstractController):
         print("Set value current:", self.target_current_value)
         self.add_command(command)
         return value
+
+    def update_resistance(self, *args, **kwargs):
+        if self.current_value <= 0.001:
+            self.resistance_value = 0.0
+        self.resistance_value = self.voltage_value / self.current_value
