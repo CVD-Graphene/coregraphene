@@ -43,6 +43,8 @@ class BaseSystem(object):
     _ports_attr_names = {}
     _default_controllers_kwargs = {}
 
+    max_error_logs_buffer = 1
+
     def __init__(self, actions_list=None):
         self._last_action_answer = None
         self._errors = []
@@ -337,9 +339,18 @@ class BaseSystem(object):
 
     def _add_log(self, log, log_type=NOTIFICATIONS.LOG):
         try:
+            if log_type == NOTIFICATIONS.ERROR and self.max_error_logs_buffer is not None:
+                current_errors_amount = len(
+                    list(filter(
+                        lambda x: x.log_type == log_type,
+                        self._event_logs
+                    ))
+                )
+                if current_errors_amount >= self.max_error_logs_buffer:
+                    return
             self._event_logs.append(EventLog(log, log_type=log_type))
         except Exception as e:
-            print(f"Add event log error: {e}")
+            print(f"[IMPORTANT] Add event log error: {e}")
 
     def _add_error_log(self, e):
         self._add_log(str(e), log_type=NOTIFICATIONS.ERROR)
