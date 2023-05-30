@@ -190,7 +190,7 @@ class ControllerEffect(BaseSignalEffect):
     #     print("Call @@@", args, kwargs)
 
     def _handle_exception(self, e: Exception):
-        print("ERROR ACTION CONTROLLER", e)
+        print(f"ERROR ACTION CONTROLLER {self.__class__.__name__}:", e)
         return self._controller._add_error(e)
 
     def current_device_num(self):
