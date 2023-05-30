@@ -231,6 +231,7 @@ class CurrentSourceController(AbstractController):
         return value
 
     def update_resistance(self, *args, **kwargs):
-        if self.current_value <= 0.001:
+        pass
+        if self.current_value <= 0.1:
             self.resistance_value = 0.0
         self.resistance_value = self.voltage_value / self.current_value
