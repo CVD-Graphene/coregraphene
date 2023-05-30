@@ -6,6 +6,15 @@ from coregraphene.conf import settings
 LOCAL_MODE = settings.LOCAL_MODE
 
 
+class GetPowerControllerAction(ControllerEffect):
+
+    def _on_get_value(self, value):
+        self._controller.is_power = value
+
+    def _call_function(self, value):
+        return bool(value)
+
+
 class GetCurrentControllerAction(ControllerEffect):
 
     def _on_get_value(self, value):

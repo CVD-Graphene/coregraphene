@@ -1,6 +1,10 @@
 from .rrg import GetCurrentFlowRrgControllerEffect, GetCurrentSccmRrgAdcControllerEffect
 from .pyrometer import GetCurrentTemperaturePyrometerControllerAction
-from .current_akip import GetCurrentControllerAction, GetVoltageControllerAction
+from .current_akip import (
+    GetCurrentControllerAction,
+    GetVoltageControllerAction,
+    GetPowerControllerAction,
+)
 from .back_pressure_valve import (
     GetCurrentStateBackPressureValveControllerAction,
     GetPressureBackPressureValveControllerAction,

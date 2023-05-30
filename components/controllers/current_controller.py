@@ -6,7 +6,11 @@ from ..devices import CurrentSourceDevice
 from ...conf import settings
 
 from .base import AbstractController
-from ...system_effects import GetCurrentControllerAction, GetVoltageControllerAction
+from ...system_effects import (
+    GetCurrentControllerAction,
+    GetVoltageControllerAction,
+    GetPowerControllerAction,
+)
 
 LOCAL_MODE = settings.LOCAL_MODE
 
@@ -54,7 +58,7 @@ class CurrentSourceController(AbstractController):
         self._thread_using = True
         # self.on_change_voltage = on_change_voltage
         # self.on_change_current = on_change_current
-
+        self.is_power = False
         self.voltage_value = 0.0
         self.current_value = 0.0
         self.resistance_value = 0.0
@@ -66,6 +70,7 @@ class CurrentSourceController(AbstractController):
 
         self.actual_current_effect = GetCurrentControllerAction(controller=self)
         self.actual_voltage_effect = GetVoltageControllerAction(controller=self)
+        self.is_power_effect = GetPowerControllerAction(controller=self)
 
         self.actual_current_effect.connect(self.update_resistance)
         self.actual_voltage_effect.connect(self.update_resistance)
@@ -85,7 +90,7 @@ class CurrentSourceController(AbstractController):
         # self._exec_command(BaseCommand(command=OUTPUT_1_COMMAND))
         # print("|> Current source exec 3 command...")
         # sleep(self.loop_delay)
-        self._exec_command(BaseCommand(command=GET_ERRORS_COMMAND,))
+        self._exec_command(BaseCommand(command=GET_ERRORS_COMMAND, ))
         print("|> Current source exec 3 command...")
         sleep(self.loop_delay * 2)
         read_value = self.read().strip()  # **self._CHECK_ERRORS_COMMAND_OBJ.kwargs
@@ -93,24 +98,10 @@ class CurrentSourceController(AbstractController):
         assert (read_value.lower() == "0 no error" or LOCAL_MODE)
         print("Current source >>> DONE!")
 
-    def setup(self):
-        super().setup()
-        # self.exec_command(command=CLEAR_COMMAND)
-        # sleep(SLEEP_TIME)
-        # self.exec_command(command=REMOTE_COMMAND)
-        # sleep(SLEEP_TIME)
-        # self.exec_command(command=OUTPUT_1_COMMAND)
-        # sleep(SLEEP_TIME)
-        # self.exec_command(command=SET_MAX_VOLTAGE_LIMIT)
-        # sleep(SLEEP_TIME)
-        # self.exec_command(command=SET_MAX_CURRENT_LIMIT)
-        # sleep(SLEEP_TIME)
-        # self.exec_command(command=SET_VOLTAGE_ACTUAL)
-
     def _thread_setup_additional(self, **kwargs):
         self.add_command(BaseCommand(command=CLEAR_COMMAND))
         self.add_command(BaseCommand(command=REMOTE_COMMAND))
-        self.add_command(BaseCommand(command=OUTPUT_1_COMMAND))
+        self.add_command(self.get_power_on_command())
         self.add_command(BaseCommand(command=SET_MAX_VOLTAGE_LIMIT))
         self.add_command(BaseCommand(command=SET_MAX_CURRENT_LIMIT))
         self.add_command(BaseCommand(command=SET_VOLTAGE_ACTUAL))
@@ -131,6 +122,30 @@ class CurrentSourceController(AbstractController):
             on_answer=self.actual_voltage_effect,
         ))
         self._create_base_commands()
+
+    def get_power_on_command(self):
+        return BaseCommand(
+            command=OUTPUT_1_COMMAND,
+            on_completed=self._on_turn_on_power,
+        )
+
+    def _on_turn_on_power(self):
+        self.is_power_effect(True)
+
+    def toggle_power(self):
+        if self.is_power:
+            self.add_command(self.get_power_off_command())
+        else:
+            self.add_command(self.get_power_on_command())
+
+    def get_power_off_command(self):
+        return BaseCommand(
+            command=OUTPUT_0_COMMAND,
+            on_completed=self._on_turn_off_power,
+        )
+
+    def _on_turn_off_power(self):
+        self.is_power_effect(False)
 
     def _create_base_commands(self):
         self._CHECK_ERRORS_COMMAND_OBJ = BaseCommand(
@@ -170,7 +185,7 @@ class CurrentSourceController(AbstractController):
             self._CLEAR_ERRORS_COMMAND_OBJ,
             BaseCommand(command=SET_ZERO_CURRENT_ACTUAL),
             BaseCommand(command=SET_ZERO_VOLTAGE_ACTUAL),
-            BaseCommand(command=OUTPUT_0_COMMAND),
+            self.get_power_off_command(),
         ]
 
     # def destructor(self):
@@ -233,5 +248,5 @@ class CurrentSourceController(AbstractController):
     def update_resistance(self, *args, **kwargs):
         if self.current_value <= 0.1:
             self.resistance_value = 0.0
-            return
-        self.resistance_value = self.voltage_value / self.current_value
+        else:
+            self.resistance_value = self.voltage_value / self.current_value
