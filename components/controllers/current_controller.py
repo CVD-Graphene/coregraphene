@@ -241,7 +241,7 @@ class CurrentSourceController(AbstractController):
         value = round(max(0.0, min(value, MAX_SET_CURRENT)), 2)
         command = self._create_set_current_command_obj(value)
         self.target_current_value = value
-        print("Set value current:", self.target_current_value)
+        # print("Set value current:", self.target_current_value)
         self.add_command(command)
         return value
 
