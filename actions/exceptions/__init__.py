@@ -3,4 +3,5 @@ class BaseActionException(Exception):
 
 
 class NotAchievingActionGoal(BaseActionException):
-    pass
+    def __str__(self):
+        return f"NotAchievingActionGoal"
