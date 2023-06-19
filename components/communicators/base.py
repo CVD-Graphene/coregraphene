@@ -38,6 +38,7 @@ class AbstractCommunicator(object):
         except BaseCommunicationMethodException:
             raise
         except Exception as e:
+            print('|> SETUP METHOD ERROR:', e)
             self._errors.append(e)
             self._status = COMMUNICATION_INTERFACE_STATUS.HAS_ERRORS
             raise SetupCommunicatorException(
