@@ -70,7 +70,7 @@ class SpidevCommunicationMethod(BaseCommunicationMethod):
         self.instrument.bits_per_word = 8
         # self.instrument.mode = 0b01
         # print("spi.mode = " + str(spi.mode))
-        self.instrument.cshigh = False
+        # self.instrument.cshigh = False # TEST SPI
 
         # gc.collect()
 
