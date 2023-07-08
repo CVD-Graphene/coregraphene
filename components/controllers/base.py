@@ -17,6 +17,7 @@ class AbstractController(object):
 
     device_class = None
     code = None  # str controller code
+    MAX_NUMBER_COMMAND_ATTEMPTS = 5
 
     logs_parameters = None
 
@@ -181,7 +182,6 @@ class AbstractController(object):
             return
 
         to_exit = False
-        MAX_NUMBER_ATTEMPTS = 5
         attempts = 0
         # with_error = False
         counter = 0
@@ -232,9 +232,9 @@ class AbstractController(object):
                 except Exception as pe:
                     print("ERROR PRINTING CONTROLLER RUN EXCEPTION :(")
                 attempts += 1
-                # if attempts < MAX_NUMBER_ATTEMPTS:
+                # if attempts < self.MAX_NUMBER_COMMAND_ATTEMPTS:
                 #     self._add_command_force(self._last_thread_command)
-                if attempts >= MAX_NUMBER_ATTEMPTS:
+                if attempts >= self.MAX_NUMBER_COMMAND_ATTEMPTS:
                     attempts = 0
                     self._reinitialize_communication()
                     self._on_thread_error(e)

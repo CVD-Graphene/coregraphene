@@ -6,6 +6,7 @@ from ..devices import VakumetrAdcDevice
 
 class VakumetrAdcController(AbstractControllerManyDevices):
     code = 'vakumetr_adc'
+    MAX_NUMBER_COMMAND_ATTEMPTS = 2
 
     def __init__(self, config, **kwargs):
         super().__init__(**kwargs)
