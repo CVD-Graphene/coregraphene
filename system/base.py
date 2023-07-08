@@ -15,7 +15,7 @@ from ..exceptions.system import BaseConditionException
 from ..components.controllers import AbstractController
 from ..recipe import RECIPE_STATES, RecipeRunner
 from ..system_effects import SetCurrentRecipeStepEffect, BaseSignalEffect, RecipeStartEffect
-from ..utils import get_available_usb_ports
+from ..utils import get_available_ttyusb_ports, get_available_ttyusb_port_by_usb
 
 TABLE_COLUMN_NAMES = settings.TABLE_COLUMN_NAMES
 
@@ -42,6 +42,7 @@ class BaseSystem(object):
 
     _ports_attr_names = {}
     _default_controllers_kwargs = {}
+    _usb_devices_ports = {}
 
     max_error_logs_buffer = 1
 
@@ -124,7 +125,7 @@ class BaseSystem(object):
         new_port = controller_port
         try:
             used_ports = [value for key, value in self.ports.items() if key != controller_code]
-            usb_ports = get_available_usb_ports()
+            usb_ports = get_available_ttyusb_ports()
             for used_port in used_ports:
                 try:
                     usb_ports.remove(used_port)
@@ -156,6 +157,25 @@ class BaseSystem(object):
             # self.ports[controller_code] = new_port
         except Exception as e:
             print("|<<< NEW PORT GET ERROR:", e)
+
+        print(f"\n|>>> NEW PORT FOR {controller_code}: {new_port}\n")
+        return new_port
+
+    def get_potential_controller_port_1(self, controller_port, controller_code):
+        new_port = controller_port
+        try:
+            device_usb_port = self._usb_devices_ports.get(controller_code, None)
+            if device_usb_port is None:
+                return self.get_potential_controller_port(controller_port, controller_code)
+
+            new_port = get_available_ttyusb_port_by_usb(device_usb_port)
+            if not new_port:
+                return self.get_potential_controller_port(controller_port, controller_code)
+
+            setattr(self, self._ports_attr_names[controller_code], new_port)
+
+        except Exception as e:
+            print("|<<< NEW PORT GET [1] ERROR:", e)
 
         print(f"\n|>>> NEW PORT FOR {controller_code}: {new_port}\n")
         return new_port
