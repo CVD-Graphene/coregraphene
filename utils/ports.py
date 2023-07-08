@@ -28,13 +28,13 @@ def get_available_ttyusb_ports():
 
 def get_available_ttyusb_port_by_usb(usb_port: str) -> str:
     try:
-        a = subprocess.run(f"sudo dmesg | grep ttyUSB | grep usb | grep {usb_port}",
+        a = subprocess.run(f'sudo dmesg | grep ttyUSB | grep "usb " | grep {usb_port}',
                            shell=True, capture_output=True)
         line = a.stdout.decode("ASCII")
         words = list(filter(lambda x: "ttyUSB" in x, line.strip().split()))
         print('WORDS:', words)
         if len(words) > 0:
-            return f"/dev/{words[0]}"
+            return f"/dev/{words[-1]}"
     except Exception as e:
         print(f"ERROR [get_available_ttyusb_port_by_usb {usb_port}]:", e)
     return ''
