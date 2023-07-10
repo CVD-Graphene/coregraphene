@@ -1,4 +1,8 @@
+import string
 import time
+import random
+import datetime
+import os
 
 import numpy as np
 
@@ -13,6 +17,12 @@ class BaseLogger(object):
     duration = 5 * 60
     parameter_time_name = "Время"
     time_index = 0  # const
+
+    session_name = None
+    session_log_file_order = 1
+    log_file_name = None
+    logs_dir = "logs/"
+    log_file_size_border = 1024 * 1024 * 200
 
     actual_logs_amount = 10000  # 10000
     actual_logs_buffer = 1000  # 1000
@@ -43,8 +53,32 @@ class BaseLogger(object):
              self.actual_logs_amount + self.actual_logs_buffer)).astype(self.log_type)
         self._actual_index = 0
 
+        self.session_name = self._generate_initial_session_name()
+        self._prepare_new_log_file()
+
+        if not os.path.exists(self.logs_dir):
+            os.makedirs(self.logs_dir)
+
+    def _prepare_new_log_file(self):
+        self.log_file_name = self._get_new_log_file_name()
+        with open(self.log_file_path, 'w') as log_file:
+            log_file.write(','.join(map(lambda x: f'{x}', self.parameter_names)) + '\n')
+            print('Header log file writing done!')
+
+    def _get_new_log_file_name(self):
+        now_time = str(datetime.datetime.now().replace(microsecond=0)).replace(' ', '-')
+
+        order = self.session_log_file_order
+        self.session_log_file_order += 1
+
+        return f"{self.session_name}_n{order}_{now_time}.csv"
+
+    def _generate_initial_session_name(self):
+        letters = string.ascii_lowercase
+        code = ''.join(random.choice(letters) for i in range(4))
+        return f"{datetime.datetime.now().date()}_{code}"
+
     def current_time(self):
-        # print('Now time:', time.time())
         return time.time() - self.start_time
 
     def add_logs(self, **kwargs):
@@ -55,12 +89,6 @@ class BaseLogger(object):
             np_logs[self.param_to_index[name]] = value
 
         self._to_log_file(np_logs)
-        # print('EREWR',
-        #       self.actual_logs[:][self._actual_index],
-        #       self.actual_logs[:, self._actual_index].shape,
-        #       self.actual_logs[:].shape,
-        #       self.actual_logs.shape,
-        #       )
         self.actual_logs[:, self._actual_index] = np_logs
         if self._actual_index == self.actual_logs_amount + self.actual_logs_buffer - 1:
             to_history_array = self.actual_logs[:, :self.actual_logs_buffer:self.step_to_history]
@@ -78,21 +106,15 @@ class BaseLogger(object):
         else:
             self._actual_index += 1
 
-        history_logs_shape = self.history_logs.shape if self.history_logs is not None else 0
+        # history_logs_shape = self.history_logs.shape if self.history_logs is not None else 0
         # print('Current logs:', self.actual_logs.shape, self._actual_index, history_logs_shape, )
         self.clear_old_history_logs()
 
     def clear_old_history_logs(self):
         border_time = self.current_time() - self.duration
-        # print('TIME:', border_time)
-        # if self.history_logs is not None:
-        #     print('TIME', border_time, float(self.history_logs[0][0]),
-        #           float(self.history_logs[0][0]) > border_time)
 
         if (self.history_logs is None) or float(self.history_logs[0][0]) > border_time:
             return
-        # print('\n\nCLEAR!!!!!!!!!!!!!!!!!!\n\n')
-        # print('ZER[0]', self.history_logs[0])
         indexes = np.where(self.history_logs[0] > border_time)
         if type(indexes) == tuple:
             indexes = indexes[0]
@@ -102,8 +124,22 @@ class BaseLogger(object):
         else:
             self.history_logs = self.history_logs[:, indexes]
 
+    @property
+    def log_file_path(self):
+        return os.path.join(self.logs_dir, self.log_file_name)
+
     def _to_log_file(self, np_array):
-        pass
+        try:
+            file_size = os.path.getsize(self.log_file_path)
+        except:
+            file_size = 0
+        print('Current file size:', file_size)
+        if file_size > self.log_file_size_border:
+            self._prepare_new_log_file()
+
+        with open(self.log_file_path, 'a') as csv_file:
+            csv_file.write(','.join(map(str, np_array)) + '\n')
+            # df.to_csv(csv_file, header=False)
 
     def get_array_log(self, name):
         index = self.param_to_index[name]
