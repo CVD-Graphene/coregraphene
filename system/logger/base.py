@@ -54,10 +54,14 @@ class BaseLogger(object):
         self._actual_index = 0
 
         self.session_name = self._generate_initial_session_name()
-        self._prepare_new_log_file()
 
         if not os.path.exists(self.logs_dir):
             os.makedirs(self.logs_dir)
+
+        if not os.path.exists(self.full_log_dir):
+            os.makedirs(self.full_log_dir)
+
+        self._prepare_new_log_file()
 
     def _prepare_new_log_file(self):
         self.log_file_name = self._get_new_log_file_name()
@@ -71,7 +75,8 @@ class BaseLogger(object):
         order = self.session_log_file_order
         self.session_log_file_order += 1
 
-        return f"{self.session_name}_n{order}_{now_time}.csv"
+        # return f"{self.session_name}_n{order}_{now_time}.csv"
+        return f"n{order}_{now_time}.csv"
 
     def _generate_initial_session_name(self):
         letters = string.ascii_lowercase
@@ -126,14 +131,18 @@ class BaseLogger(object):
 
     @property
     def log_file_path(self):
-        return os.path.join(self.logs_dir, self.log_file_name)
+        return os.path.join(self.logs_dir, self.session_name, self.log_file_name)
+
+    @property
+    def full_log_dir(self):
+        return os.path.join(self.logs_dir, self.session_name)
 
     def _to_log_file(self, np_array):
         try:
             file_size = os.path.getsize(self.log_file_path)
         except:
             file_size = 0
-        print('Current file size:', file_size)
+        # print('Current file size:', file_size)
         if file_size > self.log_file_size_border:
             self._prepare_new_log_file()
 
