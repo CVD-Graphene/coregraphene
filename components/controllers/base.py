@@ -1,3 +1,4 @@
+import datetime
 import time
 import asyncio
 import traceback
@@ -18,6 +19,7 @@ class AbstractController(object):
     device_class = None
     code = None  # str controller code
     MAX_NUMBER_COMMAND_ATTEMPTS = 5
+    works_correctly = True
 
     logs_parameters = None
 
@@ -225,10 +227,13 @@ class AbstractController(object):
 
                 # with_error = False
                 attempts = 0
+                self.works_correctly = True
             except Exception as e:
                 # with_error = True
+                self.works_correctly = False
                 try:
-                    print(f"ERROR DURING EXECUTING COMMAND:", str(e))
+                    print(f"[{datetime.datetime.now().replace(microsecond=0)}] "
+                          f"ERROR DURING EXECUTING COMMAND:", str(e))
                 except Exception as pe:
                     print("ERROR PRINTING CONTROLLER RUN EXCEPTION :(")
                 attempts += 1

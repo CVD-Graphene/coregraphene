@@ -1,3 +1,4 @@
+import datetime
 import os
 import time
 from abc import abstractmethod
@@ -14,7 +15,7 @@ from ..conf import settings
 from ..exceptions.system import BaseConditionException
 from ..components.controllers import AbstractController
 from ..recipe import RECIPE_STATES, RecipeRunner
-from ..system_effects import SetCurrentRecipeStepEffect, BaseSignalEffect, RecipeStartEffect
+from ..system_effects import SetCurrentRecipeStepEffect, BaseSignalEffect, RecipeStartEffect, SingleAnswerSystemEffect
 from ..utils import get_available_ttyusb_ports, get_available_ttyusb_port_by_usb
 
 TABLE_COLUMN_NAMES = settings.TABLE_COLUMN_NAMES
@@ -45,6 +46,7 @@ class BaseSystem(object):
     _usb_devices_ports = {}
 
     max_error_logs_buffer = 1
+    controllers_works_correctly = True
 
     def __init__(self, actions_list=None):
         self._last_action_answer = None
@@ -158,7 +160,8 @@ class BaseSystem(object):
         except Exception as e:
             print("|<<< NEW PORT GET ERROR:", e)
 
-        print(f"\n|>>> NEW PORT FOR {controller_code}: {new_port}\n")
+        print(f"\n|>>> [{datetime.datetime.now().replace(microsecond=0)}] "
+              f"NEW PORT FOR {controller_code}: {new_port}\n")
         return new_port
 
     def get_potential_controller_port_1(self, controller_port, controller_code):
@@ -196,12 +199,20 @@ class BaseSystem(object):
         self.current_recipe_step_effect = SetCurrentRecipeStepEffect(system=self)
         self.recipe_start_effect = RecipeStartEffect(system=self)
 
+        self.controllers_works_correctly_effect = SingleAnswerSystemEffect(system=self)
+        self.controllers_works_correctly_effect.connect(
+            self.update_controller_correct_working_status
+        )
+
     def _init_actions(self):
         """
         Init actions
         :return:
         """
         pass
+
+    def update_controller_correct_working_status(self, all_correct: bool):
+        self.controllers_works_correctly = all_correct
 
     def _collect_actions(self):
         # method_list = []
@@ -288,6 +299,13 @@ class BaseSystem(object):
             time.sleep(self.logger_pause)
             log_parameters = self._get_log_parameters()
             self.logger.add_logs(**log_parameters)
+
+            all_controllers_correct = True
+            for controller in self._controllers:
+                if not controller.works_correctly:
+                    all_controllers_correct = False
+                    break
+            self.controllers_works_correctly_effect(all_controllers_correct)
 
     def _get_log_parameters(self):
         values = dict()

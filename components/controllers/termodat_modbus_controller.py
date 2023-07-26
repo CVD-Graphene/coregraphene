@@ -151,15 +151,13 @@ class SeveralTermodatModbusController(AbstractControllerManyDevices):
         return False
 
     @AbstractController.thread_command
-    def set_temperature_and_speed_all_termodats(self, temperature, speed):
-        # print("TS:::", temperature, speed, type(temperature), type(speed))
+    def set_temperature_and_speed_all_termodats(self, temperature):  # , speed):
         temperature = float(temperature)
-        speed = float(speed)
-        # print("TS2:::", temperature, speed)
+        # speed = float(speed)
         for device_num in range(self.devices_amount):
             self.set_target_temperature(temperature, device_num)
-            self.set_speed_regulation(speed, device_num)
-        return [temperature, speed]
+            # self.set_speed_regulation(speed, device_num)
+        return [temperature]  # , speed]
 
     @AbstractController.thread_command
     def set_temperature_all_termodats(self, temperature):
@@ -190,6 +188,10 @@ class SeveralTermodatModbusController(AbstractControllerManyDevices):
 
     @AbstractController.thread_command
     def set_speed_regulation(self, speed: float, device_num):
+        """
+        Deprecated
+        Not used in current devices on physical level
+        """
         self.add_command(BaseCommand(
             register=REGISTER_SPEED_SET,
             functioncode=6,
