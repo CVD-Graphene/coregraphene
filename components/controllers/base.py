@@ -213,6 +213,7 @@ class AbstractController(object):
 
                     if command.immediate_answer:
                         self._thread_read_command()
+                        continue
                         # command.on_answer(answer)
                     else:
                         self._run_thread_command(command)
