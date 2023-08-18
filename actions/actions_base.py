@@ -51,11 +51,6 @@ class AppAction:
             return self.is_pause_state_function()
         return False
 
-    # def set_functions(self,
-    #                   system=None,
-    #                   **kwargs):
-    #     self.system = system
-
     def _prepare_argument(self, arg, arg_class: Argument):
         # print("ARGS!", arg, arg_class)
         return arg_class.prepare_value(arg)
