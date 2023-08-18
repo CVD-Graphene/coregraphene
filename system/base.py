@@ -19,6 +19,7 @@ from ..system_effects import SetCurrentRecipeStepEffect, BaseSignalEffect, Recip
 from ..utils import get_available_ttyusb_ports, get_available_ttyusb_port_by_usb
 
 TABLE_COLUMN_NAMES = settings.TABLE_COLUMN_NAMES
+SAVE_ERROR_NOTIFICATIONS = settings.SAVE_ERROR_NOTIFICATIONS
 
 
 class BaseSystem(object):
@@ -377,6 +378,10 @@ class BaseSystem(object):
 
     def _add_log(self, log, log_type=NOTIFICATIONS.LOG):
         try:
+            log_type_str = 'ERROR' if log_type == NOTIFICATIONS.ERROR else 'LOG'
+            print(f'|> {datetime.datetime.utcnow()} [ADD LOG] type {log_type_str}: {log}')
+            if log_type == NOTIFICATIONS.ERROR and not SAVE_ERROR_NOTIFICATIONS:
+                return
             if log_type == NOTIFICATIONS.ERROR and self.max_error_logs_buffer is not None:
                 current_errors_amount = len(
                     list(filter(
