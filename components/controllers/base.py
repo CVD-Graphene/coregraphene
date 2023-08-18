@@ -154,6 +154,7 @@ class AbstractController(object):
 
         if time.time() - self._start_thread_read_time > self._critical_read_time:
             # print("2222")
+            self.works_correctly = False
             self._start_thread_read_time = None
             self._is_thread_reading = False
             read_value = ""
@@ -169,6 +170,7 @@ class AbstractController(object):
             #       f"Read [command={com_name}]: value={read_value}.")
             if read_value is not None and not\
                     (type(read_value) == str and len(read_value) == 0):
+                self.works_correctly = True
                 self._start_thread_read_time = None
                 self._is_thread_reading = False
                 # print("READ FOR:", self._last_thread_command.command)
@@ -197,6 +199,7 @@ class AbstractController(object):
             try:
                 if self._is_thread_reading:
                     self._thread_read_command()
+                    continue
                 elif len(self._commands_queue) > 0:
                     if not self._is_working and not to_exit:
                         self._commands_queue.clear()
