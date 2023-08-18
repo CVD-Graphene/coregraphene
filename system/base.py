@@ -9,7 +9,7 @@ from threading import Thread, Lock
 
 from .constants import NOTIFICATIONS
 from .event_log import EventLog
-from .logger.base import BaseLogger
+from .logger import BaseLogger
 from ..actions import BaseThreadAction
 from ..conf import settings
 from ..exceptions.system import BaseConditionException
