@@ -8,6 +8,7 @@ from ..actions import Argument
 class AppAction:
     args_info = []
     _args_amount = 0
+    _args = []
     key = None
     name = None
     system = None
@@ -58,7 +59,7 @@ class AppAction:
     def action(self, *args):
         assert len(args) == len(self.args_info), \
             f"Check correct arguments in {self.__class__.__name__}"
-
+        self._args = args or []
         prepared_args = list(map(lambda x: self._prepare_argument(*x),
                                  zip(args, self.args_info)))
 
@@ -78,3 +79,13 @@ class AppAction:
 
     def check_args(self):
         return None
+
+    def get_full_info_name(self, *args):
+        # print('_args', self._args)
+        name: str = self.name
+        if (index := name.find('[')) >= 0:
+            name = name[:index].strip()
+        args = ', '.join(list(map(str, args))).strip()
+        if args:
+            args = f" [{args}]"
+        return f"{name}{args}"

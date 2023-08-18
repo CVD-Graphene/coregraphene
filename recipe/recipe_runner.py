@@ -128,7 +128,7 @@ class RecipeRunner:
                 action_obj: AppAction = action_obj
 
                 # self._set_current_recipe_step(f"ШАГ №{action_index + 1}: {action_table_name}")
-                self._set_current_recipe_step(f"{action_obj.name}")
+                self._set_current_recipe_step(f"{action_obj.get_full_info_name(*action_args)}")
 
                 action_obj.system = self._system
                 action_obj.is_stop_state_function = self._is_stop_recipe
