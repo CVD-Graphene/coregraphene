@@ -4,6 +4,7 @@ from .serial_ascii import (
     SerialAsciiAkipCommunicator,
     SerialAsciiPyrometerCommunicator,
     BaseSerialAsciiCommunicator,
+    SerialAsciiBhRrgControllerCommunicator,
 )
 from .digital_gpio import DigitalGpioCommunicator
 from .modbus_ascii import ModbusAsciiCommunicator

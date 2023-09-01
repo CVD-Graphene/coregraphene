@@ -1,5 +1,4 @@
 from time import sleep
-from ...conf import settings
 
 from ..communicators import SerialAsciiCommunicator
 from .base import AbstractDevice

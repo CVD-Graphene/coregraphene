@@ -150,3 +150,56 @@ class SerialAsciiPyrometerCommunicator(AbstractCommunicator):
 
         value = int(value[5:9], base=16) - 273
         return value
+
+
+class SerialAsciiBhRrgControllerCommunicator(AbstractCommunicator):
+    communication_method_class = SerialAsciiCommunicationMethod
+    # ADDRESS_PORT_LEN = 3
+
+    # def __init__(self, **kwargs):
+    #     super().__init__(**kwargs)
+    #     # self.port = port_communicator
+    #     # self.communication_method = SerialAsciiCommunicationMethod(
+    #     #     **kwargs,
+    #     #     # port=ACCURATE_VAKUMETR_USB_PORT
+    #     # )
+    #     # self.communication_method = SerialAsciiCommunicationMethod()
+
+    def _add_check_sum(self, command):
+        summ = 0
+        for c in command:
+            summ += ord(c)
+
+        summ = (summ % 64) + 64
+        # print(chr(summ))
+        return f"{command} {chr(summ)}"
+
+    def _preprocessing_value(self, value=None):
+        print('Get BH _preprocessing_value:', value)
+        value = value or []
+        value = ' '.join(value)
+        # address = str(self.port).zfill(self.ADDRESS_PORT_LEN)
+        command = f"{value}"
+        command = f"{self._add_check_sum(command)}\n"
+        # print("SerialAsciiCommunicator COMMAND::", command.strip())
+        return {
+            "command": command,
+        }
+
+    def _check_answer_sum(self, answer, check_sum):
+        # TODO: сделать проверку
+        return True
+
+    def _postprocessing_value(self, value: str = None):
+        if LOCAL_MODE:
+            return []
+        # print("|>>>> BH_RRG_1 VALUE:", value)
+        if value is None:
+            value = ""
+        answer = value.split('\n')[0]
+        answer_split = answer.split()
+        base_answer = ' '.join(answer_split[:-1])
+        check_sum = answer_split[-1]
+        self._check_answer_sum(base_answer, check_sum)
+
+        return base_answer
