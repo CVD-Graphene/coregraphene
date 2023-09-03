@@ -71,6 +71,7 @@ class BhRrgController(AbstractController):
                 repeat=True,
                 command=RRG_READ_VALUE,
                 arg1=i,
+                with_answer=True,
                 on_answer=self.get_current_flow,
             ))
 
