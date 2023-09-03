@@ -90,6 +90,7 @@ class BhRrgController(AbstractController):
             command=RRG_WRITE_VALUE,
             arg1=device_num,
             arg2=sccm,
+            with_answer=True,
             on_answer=self._on_simple_answer,
         ))
 
