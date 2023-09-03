@@ -20,7 +20,7 @@ class BhRrgController(AbstractController):
     device_class = BhRrgDevice
     code = 'rrg_bh'
 
-    logs_parameters = [sccm_label, ]
+    # logs_parameters = [sccm_label, ]
 
     def __init__(self, *args, get_potential_port=None, **kwargs):
         super().__init__(*args, **kwargs)
