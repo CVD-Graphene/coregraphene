@@ -29,7 +29,7 @@ class BhRrgController(AbstractController):
         self.port = kwargs.get("port", None)
         self._get_potential_port = get_potential_port
 
-        self.loop_delay = 0.01
+        self.loop_delay = 0.9
         self._thread_using = True
         self.target_sccms = [0.0 for _ in self._rrgs_config]
         self.current_sccms = [0.0 for _ in self._rrgs_config]
