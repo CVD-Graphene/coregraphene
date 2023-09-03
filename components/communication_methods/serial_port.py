@@ -93,7 +93,7 @@ class SerialAsciiCommunicationMethod(BaseCommunicationMethod):
         self._last_command = command
         # print("COMMAND SERIAL ASCII:", command)
         self.instrument.write(bytearray(command.encode("ASCII")))
-        if self.port == '/dev/ttyAMC0':
+        if self.port == '/dev/ttyACM0':
             print('|>> TEST:', self.instrument.readline())
         # sleep(self.pause)
         # sleep(1)
