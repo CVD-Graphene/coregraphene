@@ -86,7 +86,7 @@ class SerialAsciiCommunicationMethod(BaseCommunicationMethod):
 
     def _send(self, command=None):
         self._last_command = command
-        # print("COMMAND SERIAL ASCII:", command)
+        print("COMMAND SERIAL ASCII:", command)
         self.instrument.write(bytearray(command.encode("ASCII")))
         # sleep(self.pause)
         # sleep(1)
