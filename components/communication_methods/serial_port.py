@@ -21,6 +21,7 @@ class SerialAsciiCommunicationMethod(BaseCommunicationMethod):
                  timeout=0.001,
                  pause=0.04,
                  create_instrument_delay=None,
+                 immediate_serial_read=False,
                  **kwargs,
                  ):
         super().__init__()
@@ -35,6 +36,7 @@ class SerialAsciiCommunicationMethod(BaseCommunicationMethod):
         self.timeout = timeout
         self.pause = pause
         self.create_instrument_delay = create_instrument_delay
+        self.immediate_serial_read = immediate_serial_read
 
     def setup(self):
         super().setup()
@@ -93,8 +95,9 @@ class SerialAsciiCommunicationMethod(BaseCommunicationMethod):
         self._last_command = command
         # print("COMMAND SERIAL ASCII:", command)
         self.instrument.write(bytearray(command.encode("ASCII")))
-        if self.port == '/dev/ttyACM0':
-            print('|>> TEST:', self.instrument.readline())
+        if self.immediate_serial_read:
+            self._last_read_value = self.instrument.readline()
+            # print('|>> TEST:', self.instrument.readline())
         # sleep(self.pause)
         # sleep(1)
         # x = self.instrument.readline()
@@ -103,7 +106,10 @@ class SerialAsciiCommunicationMethod(BaseCommunicationMethod):
         # return answer
 
     def _read(self, **kwargs):
-        x = self.instrument.readline()
+        if self.immediate_serial_read:
+            x = self._last_read_value
+        else:
+            x = self.instrument.readline()
         answer = x.decode('ASCII')
         # print("SERIAL ASCII READLINE:", answer)
         # print("@ Q&A: ", self._last_command.strip(), " |", answer.strip(), " | End")
