@@ -5,7 +5,7 @@ from .base import AbstractDevice
 class BhRrgDevice(AbstractDevice):
     communicator_class = SerialAsciiBhRrgControllerCommunicator
 
-    def _preprocessing_value(self, command=None, arg1=None, arg2=None):
+    def _preprocessing_value(self, command=None, arg1=None, arg2=None, **kwargs):
         answer = list(filter(lambda x: x is not None, [command, arg1, arg2]))
         return answer
 
