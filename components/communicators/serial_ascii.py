@@ -200,8 +200,9 @@ class SerialAsciiBhRrgControllerCommunicator(AbstractCommunicator):
             # value = ""
         answer = value.split('\n')[0]
         answer_split = answer.split()
-        base_answer = ' '.join(answer_split[:-1])
-        check_sum = answer_split[-1]
-        self._check_answer_sum(base_answer, check_sum)
+        base_answer = ' '.join(answer_split[:])  # вообще [:-1]
+        print('base_answer', base_answer)
+        # check_sum = answer_split[-1]
+        # self._check_answer_sum(base_answer, check_sum)
 
         return base_answer
