@@ -180,7 +180,7 @@ class SerialAsciiBhRrgControllerCommunicator(AbstractCommunicator):
         value = ' '.join(map(str, value))
         # address = str(self.port).zfill(self.ADDRESS_PORT_LEN)
         command = f"{value}"
-        command = f"{self._add_check_sum(command)}\n"
+        # command = f"{self._add_check_sum(command)}"
         print('BH _preprocessing_value command:', command)
         # print("SerialAsciiCommunicator COMMAND::", command.strip())
         return {
