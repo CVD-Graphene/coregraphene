@@ -1,4 +1,8 @@
-from .rrg import GetCurrentFlowRrgControllerEffect, GetCurrentSccmRrgAdcControllerEffect
+from .rrg import (
+    GetCurrentFlowRrgControllerEffect,
+    GetCurrentSccmRrgAdcControllerEffect,
+    GetCurrentSccmRrgBhControllerEffect,
+)
 from .pyrometer import GetCurrentTemperaturePyrometerControllerAction
 from .current_akip import (
     GetCurrentControllerAction,

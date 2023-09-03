@@ -1,6 +1,6 @@
 import random
 
-from ...system_effects import GetCurrentFlowRrgControllerEffect, GetCurrentSccmRrgAdcControllerEffect
+from ...system_effects import GetCurrentSccmRrgAdcControllerEffect
 from .base import AbstractController, AbstractControllerManyDevices
 from ..commands import BaseCommand
 from ..devices import RrgAdcDacDevice

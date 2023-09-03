@@ -20,6 +20,7 @@ class SerialAsciiCommunicationMethod(BaseCommunicationMethod):
                  bytesize=serial.EIGHTBITS,
                  timeout=0.001,
                  pause=0.04,
+                 **kwargs,
                  ):
         super().__init__()
         self.instrument = None

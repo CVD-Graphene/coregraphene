@@ -36,3 +36,11 @@ class GetCurrentSccmRrgAdcControllerEffect(ManyDeviceControllerEffect):
         # value = float(value) / (100 * 100) * max_sccm
         # print("CALL FUNC CURRENT FLOW CONTROLLER:", value)
         return float(value)
+
+
+class GetCurrentSccmRrgBhControllerEffect(ManyDeviceControllerEffect):
+    def _on_get_value(self, value):
+        self._controller.current_sccms[self._controller._last_thread_command.kwargs['arg1']] = value
+
+    def _call_function(self, value):
+        return float(value)
