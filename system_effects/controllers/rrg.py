@@ -40,7 +40,13 @@ class GetCurrentSccmRrgAdcControllerEffect(ManyDeviceControllerEffect):
 
 class GetCurrentSccmRrgBhControllerEffect(ManyDeviceControllerEffect):
     def _on_get_value(self, value):
-        self._controller.current_sccms[self._controller._last_thread_command.kwargs['arg1']] = value
+        # device_num = self._controller._last_thread_command.kwargs['arg1']
+        device_num = self._controller._last_thread_command.device_num
+        voltage_ratio = self._controller._rrgs_config[device_num]['CONTROLLER_VOLTAGE_RATIO']
+        max_sccm = self._controller.get_max_sccm_device(device_num=device_num)
+        # value == current voltage from [0, max (5)]
+        current_sccm = value / self._controller.max_rrg_voltage * max_sccm / voltage_ratio
+        self._controller.current_sccms[device_num] = current_sccm
 
     def _call_function(self, value):
         # print('====== _call_function', value)

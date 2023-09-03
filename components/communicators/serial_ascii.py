@@ -181,8 +181,7 @@ class SerialAsciiBhRrgControllerCommunicator(AbstractCommunicator):
         # address = str(self.port).zfill(self.ADDRESS_PORT_LEN)
         command = f"{value}"
         # command = f"{self._add_check_sum(command)}"
-        print('BH _preprocessing_value command:', command)
-        # print("SerialAsciiCommunicator COMMAND::", command.strip())
+        # print('BH _preprocessing_value command:', command)
         return {
             "command": command,
         }
@@ -194,14 +193,14 @@ class SerialAsciiBhRrgControllerCommunicator(AbstractCommunicator):
     def _postprocessing_value(self, value: str = None):
         if LOCAL_MODE:
             return ""
-        print("|>>>> BH_RRG_1 VALUE:", value, type(value))
+        # print("|>>>> BH_RRG_1 VALUE:", value, type(value))
         if value is None:
             return ""
             # value = ""
         answer = value.split('\n')[0]
         answer_split = answer.split()
-        base_answer = ' '.join(answer_split[:])  # вообще [:-1]
-        print('base_answer', base_answer)
+        base_answer = ' '.join(answer_split[:-1])  # вообще [:-1]
+        # print('base_answer', base_answer)
         # check_sum = answer_split[-1]
         # self._check_answer_sum(base_answer, check_sum)
 

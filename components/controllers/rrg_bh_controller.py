@@ -27,6 +27,7 @@ class BhRrgController(AbstractController):
 
         self._rrgs_config = kwargs.get('rrg_config')
         self.port = kwargs.get("port", None)
+        self.max_rrg_voltage = kwargs.get("max_rrg_voltage", 5.0)
         self._get_potential_port = get_potential_port
 
         self.loop_delay = 0.2
@@ -52,7 +53,8 @@ class BhRrgController(AbstractController):
         return arr
 
     def _on_simple_answer(self, value):
-        print('|> BH ANSWER VALUE:', value)
+        pass
+        # print('|> BH ANSWER VALUE:', value)
 
     def _get_log_values(self):
         values = dict()
@@ -84,6 +86,9 @@ class BhRrgController(AbstractController):
         assert 0.0 <= sccm <= max_sccm
 
         self.target_sccms[device_num] = sccm
+        voltage_ratio = self._rrgs_config[device_num]['CONTROLLER_VOLTAGE_RATIO']
+        target_voltage = sccm / max_sccm * self.max_rrg_voltage * voltage_ratio
+
         # target_flow = sccm / max_sccm * 100 * 100
         # print("CREATE SCCM TARGET COMMAND")
 
@@ -91,7 +96,7 @@ class BhRrgController(AbstractController):
             command=RRG_WRITE_VALUE,
             device_num=device_num,
             arg1=device_num,
-            arg2=sccm,
+            arg2=target_voltage,
             with_answer=True,
             on_answer=self._on_simple_answer,
         ))
