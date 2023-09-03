@@ -236,8 +236,9 @@ class AbstractController(object):
                 # with_error = True
                 self.works_correctly = False
                 try:
-                    print(f"[{datetime.datetime.now().replace(microsecond=0)}] "
+                    print(f"[{datetime.datetime.now().time().replace(microsecond=0)}] "
                           f"ERROR DURING EXECUTING COMMAND:", str(e))
+                    print(traceback.format_exc())
                 except Exception as pe:
                     print("ERROR PRINTING CONTROLLER RUN EXCEPTION :(")
                 attempts += 1
