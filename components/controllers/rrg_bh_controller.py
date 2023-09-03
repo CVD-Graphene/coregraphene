@@ -36,6 +36,8 @@ class BhRrgController(AbstractController):
 
         self.get_current_flow = GetCurrentSccmRrgBhControllerEffect(controller=self)
 
+        time.sleep(2)
+
     def _reinitialize_communication(self):
         try:
             if self._get_potential_port is not None:
