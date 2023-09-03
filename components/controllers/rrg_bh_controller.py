@@ -87,7 +87,10 @@ class BhRrgController(AbstractController):
 
         self.target_sccms[device_num] = sccm
         voltage_ratio = self._rrgs_config[device_num]['CONTROLLER_VOLTAGE_RATIO']
-        target_voltage = sccm / max_sccm * self.max_rrg_voltage * voltage_ratio
+        sccm_shift = self._rrgs_config[device_num]['CONTROLLER_VOLTAGE_SHIFT']
+
+        target_voltage = (sccm - sccm_shift) / max_sccm * self.max_rrg_voltage * voltage_ratio
+        target_voltage = min(target_voltage, self.max_rrg_voltage)
 
         # target_flow = sccm / max_sccm * 100 * 100
         # print("CREATE SCCM TARGET COMMAND")
