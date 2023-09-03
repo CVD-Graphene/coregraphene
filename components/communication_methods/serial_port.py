@@ -20,6 +20,7 @@ class SerialAsciiCommunicationMethod(BaseCommunicationMethod):
                  bytesize=serial.EIGHTBITS,
                  timeout=0.001,
                  pause=0.04,
+                 create_instrument_delay=None,
                  **kwargs,
                  ):
         super().__init__()
@@ -33,6 +34,7 @@ class SerialAsciiCommunicationMethod(BaseCommunicationMethod):
         self.bytesize = bytesize
         self.timeout = timeout
         self.pause = pause
+        self.create_instrument_delay = create_instrument_delay
 
     def setup(self):
         super().setup()
@@ -57,6 +59,8 @@ class SerialAsciiCommunicationMethod(BaseCommunicationMethod):
         self.instrument.reset_output_buffer()
 
         gc.collect()
+        if self.create_instrument_delay:
+            time.sleep(self.create_instrument_delay)
 
     def update_communication(self, port=None, **kwargs):
         self.port = port or self.port
@@ -86,7 +90,7 @@ class SerialAsciiCommunicationMethod(BaseCommunicationMethod):
 
     def _send(self, command=None):
         self._last_command = command
-        print("COMMAND SERIAL ASCII:", command)
+        # print("COMMAND SERIAL ASCII:", command)
         self.instrument.write(bytearray(command.encode("ASCII")))
         # sleep(self.pause)
         # sleep(1)
