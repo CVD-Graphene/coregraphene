@@ -43,5 +43,7 @@ class GetCurrentSccmRrgBhControllerEffect(ManyDeviceControllerEffect):
         self._controller.current_sccms[self._controller._last_thread_command.kwargs['arg1']] = value
 
     def _call_function(self, value):
-        print('====== _call_function', value)
+        # print('====== _call_function', value)
+        if type(value) == list:
+            value = value[0]
         return float(value)
