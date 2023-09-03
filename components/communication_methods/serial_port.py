@@ -60,6 +60,7 @@ class SerialAsciiCommunicationMethod(BaseCommunicationMethod):
 
         gc.collect()
         if self.create_instrument_delay:
+            print('SERIAL SLEEEEEEEEEEEEEEEP', self.create_instrument_delay)
             time.sleep(self.create_instrument_delay)
 
     def update_communication(self, port=None, **kwargs):
