@@ -9,8 +9,9 @@ LOCAL_MODE = settings.LOCAL_MODE
 class GetCurrentFlowRrgControllerEffect(ManyDeviceControllerEffect):
 
     def _on_get_value(self, value):
-        # print("CALL FUNC CURRENT FLOW CONTROLLER 2:", value)
+        # print("CALL FUNC CURRENT FLOW CONTROLLER:", value, self._controller._last_thread_command.device_num)
         self._controller.current_sccms[self._controller._last_thread_command.device_num] = value
+        # print(len(self._controller._commands_queue), 'commands rrg now')
 
     def _call_function(self, value):
         max_sccm = self._controller.get_max_sccm_device(

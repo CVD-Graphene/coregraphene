@@ -100,12 +100,12 @@ class SeveralRrgModbusController(AbstractControllerManyDevices):
                 device_num=i,
                 repeat=True,
                 immediate_answer=True,
-                # on_answer=self._on_get_current_flow,
                 on_answer=self.get_current_flow,
             ))
 
     def _get_last_commands_to_exit(self):
         commands = []
+        print('LAST COMMANDS RRG')
         for i in range(self.devices_amount):
             commands += [
                 BaseCommand(
