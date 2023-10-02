@@ -173,11 +173,8 @@ class BackPressureValveController(AbstractController):
         self.add_command(self._create_read_target_pressure_command_obj())
         self.get_state_action(BACK_PRESSURE_VALVE_STATE.WAITING)
         return pressure
-        # self.state = BACK_PRESSURE_VALVE_STATE.WAITING
-        # return self.state
 
     def _on_turn_on_regulation(self):
-        # print("_on_turn_on_regulation!!!!!")
         return self.get_state_action(BACK_PRESSURE_VALVE_STATE.REGULATION)
 
     @AbstractController.thread_command
@@ -189,12 +186,8 @@ class BackPressureValveController(AbstractController):
             command=BACK_PRESSURE_VALVE_CONSTANTS.KEEP_TARGET_PERCENT,
             on_completed=self._on_turn_on_keeping_percent,
         ))
-        # self.add_command(self._create_read_target_pressure_command_obj())
         self.get_state_action(BACK_PRESSURE_VALVE_STATE.WAITING)
         return percent
-        # self.state = BACK_PRESSURE_VALVE_STATE.WAITING
-        # return self.state
 
     def _on_turn_on_keeping_percent(self):
-        # print("_on_turn_on_keeping_percent!!!!!")
         return self.get_state_action(BACK_PRESSURE_VALVE_STATE.REGULATION)
