@@ -27,6 +27,7 @@ class BhVakumetrController(AbstractController):
         # THROTTLE PARAMS
         self.state = BACK_PRESSURE_VALVE_STATE.CLOSE
         self.throttle_current_pressure = 0.0
+        self.current_pressure = 0.0
         self.throttle_target_pressure = 0.0
         self.throttle_target_open_percent = 0.0
 
@@ -51,7 +52,7 @@ class BhVakumetrController(AbstractController):
 
     def _get_log_values(self):
         values = dict()
-        values[pressure_label] = self.throttle_current_pressure
+        values[pressure_label] = self.current_pressure
         return values
 
     def get_max_sccm_device(self, device_num=None):
