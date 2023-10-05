@@ -23,7 +23,7 @@ class GetCurrentPressureBHVakumetrControllerEffect(ControllerEffect):
         self._controller.current_pressure = value
 
     def _call_function(self, value):
-        print('====== BH VAKUM _call_function', value)
+        # print('====== BH VAKUM _call_function', value)
         if LOCAL_MODE:
             return round(random() * 100, 1)
         if type(value) == list:
