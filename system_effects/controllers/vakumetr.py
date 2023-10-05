@@ -32,4 +32,4 @@ class GetCurrentPressureBHVakumetrControllerEffect(ControllerEffect):
 
     def _process_voltage_value(self, value):
         # device_num = self._controller._last_thread_command.kwargs['arg1']
-        return 1.0 * 10 ** (0.778 * (value * 2 - 6.143))
+        return 1.0 * 10 ** (0.778 * (value * 6.95 - 6.143))
