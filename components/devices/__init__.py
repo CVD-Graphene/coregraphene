@@ -9,3 +9,4 @@ from .rrg_adc_dac import RrgAdcDacDevice
 from .back_pressure_valve_device import BackPressureValveDevice
 from .vakumetr_adc_device import VakumetrAdcDevice
 from .bh_rrg_device import BhRrgDevice
+from .modbus import *

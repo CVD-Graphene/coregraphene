@@ -11,3 +11,4 @@ from .back_pressure_valve_controller import BackPressureValveController
 from .vakumetr_adc_controller import VakumetrAdcController
 from .rrg_bh_controller import BhRrgController
 from .vakumetr_bh_controller import BhVakumetrController
+from .tetron_modbus_controller import TetronCurrentSourceController

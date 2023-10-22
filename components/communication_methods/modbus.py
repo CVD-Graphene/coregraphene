@@ -1,7 +1,8 @@
 import gc
 import time
-
 import minimalmodbus as mm
+import serial
+
 from .base import BaseCommunicationMethod
 from ...conf import settings
 
@@ -33,6 +34,9 @@ class ModbusCommunicationMethod(BaseCommunicationMethod):
         self.instrument_number = instrument_number or settings.DEFAULT_MODBUS_INSTRUMENT_NUMBER
         self.baudrate = baudrate or settings.DEFAULT_MODBUS_BAUDRATE
         self.timeout = timeout or settings.DEFAULT_MODBUS_TIMEOUT
+
+        # self.bytesize = bytesize
+        # self.parity = parity
 
         # print("|>>>> MODBUS: PORT=", port, "INST NUM:", self.instrument_number,
         #       "MODE", self.mode, "baudrate", self.baudrate)
@@ -70,6 +74,8 @@ class ModbusCommunicationMethod(BaseCommunicationMethod):
         )
         self.instrument.serial.baudrate = self.baudrate
         self.instrument.serial.timeout = self.timeout
+        # if self.bytesize is not None:
+        #     self.instrument.serial.bytesize = self.bytesize
 
         gc.collect()
 
@@ -94,7 +100,8 @@ class ModbusCommunicationMethod(BaseCommunicationMethod):
             print("MODBUS HANDLE EXCEPTION:", e)
         # self._create_instrument()
 
-    def _send(self, register=None, value=None, precision=None, functioncode=None, **kwargs):
+    def _send(self, register=None, value=None, precision=None,
+              functioncode=None, function_type='register', **kwargs):
         last_command = f"{register} {value} {precision}"
         if functioncode is not None:
             last_command += f" {functioncode}"
@@ -107,7 +114,14 @@ class ModbusCommunicationMethod(BaseCommunicationMethod):
         kwargs = dict()
         if functioncode is not None:
             kwargs['functioncode'] = functioncode
-        self.instrument.write_register(*args, **kwargs)
+        if function_type == 'register':
+            self.instrument.write_register(*args, **kwargs)
+        elif function_type == 'float':
+            self.instrument.write_float(*args, **kwargs)
+        elif function_type == 'bit':
+            self.instrument.write_bit(*args, **kwargs)
+        else:
+            print(f'Write with unknown function_type: {function_type}')
 
     def _local_send(self, register=None, value=None, precision=None, functioncode=None, **kwargs):
         self.last_register = register
@@ -118,7 +132,7 @@ class ModbusCommunicationMethod(BaseCommunicationMethod):
             value = value / float(10 ** (precision - 1))
         self.register_values[register] = value
 
-    def _read(self, register=None, precision=None, **kwargs):
+    def _read(self, register=None, precision=None, function_type='register', **kwargs):
         last_command = f"{register} {precision}"
 
         self._last_command = last_command
@@ -127,7 +141,16 @@ class ModbusCommunicationMethod(BaseCommunicationMethod):
         if precision is not None:
             args.append(precision)
         # print("MODBUS _read ARGS:", args)
-        answer = self.instrument.read_register(*args)
+
+        if function_type == 'register':
+            answer = self.instrument.read_register(*args)
+        elif function_type == 'float':
+            answer = self.instrument.read_float(*args)
+        elif function_type == 'bit':
+            answer = self.instrument.read_bit(*args)
+        else:
+            print(f'Read with unknown function_type: {function_type}')
+            answer = None
         return answer
 
     def _local_read(self, register=None, precision=None, **kwargs):
