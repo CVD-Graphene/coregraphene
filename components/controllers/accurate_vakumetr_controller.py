@@ -45,14 +45,14 @@ class AccurateVakumetrController(AbstractController):
         return {parameter_label: self.vakumetr_value}
 
     def _thread_setup_additional(self, **kwargs):
-        # self.add_command(BaseCommand(
-        #     command="DR",
-        #     value="00",
-        #     operation_code="2",
-        #     repeat=False,
-        #     with_answer=True,
-        #     on_answer=self._on_reboot_answer,
-        # ))
+        self.add_command(BaseCommand(
+            command="DR",
+            value="00",
+            operation_code="2",
+            repeat=False,
+            with_answer=True,
+            on_answer=self._on_reboot_answer,
+        ))
         self.add_command(BaseCommand(
             command="MV",
             value="00",
