@@ -9,6 +9,7 @@ LOCAL_MODE = settings.LOCAL_MODE
 class GetPowerControllerAction(ControllerEffect):
 
     def _on_get_value(self, value):
+        print('CURRENT is_power:', value)
         self._controller.is_power = value
 
     def _call_function(self, value):
