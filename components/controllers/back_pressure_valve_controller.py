@@ -45,7 +45,7 @@ class BackPressureValveController(AbstractController):
         self.get_target_open_percent_action = GetTargetOpenPercentBackPressureValveControllerAction(controller=self)
 
     def _check_command(self, **kwargs):
-        self._exec_command(BaseCommand(command=BACK_PRESSURE_VALVE_CONSTANTS.READ_PRESSURE,))
+        self._exec_command(BaseCommand(command=BACK_PRESSURE_VALVE_CONSTANTS.READ_PRESSURE, ))
         time.sleep(self.loop_delay * 2)
         read_value = float(self.read())
         print("Throttle get value::", read_value)
@@ -164,13 +164,15 @@ class BackPressureValveController(AbstractController):
     def turn_on_regulation(self, pressure):
         pressure = float(pressure)
         # print("Turn on regulation to", pressure)
+        self.add_command(BaseCommand(
+            command=BACK_PRESSURE_VALVE_CONSTANTS.HOLD_STATE,
+        ))
         self.add_command(self._create_set_target_pressure_command_obj(pressure))
-        if self.state != BACK_PRESSURE_VALVE_STATE.REGULATION:
-            self.add_command(BaseCommand(
-                command=BACK_PRESSURE_VALVE_CONSTANTS.START_REGULATION,
-                # with_answer=True,  # ON END, NOT ON ANSWER
-                on_completed=self._on_turn_on_regulation,
-            ))
+        self.add_command(BaseCommand(
+            command=BACK_PRESSURE_VALVE_CONSTANTS.START_REGULATION,
+            # with_answer=True,  # ON END, NOT ON ANSWER
+            on_completed=self._on_turn_on_regulation,
+        ))
         self.add_command(self._create_read_target_pressure_command_obj())
         self.get_state_action(BACK_PRESSURE_VALVE_STATE.WAITING)
         return pressure
