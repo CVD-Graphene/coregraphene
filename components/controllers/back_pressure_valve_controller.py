@@ -165,11 +165,12 @@ class BackPressureValveController(AbstractController):
         pressure = float(pressure)
         # print("Turn on regulation to", pressure)
         self.add_command(self._create_set_target_pressure_command_obj(pressure))
-        self.add_command(BaseCommand(
-            command=BACK_PRESSURE_VALVE_CONSTANTS.START_REGULATION,
-            # with_answer=True,  # ON END, NOT ON ANSWER
-            on_completed=self._on_turn_on_regulation,
-        ))
+        if self.state != BACK_PRESSURE_VALVE_STATE.REGULATION:
+            self.add_command(BaseCommand(
+                command=BACK_PRESSURE_VALVE_CONSTANTS.START_REGULATION,
+                # with_answer=True,  # ON END, NOT ON ANSWER
+                on_completed=self._on_turn_on_regulation,
+            ))
         self.add_command(self._create_read_target_pressure_command_obj())
         self.get_state_action(BACK_PRESSURE_VALVE_STATE.WAITING)
         return pressure
