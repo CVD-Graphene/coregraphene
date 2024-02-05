@@ -1,4 +1,4 @@
-from ..communicators import SerialAsciiAkipCommunicator
+from ..communicators import SerialAsciiAkipCommunicator, InstekBaseSerialCommunicator
 from ...conf import settings
 
 from .base import AbstractDevice
@@ -21,6 +21,15 @@ class CurrentSourceDevice(AbstractDevice):
     #     self.communicator = SerialAsciiAkipCommunicator(
     #         port=settings.CURRENT_SOURCE_PORT
     #     )
+
+    def _preprocessing_value(self, command=None, value=None):
+        if value is None:
+            return command.strip()
+        return f"{command} {value}".strip()
+
+
+class InstekCurrentSourceDevice(AbstractDevice):
+    communicator_class = InstekBaseSerialCommunicator
 
     def _preprocessing_value(self, command=None, value=None):
         if value is None:

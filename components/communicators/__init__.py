@@ -4,6 +4,7 @@ from .serial_ascii import (
     SerialAsciiAkipCommunicator,
     SerialAsciiPyrometerCommunicator,
     BaseSerialAsciiCommunicator,
+    InstekBaseSerialCommunicator,
     SerialAsciiBhRrgControllerCommunicator,
 )
 from .digital_gpio import DigitalGpioCommunicator

@@ -205,3 +205,22 @@ class SerialAsciiBhRrgControllerCommunicator(AbstractCommunicator):
         # self._check_answer_sum(base_answer, check_sum)
 
         return base_answer
+
+
+class InstekBaseSerialCommunicator(AbstractCommunicator):
+    communication_method_class = SerialAsciiCommunicationMethod
+
+    def _preprocessing_value(self, value="") -> dict:
+        return {
+            "command": f"{value}\r\n",
+        }
+
+    def _postprocessing_value(self, value: str = None):
+        if not value:
+            return ""
+        return str(value).strip()
+        # if LOCAL_MODE:
+        #     return str(value).strip()
+
+        # value = int(value[5:9], base=16) - 273
+        # return value
