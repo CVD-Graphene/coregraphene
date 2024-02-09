@@ -162,7 +162,7 @@ class BackPressureValveController(AbstractController):
 
     @AbstractController.thread_command
     def turn_on_regulation(self, pressure):
-        pressure = float(pressure)
+        pressure = max(0.0, min(BACK_PRESSURE_VALVE_CONSTANTS.MAX_SET_PRESSURE, float(pressure)))
         # print("Turn on regulation to", pressure)
         self.add_command(BaseCommand(
             command=BACK_PRESSURE_VALVE_CONSTANTS.HOLD_STATE,
