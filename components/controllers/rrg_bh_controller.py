@@ -14,6 +14,11 @@ LOCAL_MODE = settings.LOCAL_MODE
 sccm_label = 'РРГ sccm [BH] '
 pressure_label = 'Давление дросселя'
 
+# Из-за ошибки в плате, у нас можно выставлять только напряжение в 5В, а не 10В,
+# поэтому нужно в 2 раза урезать полученные от пользователя значения
+# (выдавать обратно тоже в 2 раза больше, соответственно)
+# SCCM_COEF = 100.0 / 200.0
+
 
 class BhRrgController(AbstractController):
     device_class = BhRrgDevice
@@ -143,8 +148,8 @@ class BhRrgController(AbstractController):
         assert 0.0 <= sccm <= max_sccm
 
         self.target_sccms[device_num] = sccm
-        voltage_ratio = self._rrgs_config[device_num]['CONTROLLER_VOLTAGE_RATIO']
-        sccm_shift = self._rrgs_config[device_num]['CONTROLLER_VOLTAGE_SHIFT']
+        voltage_ratio = self._rrgs_config[device_num].get('CONTROLLER_VOLTAGE_RATIO', 1.0)
+        sccm_shift = self._rrgs_config[device_num].get('CONTROLLER_VOLTAGE_SHIFT', 0.0)
 
         target_voltage = (sccm - sccm_shift) / max_sccm * self.max_rrg_voltage * voltage_ratio
         target_voltage = min(target_voltage, self.max_rrg_voltage)
