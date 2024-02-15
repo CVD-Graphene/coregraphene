@@ -16,7 +16,7 @@ LOCAL_MODE = settings.LOCAL_MODE
 
 # MAX_CURRENT = 120.0
 MAX_SET_CURRENT = 120.0  # MAX_CURRENT
-MAX_VOLTAGE = 12.5
+MAX_VOLTAGE = 12.4
 
 OUTPUT_1_COMMAND = "OUTP 1"  # "ON" COMMAND
 OUTPUT_0_COMMAND = "OUTP 0"  # "OFF" COMMAND
@@ -93,7 +93,10 @@ class GWInstekCurrentSourceController(AbstractController):
         # self.add_command(BaseCommand(command=CLEAR_COMMAND))
         # self.add_command(BaseCommand(command=REMOTE_COMMAND))
         self.add_command(self.get_power_on_command())
-        # self.add_command(BaseCommand(command=SET_MAX_VOLTAGE_LIMIT))
+        self.add_command(BaseCommand(
+            command=SET_VOLTAGE_ACTUAL,
+            value=MAX_VOLTAGE,
+        ))
         # self.add_command(BaseCommand(command=SET_MAX_CURRENT_LIMIT))
         # self.add_command(BaseCommand(command=SET_VOLTAGE_ACTUAL))
 
