@@ -89,7 +89,7 @@ class BhRrgController(AbstractController):
             self.add_command(BaseCommand(
                 repeat=True,
                 command=BH_RRG_THROTTLE.RRG_READ_VALUE,
-                arg1=i,
+                arg1=self._rrgs_config[i]['ADDRESS'],
                 device_num=i,
                 with_answer=True,
                 on_answer=self.get_current_flow,
@@ -160,7 +160,8 @@ class BhRrgController(AbstractController):
         self.add_command(BaseCommand(
             command=BH_RRG_THROTTLE.RRG_WRITE_VALUE,
             device_num=device_num,
-            arg1=device_num,
+            # arg1=device_num,
+            arg1=self._rrgs_config[device_num]['DAC_ADDRESS'],
             arg2=target_voltage,
             with_answer=True,
             on_answer=self._on_simple_answer,
