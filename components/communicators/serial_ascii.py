@@ -224,3 +224,42 @@ class InstekBaseSerialCommunicator(AbstractCommunicator):
 
         # value = int(value[5:9], base=16) - 273
         # return value
+
+
+class PumpTC110SerialAsciiCommunicator(AbstractCommunicator):
+    communication_method_class = SerialAsciiCommunicationMethod
+    ADDRESS_PORT_LEN = 3
+
+    def __init__(self, port_communicator=None, **kwargs):
+        super().__init__(**kwargs)
+        self.port = port_communicator
+
+    def _add_check_sum(self, command):
+        summ = 0
+        for c in command:
+            summ += ord(c)
+            # print(ord(c))
+
+        summ = summ % 256
+        return f"{command}{chr(summ)}"
+
+    def _preprocessing_value(self, value=""):
+        address = str(self.port).zfill(self.ADDRESS_PORT_LEN)
+        command = f"{address}{value}"
+        command = f"{self._add_check_sum(command)}{chr(13)}"
+        print('TC110 total command:', command)
+        return {
+            "command": command,
+        }
+
+    def _postprocessing_value(self, value: str = None):
+        if LOCAL_MODE:
+            return value
+        # print("|>>>> VAK VALUE:", value)
+        if value is None:
+            value = ""
+        answer = value.split('\r')[0]
+        if len(answer) < 8:
+            return ""
+        ans_length = int(answer[8:10])
+        return answer[10:10 + ans_length]

@@ -3,6 +3,7 @@ from .accurate_vakumetr_controller import AccurateVakumetrController
 from .valve_controller import ValveController
 from .current_controller import CurrentSourceController
 from .instek_current_controller import GWInstekCurrentSourceController
+from .pump_TC110 import PumpTC110Controller
 from .rrg_modbus_controller import RrgModbusController, SeveralRrgModbusController
 from .termodat_modbus_controller import TermodatModbusController, SeveralTermodatModbusController
 from .pyrometer_temperature_controller import PyrometerTemperatureController

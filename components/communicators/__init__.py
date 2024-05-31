@@ -6,6 +6,7 @@ from .serial_ascii import (
     BaseSerialAsciiCommunicator,
     InstekBaseSerialCommunicator,
     SerialAsciiBhRrgControllerCommunicator,
+    PumpTC110SerialAsciiCommunicator,
 )
 from .digital_gpio import DigitalGpioCommunicator
 from .modbus_ascii import ModbusAsciiCommunicator
