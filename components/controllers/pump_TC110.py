@@ -91,10 +91,10 @@ class PumpTC110Controller(AbstractController):
         )
 
     @AbstractController.device_command()
-    def set_target_speed_percent(self, percent: float):
-        percent = float(percent)
-        percent = min(100.0, max(20.0, percent))
-        assert 20.0 <= percent <= 100.0
+    def set_target_speed_percent(self, percent: int):
+        percent = int(percent)
+        percent = min(100, max(20, percent))
+        assert 20 <= percent <= 100
 
         self.target_speed = percent
 

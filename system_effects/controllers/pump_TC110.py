@@ -12,5 +12,5 @@ class GetActualSpeedPumpTC110ControllerEffect(ControllerEffect):
 
     def _call_function(self, value):
         if LOCAL_MODE:
-            return 0.0
+            return random() * 100
         return float(value)

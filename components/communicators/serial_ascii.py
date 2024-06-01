@@ -241,13 +241,13 @@ class PumpTC110SerialAsciiCommunicator(AbstractCommunicator):
             # print(ord(c))
 
         summ = summ % 256
-        return f"{command}{chr(summ)}"
+        return f"{command}{str(summ).zfill(3)}"
 
     def _preprocessing_value(self, value=""):
         address = str(self.port).zfill(self.ADDRESS_PORT_LEN)
         command = f"{address}{value}"
         command = f"{self._add_check_sum(command)}{chr(13)}"
-        print('TC110 total command:', command)
+        # print('TC110 total command:', command)
         return {
             "command": command,
         }
