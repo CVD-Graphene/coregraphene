@@ -412,7 +412,7 @@ class BaseSystem(object):
         self._add_error_log(e)
         self._errors.append(e)
         if isinstance(e, BaseConditionException):
-            pass
+            raise
 
     @abstractmethod
     def log_state(self):

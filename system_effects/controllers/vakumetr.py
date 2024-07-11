@@ -14,7 +14,7 @@ class GetCurrentPressureVakumetrControllerEffect(ControllerEffect):
 
     def _call_function(self, value):
         if LOCAL_MODE:
-            value = round(random() * 100, 1)
+            value = round(random() * 1.1, 1)
         return float(value)
 
 

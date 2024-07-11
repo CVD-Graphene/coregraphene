@@ -34,7 +34,7 @@ class PumpTC110Controller(AbstractController):
 
         # PARAMS
         self.is_active = False
-        self.target_speed = 0.0
+        self.target_speed = 0
         # self.current_speed = 0.0
         self.actual_speed = 0.0
 
@@ -89,6 +89,10 @@ class PumpTC110Controller(AbstractController):
             with_answer=True,
             on_answer=self.get_actual_speed_action,
         )
+
+    @property
+    def is_working(self):
+        return self.is_active or (self.actual_speed > 0.0)
 
     @AbstractController.device_command()
     def set_target_speed_percent(self, percent: int):
