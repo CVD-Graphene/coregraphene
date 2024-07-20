@@ -68,14 +68,14 @@ class PumpTC110Controller(AbstractController):
 
     def get_off_commands(self):
         return [
-            BaseCommand(command=OFF_1_COMMAND),
-            BaseCommand(command=OFF_2_COMMAND),
+            BaseCommand(command=OFF_1_COMMAND, value='0'),
+            BaseCommand(command=OFF_2_COMMAND, value='0'),
         ]
 
     def get_on_commands(self):
         return [
-            BaseCommand(command=ON_1_COMMAND),
-            BaseCommand(command=ON_2_COMMAND),
+            BaseCommand(command=ON_1_COMMAND, value='1'),
+            BaseCommand(command=ON_2_COMMAND, value='100'),
         ]
 
     def _get_last_commands_to_exit(self):
@@ -85,7 +85,7 @@ class PumpTC110Controller(AbstractController):
     def _create_set_target_speed_command_obj(self, value):
         return BaseCommand(
             command=SET_SPEED_COMMAND,
-            value=value,
+            value=f"0{str(int(value)).zfill(3)}00",
             with_answer=True,
             on_answer=self.get_actual_speed_action,
         )
